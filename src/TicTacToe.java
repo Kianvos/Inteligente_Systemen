@@ -50,9 +50,6 @@ public class TicTacToe implements ActionListener {
             this.GUI.updateTextField("Je hebt gewonnen.");
             System.out.println("Je hebt gewonnen.");
         }
-
-        System.out.println(this.gameBoard);
-        System.out.println(checkWinner('X'));
     }
 
 
