@@ -2,12 +2,12 @@ import javax.swing.*;
 import java.awt.*;
 
 public class gui {
-    public JButton[][] button;
+    public JButton[] button;
     private JLabel textfield;
     private JFrame frame;
 
     public gui(String title, int width, int height) {
-        this.button = new JButton[3][3];
+        this.button = new JButton[9];
 
         JPanel t_panel = new JPanel();
         t_panel.setLayout(new GridLayout(1, 1));
@@ -28,14 +28,13 @@ public class gui {
 
         bt_panel.setLayout(new GridLayout(3, 3));
 
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
-                button[i][j] = new JButton();
-                bt_panel.add(button[i][j]);
-                button[i][j].setFocusable(false);
-                button[i][j].setFont(new Font(button[i][j].getFont().toString(), Font.BOLD, 50));
-            }
+        for (int i = 0; i < 9; i++) {
+            button[i] = new JButton();
+            bt_panel.add(button[i]);
+            button[i].setFocusable(false);
+            button[i].setFont(new Font(button[i].getFont().toString(), Font.BOLD, 50));
         }
+
         t_panel.add(this.textfield);
         this.frame.add(t_panel, BorderLayout.NORTH);
 
@@ -60,12 +59,12 @@ public class gui {
         this.textfield.setText(text);
     }
 
-    public void updateButton(int row, int column, char player) {
-        this.button[row][column].setText(String.valueOf(player));
+    public void updateButton(int pos, char player) {
+        this.button[pos].setText(String.valueOf(player));
     }
 
     public static void main(String[] args) {
         gui GUI = new gui("Tic Tac Toe", 450, 600);
-        GUI.updateButton(1, 1, 'X');
+        GUI.updateButton(1, 'X');
     }
 }
