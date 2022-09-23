@@ -2,8 +2,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Random;
 
-
-//TODO REMOVE PUBLIC variables EN CREATE METHODS
 public class TicTacToe {
     final char playerX = 'X';
     final char playerO = 'O';
