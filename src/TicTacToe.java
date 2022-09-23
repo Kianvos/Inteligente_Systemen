@@ -62,7 +62,6 @@ public class TicTacToe {
                 }
             }
         }
-
     }
 
     public boolean checkPlace(int pos) {
@@ -151,6 +150,14 @@ public class TicTacToe {
 
     public int getRandom(int length) {
         return new Random().nextInt(length);
+    }
+
+    public void resetGame(){
+        this.gameBoard = new char[9];
+        this.winner = 0;
+        this.gameEnded = false;
+        this.GUI.resetBoard();
+        this.startGame();
     }
 
     public String toString() {
