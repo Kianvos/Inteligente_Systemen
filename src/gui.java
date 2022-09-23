@@ -1,10 +1,15 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
-public class gui {
-    public JButton[] button;
+public class gui implements ActionListener {
+    private JButton[] button;
     private JLabel textfield;
     private JFrame frame;
+
+    private boolean buttonPressed;
+    private int set;
 
     public gui(String title, int width, int height) {
         this.button = new JButton[9];
@@ -22,7 +27,8 @@ public class gui {
         this.frame.setSize(width, height);
         this.frame.setLayout(new BorderLayout());
 
-
+        this.buttonPressed = false;
+        this.set = 0;
 
         JPanel bt_panel = new JPanel();// Pannel for buttons
 
@@ -33,6 +39,7 @@ public class gui {
             bt_panel.add(button[i]);
             button[i].setFocusable(false);
             button[i].setFont(new Font(button[i].getFont().toString(), Font.BOLD, 50));
+            button[i].addActionListener(this);
         }
 
         t_panel.add(this.textfield);
@@ -66,5 +73,31 @@ public class gui {
     public static void main(String[] args) {
         gui GUI = new gui("Tic Tac Toe", 450, 600);
         GUI.updateButton(1, 'X');
+    }
+
+    public int getSet() {
+        return set;
+    }
+
+    public void setSet(int i) {
+        this.set = i;
+    }
+
+    public boolean getButtonPressed() {
+        return buttonPressed;
+    }
+
+    public void setButtonPressed(boolean pressed) {
+        this.buttonPressed = pressed;
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        for (int i = 0; i < 9; i++) {
+            if (e.getSource() == button[i]) {
+                this.buttonPressed = true;
+                setSet(i);
+            }
+        }
     }
 }

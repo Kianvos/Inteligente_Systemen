@@ -4,12 +4,10 @@ import java.util.Random;
 
 
 //TODO REMOVE PUBLIC variables EN CREATE METHODS
-public class TicTacToe implements ActionListener {
+public class TicTacToe {
     final char playerX = 'X';
     final char playerO = 'O';
 
-    private boolean buttonPressed;
-    private int set;
     private char[] gameBoard;
     private char winner;
     private boolean gameEnded;
@@ -17,14 +15,9 @@ public class TicTacToe implements ActionListener {
 
     public TicTacToe(gui GUI) {
         this.GUI = GUI;
-        for (int i = 0; i < 9; i++) {
-                this.GUI.button[i].addActionListener(this);
-        }
         this.gameBoard = new char[9];
         this.winner = 0;
         this.gameEnded = false;
-        this.buttonPressed = false;
-        this.set = 0;
     }
 
     public void startGame() {
@@ -57,10 +50,9 @@ public class TicTacToe implements ActionListener {
         boolean isDone = false;
         while (!isDone) {
             Thread.yield();
-            if (this.buttonPressed) {
-                this.buttonPressed = false;
-                int pos = this.set;
-                System.out.println(pos);
+            if (this.GUI.getButtonPressed()) {
+                this.GUI.setButtonPressed(false);
+                int pos = this.GUI.getSet();
                 if (checkPlace(pos)) {
                     this.gameBoard[pos] = playerX;
                     this.GUI.updateButton(pos, playerX);
@@ -185,15 +177,5 @@ public class TicTacToe implements ActionListener {
         gui GUI = new gui("Tic Tac Toe", width, width+150);
         TicTacToe game = new TicTacToe(GUI);
         game.startGame();
-    }
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        for (int i = 0; i < this.gameBoard.length; i++) {
-            if (e.getSource() == this.GUI.button[i]) {
-                this.buttonPressed = true;
-                this.set = i;
-            }
-        }
     }
 }
