@@ -21,7 +21,6 @@ public class AI {
 
     static int minimax(char[] board, int depth, boolean isMax, GameModel AiModel) {
         int score = evaluate(board, AiModel);
-
         if (score == 10) {
             return score;
         }
@@ -30,8 +29,11 @@ public class AI {
             return score;
         }
 
-        //Check of moves over zijn op dit bord
+        if (AiModel.checkTie()) {
+            return 0;
+        }
 
+        //Check of moves over zijn op dit bord
         if(isMax) {
             int best = -1000;
 
@@ -53,7 +55,7 @@ public class AI {
             for (int i = 0; i < board.length; i++) {
                 if(board[i] == '\u0000') {
                     board[i] = 'X';
-                    best = Math.max(best, minimax(board, depth + 1, !isMax, AiModel));
+                    best = Math.min(best, minimax(board, depth + 1, !isMax, AiModel));
                     board[i] = '\u0000';
                 }
             }
@@ -70,8 +72,8 @@ public class AI {
             if (board[i] == '\u0000') {
                 board[i] = 'O';
 
-                int moveVal = minimax(board, 3, false, AiModel);
-
+                int moveVal = minimax(board, 0, false, AiModel);
+                System.out.println(moveVal);
                 board[i] = '\u0000';
 
                 if (moveVal > bestVal) {
