@@ -2,6 +2,10 @@ import java.util.Random;
 
 public class AI {
     private int size;
+
+    public AI(int size) {
+        this.size = size;
+    }
     static int evaluate(char b[], GameModel AiModel) {
         //Bekijk wie wint en geeft op basis daar van punten
         if(AiModel.checkWinner('O')) {
@@ -50,22 +54,36 @@ public class AI {
                 if(board[i] == '\u0000') {
                     board[i] = 'X';
                     best = Math.max(best, minimax(board, depth + 1, !isMax, AiModel));
-
                     board[i] = '\u0000';
                 }
             }
             return best;
         }
 
-
-
     }
 
+    static int findBestMove(char[] board, GameModel AiModel) {
+        int bestVal = -1000;
+        int bestMove = -1;
 
-    public AI(int size) {
-        this.size = size;
+        for (int i = 0; i < board.length; i++) {
+            if (board[i] == '\u0000') {
+                board[i] = 'O';
+
+                int moveVal = minimax(board, 3, false, AiModel);
+
+                board[i] = '\u0000';
+
+                if (moveVal > bestVal) {
+                    bestMove = i;
+                    bestVal = moveVal;
+                }
+            }
+        }
+        System.out.println("De waarde van de beste zet: " + bestVal);
+
+        return bestMove;
     }
-
     public int aiNewSet(char[] gameBoard, GameModel model) {
         //Create a copy of the current game model for use in evaluation
         GameModel AiModel = new GameModel(gameBoard.length);
@@ -73,10 +91,13 @@ public class AI {
         //Set the current board as the board for the new instance
         AiModel.setGameBoard(gameBoard);
 
+        int bestMove = findBestMove(gameBoard, AiModel);
+        System.out.println(bestMove);
+
         boolean choice = false;
         int pos = -1;
         while (!choice) {
-            int posChoise = getRandom(size*size-1);
+            int posChoise = bestMove;
             if (gameBoard[posChoise] == '\u0000') {
                 pos = posChoise;
                 choice = true;
