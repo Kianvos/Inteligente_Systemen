@@ -22,9 +22,11 @@ public class GUI {
     private JPanel rightTopGame = new JPanel();
     private JPanel rightTopMenu = new JPanel();
 
-    // GameGUI
-    private GameGUI game;
+    // Game
+    private JButton[] buttons;
     private JPanel gamePanel;
+    // private GameGUI game;
+    // private JPanel gamePanel;
 
     public GUI(GameModel model, int size) {
         this.frame = new JFrame();
@@ -35,11 +37,12 @@ public class GUI {
         this.top_panel = new JPanel();
         buildTopMenu();
 
-        this.game = new GameGUI(this, size);
-        this.game.update(model);
+        // this.game = new GameGUI(this, size);
+        // this.game.update(model);
 
-        this.gamePanel = game.getPanel();
-        gamePanel.setVisible(false);
+        this.buttons = new JButton[size * size];
+        this.gamePanel = new JPanel(new GridLayout(size, size));
+        buildGameButtons(size);
 
         frameSettings();   
     }
@@ -53,6 +56,7 @@ public class GUI {
         this.frame.add(top_panel, BorderLayout.NORTH);
         this.frame.add(gamePanel);
         
+        gamePanel.setVisible(false);
         this.frame.setVisible(true);
     }
 
@@ -115,6 +119,16 @@ public class GUI {
         textfield.setOpaque(true);
     }
 
+    public void buildGameButtons(int size) {
+        for (int i = 0; i < size * size; i++) {
+            buttons[i] = new JButton();
+            gamePanel.add(buttons[i]);
+            buttons[i].setFocusable(false);
+            buttons[i].setFont(new Font(buttons[i].getFont().toString(), Font.BOLD, 40));
+            buttons[i].setBackground(new Color(220, 220, 220));
+        }
+    }
+
     public void show(String panel) {
         if (panel == "game") {
             gamePanel.setVisible(true);
@@ -126,7 +140,30 @@ public class GUI {
     }
 
     public void update(GameModel model) {
-        game.update(model);
+        textfield.setText("Boter kaas en eieren");
+
+        char[] boardData = model.getBoardData();
+        for (int i = 0; i < boardData.length; i++) {
+            if (boardData[i] == 'X') {
+                // buttons[i].setBackground(new Color(169, 169, 169));
+                buttons[i].setBackground(new Color(164, 0, 0));
+                buttons[i].setText("X");
+            } else if (boardData[i] == 'O') {
+                // buttons[i].setBackground(new Color(169, 169, 169));
+                buttons[i].setBackground(new Color(17, 55, 190));
+                buttons[i].setText("O");
+            } else {
+                buttons[i].setBackground(new Color(220, 220, 220));
+                buttons[i].setText(" ");
+            }
+        }
+
+        if (model.isWinner()) {
+            textfield.setText(model.getWinner() + " heeft gewonnen!");
+        } else if (model.isTie()) {
+            textfield.setText("Gelijkspel");
+        }
+        // game.update(model);
     }
 
     public JButton getLocalButton() {
@@ -146,7 +183,7 @@ public class GUI {
     }
 
     public JButton[] getGameButtons() {
-        return game.getGameButtons();
+        return buttons;
     }
 
     public void setText(String s) {
