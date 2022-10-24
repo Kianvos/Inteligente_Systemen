@@ -4,9 +4,9 @@ import java.awt.event.ActionListener;
 
 public class GameController {
     private GameModel model;
-    private GameGUI view;
+    private GUI view;
 
-    public GameController(GameModel model, GameGUI view) {
+    public GameController(GameModel model, GUI view) {
         this.model = model;
         this.view = view;
         createListeners();
@@ -14,14 +14,35 @@ public class GameController {
 
     private void createListeners() {
         int size = model.getSize();
+
         for (int i = 0; i < size*size; i++) {
             createActionListener(i);
         }
 
-        view.getExitButton().addActionListener(new ActionListener() {
+        view.getLocalButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                model.quitGame();
+                view.show("game");
+
+                model.resetGame();
+                view.update(model);
+            }
+        });
+
+        view.getServerButton().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // TODO: Server implementatie
+            }
+        });
+
+        view.getMenuButton().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                view.show("menu");
+
+                model.resetGame();
+                view.update(model);
             }
         });
 
@@ -29,19 +50,27 @@ public class GameController {
             @Override
             public void actionPerformed(ActionEvent e) {
                 model.resetGame();
-                view.resetGame();
+                view.update(model);
+                // view.updateGame();
             }
         });
+
+        // view.getQuitButton().addActionListener(new ActionListener() {
+        //     @Override
+        //     public void actionPerformed(ActionEvent e) {
+        //         model.quitGame();
+        //     }
+        // });
     }
 
     private void createActionListener(int idx) {
-        JButton[] buttons = view.getAllGameButtons();
+        JButton[] buttons = view.getGameButtons();
         buttons[idx].addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (!model.isWinner() && !model.isTie()){
                     model.sets(idx);
-                    view.update();
+                    view.update(model);
                 }
             }
         });

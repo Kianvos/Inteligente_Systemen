@@ -4,6 +4,7 @@ public class Main {
         int size = 3;
         GameModel model = new GameModel(size);
         GameGUI view = new GameGUI(model, size);
+        
         GameController controller = new GameController(model, view);
     }
 }
