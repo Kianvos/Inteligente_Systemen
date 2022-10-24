@@ -1,9 +1,10 @@
+
 public class Main {
     public static void main(String[] args) {
         int size = 3;
         GameModel model = new GameModel(size);
-        GUI view = new GUI(model, size);
+        GameGUI view = new GameGUI(model, size);
         
-        new GameController(model, view);
+        GameController controller = new GameController(model, view);
     }
 }
