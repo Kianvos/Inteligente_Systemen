@@ -9,12 +9,12 @@ public class GUI {
     private JPanel top_panel;
 
     // Buttons
-    private JButton localButton = new JButton("local");
-    private JButton serverButton = new JButton("server");
+    private JButton localButton = new JButton("Local");
+    private JButton serverButton = new JButton("Server");
     // private JButton quitButton = new JButton("quit");
 
-    private JButton resetButton = new JButton("reset");
-    private JButton menuButton = new JButton("menu");
+    private JButton resetButton = new JButton("Reset");
+    private JButton menuButton = new JButton("Menu");
 
     // Cards
     private CardLayout layout = new CardLayout();
@@ -146,14 +146,15 @@ public class GUI {
         for (int i = 0; i < boardData.length; i++) {
             if (boardData[i] == 'X') {
                 // buttons[i].setBackground(new Color(169, 169, 169));
-                buttons[i].setBackground(new Color(164, 0, 0));
+                buttons[i].setForeground(new Color(164, 0, 0));
                 buttons[i].setText("X");
             } else if (boardData[i] == 'O') {
                 // buttons[i].setBackground(new Color(169, 169, 169));
-                buttons[i].setBackground(new Color(17, 55, 190));
+                buttons[i].setForeground(new Color(17, 55, 190));
                 buttons[i].setText("O");
             } else {
-                buttons[i].setBackground(new Color(220, 220, 220));
+//                buttons[i].setBackground(new Color(220, 220, 220));
+                buttons[i].setForeground(new Color(220, 220, 220));
                 buttons[i].setText(" ");
             }
         }
