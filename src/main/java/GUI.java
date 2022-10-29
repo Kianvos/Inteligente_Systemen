@@ -11,6 +11,7 @@ public class GUI {
     // Buttons
     private JButton localButton = new JButton("Local");
     private JButton serverButton = new JButton("Server");
+    private JButton disconnectButton = new JButton("Disconnect");
     // private JButton quitButton = new JButton("quit");
 
     private JButton resetButton = new JButton("Reset");
@@ -20,6 +21,7 @@ public class GUI {
     private CardLayout layout = new CardLayout();
     private JPanel rightTop = new JPanel();
     private JPanel rightTopGame = new JPanel();
+    private JPanel rightTopOnlineGame = new JPanel();
     private JPanel rightTopMenu = new JPanel();
 
     // Game
@@ -67,23 +69,27 @@ public class GUI {
         rightTop.setLayout(layout);
         rightTopMenu = settingsRightTopPanel(new JPanel());
         rightTopGame = settingsRightTopPanel(new JPanel());
+        rightTopOnlineGame = settingsRightTopPanel(new JPanel());
 
         localButton = settingsRightTopButtons(localButton);
         serverButton = settingsRightTopButtons(serverButton);
+        disconnectButton = settingsRightTopButtons(disconnectButton);
         // quitButton = settingsRightTopButtons(quitButton);
 
         resetButton = settingsRightTopButtons(resetButton);
         menuButton = settingsRightTopButtons(menuButton);
-
         rightTopMenu.add(localButton);
         rightTopMenu.add(serverButton);
         // rightTopMenu.add(quitButton);
 
         rightTopGame.add(resetButton);
         rightTopGame.add(menuButton);
-        
+
+        rightTopOnlineGame.add(disconnectButton);
+
         rightTop.add(rightTopMenu, "menu");
         rightTop.add(rightTopGame, "game");
+        rightTop.add(rightTopOnlineGame,"online");
 
         layout.show(rightTop, "menu");
         top_panel.add(rightTop);
@@ -130,7 +136,7 @@ public class GUI {
     }
 
     public void show(String panel) {
-        if (panel == "game") {
+        if (panel.equals("game") || panel.equals("online")) {
             gamePanel.setVisible(true);
         } else {
             gamePanel.setVisible(false);
@@ -140,7 +146,7 @@ public class GUI {
     }
 
     public void update(GameModel model) {
-        textfield.setText("Boter kaas en eieren");
+        //textfield.setText("Boter kaas en eieren");
 
         char[] boardData = model.getBoardData();
         for (int i = 0; i < boardData.length; i++) {
@@ -174,6 +180,7 @@ public class GUI {
     public JButton getServerButton() {
         return serverButton;
     }
+    public JButton getDisconnectButton() { return disconnectButton; }
 
     public JButton getResetButton() {
         return resetButton;

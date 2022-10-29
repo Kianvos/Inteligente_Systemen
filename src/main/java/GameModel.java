@@ -6,6 +6,7 @@ public class GameModel {
     private char currentPlayer;
     private boolean isWinner;
     private boolean isTie;
+    private boolean isOnline;
     private char winner;
     private int size;
     private AI ai;
@@ -16,6 +17,7 @@ public class GameModel {
         this.currentPlayer = PLAYER;
         this.isWinner = false;
         this.isTie = false;
+        this.isOnline = false;
         this.winner = ' ';
         this.ai = new AI(size);
     }
@@ -25,10 +27,15 @@ public class GameModel {
             return;
         }
         userSet(idx);
-        if (!isWinner && !isTie){
-            int i = ai.aiNewSet(gameBoard, this);
-            userSet(i);
+        if (!isWinner && !isTie) {
+            aiSet();
         }
+    }
+
+    public int aiSet(){
+        int i = ai.aiNewSet(gameBoard, this);
+        userSet(i);
+        return i;
     }
 
     public void userSet(int idx) {
@@ -107,6 +114,14 @@ public class GameModel {
 
     public boolean isTie() {
         return isTie;
+    }
+
+    public boolean isOnline(){
+        return isOnline;
+    }
+
+    public void toggleIsOnline() {
+        this.isOnline = !(this.isOnline);
     }
 
     public String getWinner() {
