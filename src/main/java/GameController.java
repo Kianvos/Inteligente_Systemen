@@ -40,7 +40,14 @@ public class GameController {
             @Override
             public void actionPerformed(ActionEvent e) {
                 int a = JOptionPane.showOptionDialog(menu.getFrame(), "Wie mag er beginnen? ", "Test", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, buttonsPlayerAi, buttonsPlayerAi[0]);
+                System.out.println(a);
 
+                if (a != 0){
+                    menu.setVisible(false);
+                    view.show("game");
+                    model.resetGame(a==1);
+                    view.update(model);
+                }
             }
         });
         String[] buttonsPlayerPlayer = {"Cancel", "O", "X"};
@@ -48,17 +55,10 @@ public class GameController {
             @Override
             public void actionPerformed(ActionEvent e) {
                 int a = JOptionPane.showOptionDialog(menu.getFrame(), "Start X of O? ", "Test", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, buttonsPlayerPlayer, buttonsPlayerPlayer[0]);
-                char playerStart;
-                if (a == 1){
-                    playerStart = 'O';
-                }else if (a == 2){
-                    playerStart = 'X';
-                }
-
                 if (a != 0){
+                    menu.setVisible(false);
                     view.show("game");
-
-                    model.resetGame();
+                    model.resetGame(a==1);
                     view.update(model);
                 }
             }
@@ -72,34 +72,12 @@ public class GameController {
             createActionListener(i);
         }
 
-        view.getLocalButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                view.show("game");
-
-                model.resetGame();
-                view.update(model);
-            }
-        });
-
-        view.getServerButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                model.toggleIsOnline();
-                ExecutorService executor = Executors.newSingleThreadExecutor();
-                ticTacToeServerConnection = new TicTacToeServerConnection(view, model, "groep3ai");
-                view.show("online");
-                executor.submit(ticTacToeServerConnection);
-                executor.shutdown();
-            }
-        });
-
         view.getDisconnectButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (ticTacToeServerConnection != null) {
                     ticTacToeServerConnection.forfeit();
-                    model.resetGame();
+                    model.resetGame(false);
                     view.update(model);
                     view.setText("Boter kaas en eieren");
                     view.setVisible(false);
@@ -113,8 +91,9 @@ public class GameController {
             @Override
             public void actionPerformed(ActionEvent e) {
                 view.show("menu");
+                menu.setVisible(true);
                 view.setText("Boter kaas en eieren");
-                model.resetGame();
+                model.resetGame(false);
                 view.update(model);
             }
         });
@@ -122,9 +101,8 @@ public class GameController {
         view.getResetButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                model.resetGame();
+                model.resetGame(Math.random() < 0.5);
                 view.update(model);
-                // view.updateGame();
             }
         });
 

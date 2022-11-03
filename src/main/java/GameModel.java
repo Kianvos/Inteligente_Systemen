@@ -128,13 +128,15 @@ public class GameModel {
         return String.valueOf(winner);
     }
 
-    public void resetGame() {
+    public void resetGame(boolean AiStart) {
         gameBoard = new char[size * size];
         currentPlayer = PLAYER;
         isWinner = false;
         isTie = false;
         winner = ' ';
-
+        if (AiStart){
+            gameBoard[ai.aiNewSet(gameBoard, this)] = AI;
+        }
     }
 
     public int getSize() {
