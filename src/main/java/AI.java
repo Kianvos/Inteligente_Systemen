@@ -57,10 +57,10 @@ public class AI {
         //Haal het spelbord op van deze simulatie
         char[] boardData = AiModel.getBoardData();
 
+        //Controleer of de maximizer aan de beurt is
         int best;
         if(isMax) {
             best = -1000;
-
             for (int i = 0; i < boardData.length; i++) {
                 if(boardData[i] == '\u0000') {
                     boardData[i] = 'O';
@@ -115,7 +115,6 @@ public class AI {
 
         //Bepaal de beste zet
         int bestMove = findBestMove(AiModel);
-
 
         boolean choice = false;
         int pos = -1;
