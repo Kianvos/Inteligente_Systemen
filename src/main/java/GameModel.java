@@ -26,7 +26,7 @@ public class GameModel {
         }
         userSet(idx);
         if (!isWinner && !isTie){
-            int i = ai.aiNewSet(gameBoard, this);
+            int i = ai.aiNewSet(gameBoard);
             userSet(i);
         }
     }

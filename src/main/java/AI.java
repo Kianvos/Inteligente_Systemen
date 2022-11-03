@@ -6,11 +6,20 @@ public class AI {
     public AI(int size) {
         this.size = size;
     }
-    static int evaluate(char b[], GameModel AiModel) {
-        //Bekijk wie wint en geeft op basis daar van punten
+
+    /**
+     * Geeft de score van het bord terug
+     * @param AiModel Kopie van het bord
+     * @return Score die wordt bepaald op basis van wie wint of gelijkspel
+     */
+    static int evaluate(GameModel AiModel) {
+
+        //Als de maximizer wint, tel dan 10 op bij de score
         if(AiModel.checkWinner('O')) {
             return + 10;
         }
+
+        //Als de minimizer wint, trek dan 10 af van de score
         else if(AiModel.checkWinner('X')) {
             return - 10;
         }
@@ -19,62 +28,75 @@ public class AI {
         return + 0;
     }
 
-    static int minimax(char[] board, int depth, boolean isMax, GameModel AiModel) {
-        int score = evaluate(board, AiModel);
+    static int minimax(GameModel AiModel, boolean isMax, int depth) {
+
+        //Stop met puntentelling als de maximale diepte is geraakt
+        if (depth <= 0) {
+            return + 0;
+        }
+
+        //Controleer de score van het huidige bord
+        int score = evaluate(AiModel);
+
+        //Geef de score terug als de maximizer gewonnen heeft
         if (score == 10) {
             return score;
         }
 
+        //Geef de score terug als de minimizer gewonnen heeft
         if (score == -10) {
             return score;
         }
 
+
+        //Geef niks terug als er gelijkspel is
         if (AiModel.checkTie()) {
             return 0;
         }
 
-        //Check of moves over zijn op dit bord
+        //Haal het spelbord op van deze simulatie
+        char[] boardData = AiModel.getBoardData();
+
+        int best;
         if(isMax) {
-            int best = -1000;
+            best = -1000;
 
-            //Als het de zet is van de maximizer
-            for (int i = 0; i < board.length; i++) {
-                if(board[i] == '\u0000') {
-                    board[i] = 'O';
-                    best = Math.max(best, minimax(board, depth + 1, !isMax, AiModel));
-
-                    board[i] = '\u0000';
+            for (int i = 0; i < boardData.length; i++) {
+                if(boardData[i] == '\u0000') {
+                    boardData[i] = 'O';
+                    best = Math.max(best, minimax(AiModel, !isMax, depth - 1));
+                    boardData[i] = '\u0000';
                 }
             }
-            return best;
         }
         else {
-            int best = 1000;
+            best = 1000;
 
-            //Als het de zet is van de maximizer
-            for (int i = 0; i < board.length; i++) {
-                if(board[i] == '\u0000') {
-                    board[i] = 'X';
-                    best = Math.min(best, minimax(board, depth + 1, !isMax, AiModel));
-                    board[i] = '\u0000';
+            for (int i = 0; i < boardData.length; i++) {
+                if(boardData[i] == '\u0000') {
+                    boardData[i] = 'X';
+                    best = Math.min(best, minimax(AiModel, !isMax, depth - 1));
+                    boardData[i] = '\u0000';
                 }
             }
-            return best;
         }
+        return best;
 
     }
 
-    static int findBestMove(char[] board, GameModel AiModel) {
+    static int findBestMove(GameModel AiModel) {
+
+        char[] boardData = AiModel.getBoardData();
+
         int bestVal = -1000;
         int bestMove = -1;
 
-        for (int i = 0; i < board.length; i++) {
-            if (board[i] == '\u0000') {
-                board[i] = 'O';
+        for (int i = 0; i < boardData.length; i++) {
+            if (boardData[i] == '\u0000') {
+                boardData[i] = 'O';
 
-                int moveVal = minimax(board, 0, false, AiModel);
-                System.out.println(moveVal);
-                board[i] = '\u0000';
+                int moveVal = minimax(AiModel, false, 5);
+                boardData[i] = '\u0000';
 
                 if (moveVal > bestVal) {
                     bestMove = i;
@@ -82,19 +104,18 @@ public class AI {
                 }
             }
         }
-        System.out.println("De waarde van de beste zet: " + bestVal);
 
         return bestMove;
     }
-    public int aiNewSet(char[] gameBoard, GameModel model) {
-        //Create a copy of the current game model for use in evaluation
-        GameModel AiModel = new GameModel(gameBoard.length);
+    public int aiNewSet(char[] gameBoard) {
 
-        //Set the current board as the board for the new instance
+        //Maak een kopie van het spelbord die het algoritme kan gebruiken voor simulaties
+        GameModel AiModel = new GameModel(gameBoard.length);
         AiModel.setGameBoard(gameBoard);
 
-        int bestMove = findBestMove(gameBoard, AiModel);
-        System.out.println(bestMove);
+        //Bepaal de beste zet
+        int bestMove = findBestMove(AiModel);
+
 
         boolean choice = false;
         int pos = -1;
