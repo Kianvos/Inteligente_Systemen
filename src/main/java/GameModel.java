@@ -5,6 +5,7 @@ public class GameModel {
     private boolean againstAi;
     private char[] gameBoard;
     private char currentPlayer;
+    private char startPlayer;
     private boolean isWinner;
     private boolean isTie;
     private boolean isOnline;
@@ -134,6 +135,7 @@ public class GameModel {
         isWinner = false;
         isTie = false;
         againstAi = playAi;
+        startPlayer = start;
         winner = ' ';
         if (AiStart && playAi){
             gameBoard[ai.aiNewSet(gameBoard, this)] = 'O';
@@ -145,6 +147,10 @@ public class GameModel {
     }
 
     public char getCurrentPlayer(){
+        return currentPlayer;
+    }
+
+    public char getStartPlayer(){
         return currentPlayer;
     }
 

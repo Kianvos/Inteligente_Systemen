@@ -111,10 +111,15 @@ public class GameController {
         view.getResetButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Random r = new Random();
-                char c = r.nextBoolean() ? 'X' : 'O';
-                model.resetGame(model.getAgainstAi(), Math.random() < 0.5, c);
-                view.setText(c + " is aan de beurt");
+                if (model.getAgainstAi()){
+                    model.resetGame(model.getAgainstAi(), Math.random() < 0.5, model.getStartPlayer());
+                    view.setText(model.getCurrentPlayer() + " is aan de beurt");
+                }else{
+                    Random r = new Random();
+                    char c = r.nextBoolean() ? 'X' : 'O';
+                    model.resetGame(model.getAgainstAi(), Math.random() < 0.5, c);
+                    view.setText(c + " is aan de beurt");
+                }
                 view.update(model);
             }
         });
