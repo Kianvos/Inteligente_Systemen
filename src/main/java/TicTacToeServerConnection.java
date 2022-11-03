@@ -1,15 +1,13 @@
 import java.net.*;
 import java.io.*;
-import java.util.Arrays;
-import java.util.Random;
 
 public class TicTacToeServerConnection implements Runnable {
     final private String playerName;
-    private String opponentName;
     final private String Hostname;
     final private int portNumber;
+    final private String DEFAULT = "Searching for opponent...";
+    private String opponentName;
     private boolean run;
-    private boolean forfeit;
     private GUI view;
     private GameModel model;
 
@@ -18,7 +16,6 @@ public class TicTacToeServerConnection implements Runnable {
         this.portNumber = 7789;
         this.playerName = "groep3ai";
         this.run = true;
-        this.forfeit = false;
         this.view = view;
         this.model = model;
     }
@@ -30,8 +27,6 @@ public class TicTacToeServerConnection implements Runnable {
     public void disconnect() {
         this.run = !(this.run);
     }
-
-    public void forfeit() { this.forfeit = !(this.forfeit); }
 
     @Override
     public void run(){
@@ -63,35 +58,22 @@ public class TicTacToeServerConnection implements Runnable {
      * @throws IOException
      */
     private void connectedMain(PrintWriter out, BufferedReader in) throws IOException {
-        in.readLine(); in.readLine(); // remove first two lines the server returns upon connection
+        in.readLine(); in.readLine();  // remove first two lines the server returns upon connection
         out.println("login " + this.playerName);
-        System.out.println(in.readLine()); // message: OK
-        out.println("subscribe tic-tac-toe");
-        System.out.println(in.readLine()); // message: OK
-        this.view.setText("Searching for opponent...");
+        in.readLine(); // message: OK
+        //out.println("subscribe tic-tac-toe");
+        this.view.setText(DEFAULT);
         while (isRun()) {
-            if(this.forfeit){
-                System.out.println("forfeit the match :(");
-                if(in.ready()){
-                    out.println("forfeit");
-                }
-                out.println("exit");
-                this.disconnect();
-            }
             if(in.ready()){
                 String input = in.readLine();
                 System.out.println("input: "+ input);
                 if(input.contains("SVR GAME MATCH")) {
                     this.opponentName = input.substring(input.indexOf("OPPONENT: \"") + 11);
-                    this.opponentName = this.opponentName.substring(0,this.opponentName.length()-2);
+                    this.opponentName = this.opponentName.substring(0,this.opponentName.indexOf("\""));
                 }
                 if(input.contains("SVR GAME YOURTURN")){
                     this.view.setText("turn: "+ this.playerName);
-                    System.out.println("my turn :)");
-                    System.out.println(this.model.getBoardData());
-                    int move = this.model.aiSet();
-                    System.out.println(move);
-                    out.println("move " + move);
+                    out.println("move " + this.model.aiSet());
                 }else{
                     this.view.setText("turn: "+ this.opponentName);
                 }
@@ -99,27 +81,21 @@ public class TicTacToeServerConnection implements Runnable {
                     this.updateBoard(input);
                 }
                 if(input.contains("SVR GAME WIN")){
-                    this.view.setText(this.playerName + " wins.");
-                    System.out.println("I win! :)");
-                    out.println("exit");
-                    this.disconnect();
+                    String message = String.format("Last match winner: %s", this.playerName);
+                    resetBoard(message);
                 }
 
                 if(input.contains("SVR GAME DRAW")){
-                    this.view.setText("Draw.");
-                    System.out.println("It's a draw! :o");
-                    out.println("exit");
-                    this.disconnect();
+                    resetBoard("Last match: Draw");
                 }
 
                 if(input.contains("SVR GAME LOSS")){
-                    this.view.setText(this.opponentName + " wins.");
-                    System.out.println("I lose! :(");
-                    out.println("exit");
-                    this.disconnect();
+                    String message = String.format("Last match winner: %s", this.opponentName);
+                    resetBoard(message);
                 }
             }
         }
+        out.println("exit");
     }
 
     /**
@@ -127,11 +103,19 @@ public class TicTacToeServerConnection implements Runnable {
      * @param input The message from the server
      */
     private void updateBoard(String input){ // String input
-        System.out.println("Game move:");
         int index = input.indexOf("MOVE: \"");
         int move = Integer.parseInt(input.substring(index + 7, index + 8));
-        System.out.println("move in remember: " + move);
         this.model.userSet(move);
         this.view.update(this.model);
+    }
+
+    /**
+     * Reset the board to the beginning stage
+     * to play a new game.
+     */
+    public void resetBoard(String message) {
+        this.model.resetGame();
+        this.view.update(this.model);
+        this.view.setText(String.format("<html>%s<br />%s</html>", message,DEFAULT));
     }
 }

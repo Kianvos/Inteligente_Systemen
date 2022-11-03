@@ -48,7 +48,7 @@ public class GameController {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if(ticTacToeServerConnection != null){
-                    ticTacToeServerConnection.forfeit();
+                    ticTacToeServerConnection.disconnect();
                     model.resetGame();
                     view.update(model);
                     view.setText("Boter kaas en eieren");
