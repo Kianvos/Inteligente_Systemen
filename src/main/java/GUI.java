@@ -32,7 +32,6 @@ public class GUI {
 
     public GUI(GameModel model, int size) {
         this.frame = new JFrame();
-
         this.textfield = new JLabel();
         settingsTextField();
 
@@ -59,7 +58,7 @@ public class GUI {
         this.frame.add(gamePanel);
         
         gamePanel.setVisible(false);
-        this.frame.setVisible(true);
+        this.frame.setVisible(false);
     }
 
     public void buildTopMenu() {
@@ -138,11 +137,17 @@ public class GUI {
     public void show(String panel) {
         if (panel.equals("game") || panel.equals("online")) {
             gamePanel.setVisible(true);
+            frame.setVisible(true);
         } else {
             gamePanel.setVisible(false);
+            frame.setVisible(false);
         }
         
         layout.show(rightTop, panel);
+    }
+
+    public void setVisible(boolean visible){
+        frame.setVisible(visible);
     }
 
     public void update(GameModel model) {
