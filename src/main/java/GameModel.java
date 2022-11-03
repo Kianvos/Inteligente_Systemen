@@ -1,7 +1,8 @@
 public class GameModel {
 
-    final char PLAYER = 'X';
-    final char AI = 'O';
+    private char player_1;
+    private char player_2;
+    private boolean againstAi;
     private char[] gameBoard;
     private char currentPlayer;
     private boolean isWinner;
@@ -14,7 +15,6 @@ public class GameModel {
     public GameModel(int size) {
         this.size = size;
         this.gameBoard = new char[size * size];
-        this.currentPlayer = PLAYER;
         this.isWinner = false;
         this.isTie = false;
         this.isOnline = false;
@@ -27,7 +27,7 @@ public class GameModel {
             return;
         }
         userSet(idx);
-        if (!isWinner && !isTie) {
+        if (!isWinner && !isTie && againstAi) {
             aiSet();
         }
     }
@@ -48,10 +48,10 @@ public class GameModel {
             winner = currentPlayer;
         }
         isTie = checkTie();
-        if(currentPlayer == PLAYER){
-            currentPlayer = AI;
+        if(currentPlayer == 'X'){
+            currentPlayer = 'O';
         }else {
-            currentPlayer = PLAYER;
+            currentPlayer = 'X';
         }
     }
 
@@ -128,15 +128,24 @@ public class GameModel {
         return String.valueOf(winner);
     }
 
-    public void resetGame(boolean AiStart) {
+    public void resetGame(boolean playAi, boolean AiStart, char start) {
         gameBoard = new char[size * size];
-        currentPlayer = PLAYER;
+        currentPlayer = start;
         isWinner = false;
         isTie = false;
+        againstAi = playAi;
         winner = ' ';
-        if (AiStart){
-            gameBoard[ai.aiNewSet(gameBoard, this)] = AI;
+        if (AiStart && playAi){
+            gameBoard[ai.aiNewSet(gameBoard, this)] = 'O';
         }
+    }
+
+    public boolean getAgainstAi(){
+        return againstAi;
+    }
+
+    public char getCurrentPlayer(){
+        return currentPlayer;
     }
 
     public int getSize() {

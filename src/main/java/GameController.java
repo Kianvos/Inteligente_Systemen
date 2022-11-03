@@ -1,6 +1,7 @@
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -45,7 +46,7 @@ public class GameController {
                 if (a != 0){
                     menu.setVisible(false);
                     view.show("game");
-                    model.resetGame(a==1);
+                    model.resetGame(true, a==1, 'X');
                     view.update(model);
                 }
             }
@@ -55,10 +56,19 @@ public class GameController {
             @Override
             public void actionPerformed(ActionEvent e) {
                 int a = JOptionPane.showOptionDialog(menu.getFrame(), "Start X of O? ", "Test", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, buttonsPlayerPlayer, buttonsPlayerPlayer[0]);
+
+                char playerStart = 0;
+                if (a == 1){
+                    playerStart = 'O';
+                } else if (a == 2) {
+                    playerStart = 'X';
+                }
+
                 if (a != 0){
                     menu.setVisible(false);
                     view.show("game");
-                    model.resetGame(a==1);
+                    model.resetGame(false,false, playerStart);
+                    view.setText(playerStart + " is aan de beurt");
                     view.update(model);
                 }
             }
@@ -77,7 +87,7 @@ public class GameController {
             public void actionPerformed(ActionEvent e) {
                 if (ticTacToeServerConnection != null) {
                     ticTacToeServerConnection.forfeit();
-                    model.resetGame(false);
+                    model.resetGame(false, false, 'X');
                     view.update(model);
                     view.setText("Boter kaas en eieren");
                     view.setVisible(false);
@@ -93,7 +103,7 @@ public class GameController {
                 view.show("menu");
                 menu.setVisible(true);
                 view.setText("Boter kaas en eieren");
-                model.resetGame(false);
+                model.resetGame(false,false, 'X');
                 view.update(model);
             }
         });
@@ -101,7 +111,10 @@ public class GameController {
         view.getResetButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                model.resetGame(Math.random() < 0.5);
+                Random r = new Random();
+                char c = r.nextBoolean() ? 'X' : 'O';
+                model.resetGame(model.getAgainstAi(), Math.random() < 0.5, c);
+                view.setText(c + " is aan de beurt");
                 view.update(model);
             }
         });
@@ -121,6 +134,7 @@ public class GameController {
             public void actionPerformed(ActionEvent e) {
                 if (!model.isWinner() && !model.isTie() && !model.isOnline()) {
                     model.sets(idx);
+                    view.setText(model.getCurrentPlayer() + " is aan de beurt");
                     view.update(model);
                 }
             }
