@@ -1,7 +1,5 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class MenuGUI {
     private JFrame frame;
@@ -10,7 +8,6 @@ public class MenuGUI {
     private JButton playerVersusAiButton = new JButton("Speler VS AI");
     private JButton playerVersusPlayerButton = new JButton("Player VS PLAYER");
 
-    private String playerName;
 
     public MenuGUI() {
         this.frame = new JFrame();
@@ -26,6 +23,9 @@ public class MenuGUI {
         frame.setVisible(true);
     }
 
+    /**
+     * @param visible geeft aan of het frame zichtbaar moet zijn
+     */
     public void setVisible(boolean visible){
         frame.setVisible(visible);
     }
@@ -46,7 +46,4 @@ public class MenuGUI {
         return playerVersusPlayerButton;
     }
 
-    public static void main(String[] args) {
-        MenuGUI gui = new MenuGUI();
-    }
 }

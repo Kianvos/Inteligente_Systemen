@@ -5,6 +5,7 @@ import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+
 public class GameController {
     private GameModel model;
     private MenuGUI menu;
@@ -19,6 +20,9 @@ public class GameController {
         createListeners();
     }
 
+    /**
+     * Zet de instellingen voor de knoppen die op de menu view te zien zijn.
+     */
     private void createMenuListeners() {
         menu.getAiVersusAiButton().addActionListener(new ActionListener() {
             @Override
@@ -56,7 +60,7 @@ public class GameController {
             @Override
             public void actionPerformed(ActionEvent e) {
                 int a = JOptionPane.showOptionDialog(menu.getFrame(), "Start X of O? ", "Test", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, buttonsPlayerPlayer, buttonsPlayerPlayer[0]);
-
+                // Kijkt welke knop er in gedrukt is en wie er dus mag beginnen
                 char playerStart = 0;
                 if (a == 1){
                     playerStart = 'O';
@@ -75,6 +79,9 @@ public class GameController {
         });
     }
 
+    /**
+     * Zet de instellingen voor de knoppen die op de view te zien zijn tijdens het tic-tac-toe spel.
+     */
     private void createListeners() {
         int size = model.getSize();
 
@@ -132,6 +139,9 @@ public class GameController {
         // });
     }
 
+    /**
+     * Zet de instellingen voor de knoppen van het bord zelf. Dus waar je een zet wil doen.
+     */
     private void createActionListener(int idx) {
         JButton[] buttons = view.getGameButtons();
         buttons[idx].addActionListener(new ActionListener() {

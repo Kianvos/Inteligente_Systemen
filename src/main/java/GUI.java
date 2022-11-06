@@ -48,6 +48,9 @@ public class GUI {
         frameSettings();   
     }
 
+    /**
+     * Stelt de frame variabele in zo als het moet.
+     */
     public void frameSettings() {
         this.frame = new JFrame("Tic Tac Toe");
         this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -61,6 +64,9 @@ public class GUI {
         this.frame.setVisible(false);
     }
 
+    /**
+     * Boven het spel is er een menu. Hier worden de settings hiervoor gezet.
+     */
     public void buildTopMenu() {
         top_panel = settingsTopPanel(top_panel, 500);
         top_panel.add(this.textfield);
@@ -124,6 +130,10 @@ public class GUI {
         textfield.setOpaque(true);
     }
 
+    /**
+     * Hier worden de knoppen ingesteld waar je op moet drukken om een zet te doen.
+     * @param size is de lengte van het bord.
+     */
     public void buildGameButtons(int size) {
         for (int i = 0; i < size * size; i++) {
             buttons[i] = new JButton();
@@ -146,6 +156,9 @@ public class GUI {
         layout.show(rightTop, panel);
     }
 
+    /**
+     * @param visible geeft aan of het frame zichtbaar moet zijn
+     */
     public void setVisible(boolean visible){
         frame.setVisible(visible);
     }
@@ -203,7 +216,4 @@ public class GUI {
         textfield.setText(s);
     }
 
-    // public JButton getQuitButton() {
-    //     return quitButton;
-    // }
 }
