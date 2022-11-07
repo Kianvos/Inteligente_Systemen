@@ -4,10 +4,11 @@ import java.awt.*;
 public class MenuGUI {
     private JFrame frame;
 
-    private JButton aiVersusAiButton = new JButton("AI VS AI");
-    private JButton playerVersusAiButton = new JButton("Speler VS AI");
-    private JButton playerVersusPlayerButton = new JButton("Player VS PLAYER");
+    private String[] options = {"player", "ai"};
+    private JComboBox[] dropdowns = {new JComboBox(options), new JComboBox(options)};
 
+    private JButton singleplayerButton = new JButton("Singleplayer");
+    private JButton mutliplayerButton = new JButton("Multiplayer");
 
     public MenuGUI() {
         this.frame = new JFrame();
@@ -15,9 +16,16 @@ public class MenuGUI {
         JPanel buttonPanel = new JPanel(new GridLayout(3, 1));
         buttonPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
-        buttonPanel.add(aiVersusAiButton);
-        buttonPanel.add(playerVersusAiButton);
-        buttonPanel.add(playerVersusPlayerButton);
+        JPanel optionPanel = new JPanel(new FlowLayout());
+
+        optionPanel.add(new JLabel("p1:"));
+        optionPanel.add(dropdowns[0]);
+        optionPanel.add(new JLabel("p2:"));
+        optionPanel.add(dropdowns[1]);
+
+        buttonPanel.add(optionPanel);
+        buttonPanel.add(singleplayerButton);
+        buttonPanel.add(mutliplayerButton);
 
         frame.add(buttonPanel);
         frame.setVisible(true);
@@ -34,16 +42,15 @@ public class MenuGUI {
         return frame;
     }
 
-    public JButton getAiVersusAiButton(){
-        return aiVersusAiButton;
+    public JComboBox[] getDropdowns() {
+        return dropdowns;
     }
 
-    public JButton getPlayerVersusAiButton(){
-        return playerVersusAiButton;
+    public JButton getSingleplayerButton() {
+        return singleplayerButton;
     }
 
-    public JButton getPlayerVersusPlayerButton(){
-        return playerVersusPlayerButton;
+    public JButton getMultiplayerButton() {
+        return mutliplayerButton;
     }
-
 }
