@@ -11,6 +11,7 @@ public class GUI {
     // Buttons
     private JButton localButton = new JButton("Local");
     private JButton serverButton = new JButton("Server");
+    private JButton disconnectButton = new JButton("Disconnect");
     // private JButton quitButton = new JButton("quit");
 
     private JButton resetButton = new JButton("Reset");
@@ -20,6 +21,7 @@ public class GUI {
     private CardLayout layout = new CardLayout();
     private JPanel rightTop = new JPanel();
     private JPanel rightTopGame = new JPanel();
+    private JPanel rightTopOnlineGame = new JPanel();
     private JPanel rightTopMenu = new JPanel();
 
     // Game
@@ -30,7 +32,6 @@ public class GUI {
 
     public GUI(GameModel model, int size) {
         this.frame = new JFrame();
-
         this.textfield = new JLabel();
         settingsTextField();
 
@@ -47,6 +48,9 @@ public class GUI {
         frameSettings();   
     }
 
+    /**
+     * Stelt de frame variabele in zo als het moet.
+     */
     public void frameSettings() {
         this.frame = new JFrame("Tic Tac Toe");
         this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -57,9 +61,12 @@ public class GUI {
         this.frame.add(gamePanel);
         
         gamePanel.setVisible(false);
-        this.frame.setVisible(true);
+        this.frame.setVisible(false);
     }
 
+    /**
+     * Boven het spel is er een menu. Hier worden de settings hiervoor gezet.
+     */
     public void buildTopMenu() {
         top_panel = settingsTopPanel(top_panel, 500);
         top_panel.add(this.textfield);
@@ -67,23 +74,27 @@ public class GUI {
         rightTop.setLayout(layout);
         rightTopMenu = settingsRightTopPanel(new JPanel());
         rightTopGame = settingsRightTopPanel(new JPanel());
+        rightTopOnlineGame = settingsRightTopPanel(new JPanel());
 
         localButton = settingsRightTopButtons(localButton);
         serverButton = settingsRightTopButtons(serverButton);
+        disconnectButton = settingsRightTopButtons(disconnectButton);
         // quitButton = settingsRightTopButtons(quitButton);
 
         resetButton = settingsRightTopButtons(resetButton);
         menuButton = settingsRightTopButtons(menuButton);
-
         rightTopMenu.add(localButton);
         rightTopMenu.add(serverButton);
         // rightTopMenu.add(quitButton);
 
         rightTopGame.add(resetButton);
         rightTopGame.add(menuButton);
-        
+
+        rightTopOnlineGame.add(disconnectButton);
+
         rightTop.add(rightTopMenu, "menu");
         rightTop.add(rightTopGame, "game");
+        rightTop.add(rightTopOnlineGame,"online");
 
         layout.show(rightTop, "menu");
         top_panel.add(rightTop);
@@ -119,6 +130,10 @@ public class GUI {
         textfield.setOpaque(true);
     }
 
+    /**
+     * Hier worden de knoppen ingesteld waar je op moet drukken om een zet te doen.
+     * @param size is de lengte van het bord.
+     */
     public void buildGameButtons(int size) {
         for (int i = 0; i < size * size; i++) {
             buttons[i] = new JButton();
@@ -130,17 +145,26 @@ public class GUI {
     }
 
     public void show(String panel) {
-        if (panel == "game") {
+        if (panel.equals("game") || panel.equals("online")) {
             gamePanel.setVisible(true);
+            frame.setVisible(true);
         } else {
             gamePanel.setVisible(false);
+            frame.setVisible(false);
         }
         
         layout.show(rightTop, panel);
     }
 
+    /**
+     * @param visible geeft aan of het frame zichtbaar moet zijn
+     */
+    public void setVisible(boolean visible){
+        frame.setVisible(visible);
+    }
+
     public void update(GameModel model) {
-        textfield.setText("Boter kaas en eieren");
+        //textfield.setText("Boter kaas en eieren");
 
         char[] boardData = model.getBoardData();
         for (int i = 0; i < boardData.length; i++) {
@@ -174,6 +198,7 @@ public class GUI {
     public JButton getServerButton() {
         return serverButton;
     }
+    public JButton getDisconnectButton() { return disconnectButton; }
 
     public JButton getResetButton() {
         return resetButton;
@@ -191,7 +216,4 @@ public class GUI {
         textfield.setText(s);
     }
 
-    // public JButton getQuitButton() {
-    //     return quitButton;
-    // }
 }

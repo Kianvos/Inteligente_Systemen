@@ -114,7 +114,6 @@ public class AI {
         //Zoek naar een leeg vakje
         for (int i = 0; i < boardData.length; i++) {
             if (boardData[i] == '\u0000') {
-
                 //Doe een zet als de maximizer
                 boardData[i] = 'O';
 
