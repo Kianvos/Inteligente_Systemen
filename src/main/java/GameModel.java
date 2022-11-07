@@ -35,7 +35,8 @@ public class GameModel {
         //Alleen als het spel nog niet geeindigd is.
         //Alleen als er tegen de AI gespeeld wordt.
         if (!isWinner && !isTie && againstAi) {
-            aiSet();
+            int i = ai.aiNewSet(gameBoard);
+            userSet(i);
         }
     }
 
