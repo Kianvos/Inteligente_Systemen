@@ -12,15 +12,15 @@ public class AI {
      * @param AiModel Kopie van het echte spelbord waar de experimentele zetten op gedaan worden
      * @return score van de zet
      */
-    static int evaluate(GameModel AiModel) {
+    static int evaluate(GameModel AiModel, char opponent, char player) {
 
         //Als de maximizer wint, tel dan 10 op bij de score
-        if(AiModel.checkWinner('O')) {
+        if(AiModel.checkWinner(player)) {
             return + 10;
         }
 
         //Als de minimizer wint, trek dan 10 af van de score
-        else if(AiModel.checkWinner('X')) {
+        else if(AiModel.checkWinner(opponent)) {
             return - 10;
         }
 
@@ -37,9 +37,10 @@ public class AI {
      * @param AiModel Kopie van het echte spelbord waar de experimentele zetten op gedaan worden
      * @param isMax Of de maximizer aan de beurt is of niet
      * @param depth Tot hoe diep het algoritme experimentele zetten mag doen
+     * @param opponent geeft mee welke speler de tegenstander is.
      * @return De score van het beste mogelijke zet
      */
-    static int minimax(GameModel AiModel, boolean isMax, int depth) {
+    static int minimax(GameModel AiModel, boolean isMax, int depth, char opponent, char player) {
 
         //Stop met puntentelling als de maximale diepte is bereikt
         if (depth <= 0) {
@@ -47,7 +48,7 @@ public class AI {
         }
 
         //Controleer de score van de zet waarmee de functie is aangeroepen
-        int score = evaluate(AiModel);
+        int score = evaluate(AiModel, opponent, player);
         //Geef de score terug als de maximizer of minimizer gewonnen heeft
         if (score == 10 || score == -10) {
             return score;
@@ -75,17 +76,17 @@ public class AI {
             if(boardData[i] == '\u0000') {
                 if(isMax) {
                     //Doe een zet als de maximizer
-                    boardData[i] = 'O';
+                    boardData[i] = player;
 
                     //Bepaal de beste score door de functie opnieuw aan te roepen en een zet te doen als de minimizer
-                    best = Math.max(best, minimax(AiModel, false, depth - 1));
+                    best = Math.max(best, minimax(AiModel, false, depth - 1, opponent, player));
                 }
                 else {
                     //Doe een zet als de minimizer
-                    boardData[i] = 'X';
+                    boardData[i] = opponent;
 
                     //Bepaal de beste score door de functie opnieuw aan te roepen en een zet te doen als de maximizer
-                    best = Math.min(best, minimax(AiModel, true, depth - 1));
+                    best = Math.min(best, minimax(AiModel, true, depth - 1, opponent, player));
                 }
 
                 //Maak het vakje weer leeg om andere zetten mogelijk te maken
@@ -101,24 +102,29 @@ public class AI {
      * Geeft een lege positie op het bord terug waarbij de kans het grootste
      * is dat het een overwinning oplevert
      * @param AiModel Kopie van het echte spelbord waar de experimentele zetten op gedaan worden
+     * @param opponent geeft mee welke speler de tegenstander is.
      * @return Lege positie op het bord
      */
-    static int findBestMove(GameModel AiModel) {
+    static int findBestMove(GameModel AiModel, char opponent) {
 
         char[] boardData = AiModel.getBoardData();
 
         //Bepaal de hoogst mogelijke score die een bord zou kunnen hebben voor de minimizer
         int bestVal = -1000;
         int bestMove = -1;
-
+        char player = 'X';
+        if (opponent == 'X'){
+            player = 'O';
+        }
+        System.out.println("\n\n\n"+player+", "+opponent+"\n\n\n");
         //Zoek naar een leeg vakje
         for (int i = 0; i < boardData.length; i++) {
             if (boardData[i] == '\u0000') {
                 //Doe een zet als de maximizer
-                boardData[i] = 'O';
+                boardData[i] = player;
 
                 //Bepaal de score van de zet door een zet te doen als de minimizer
-                int moveVal = minimax(AiModel, false, 100);
+                int moveVal = minimax(AiModel, false, 100, opponent, player);
 
                 //Maak het vakje van deze zet weer leeg om andere zetten toe te staan als het bord veranderd is
                 boardData[i] = '\u0000';
@@ -137,16 +143,17 @@ public class AI {
     /**
      * Laat de AI een zet doen
      * @param gameBoard Bord van het huidige potje
+     * @param opponent geeft mee welke speler de tegenstander is.
      * @return Een lege positie waar de zet opgedaan word
      */
-    public int aiNewSet(char[] gameBoard) {
+    public int aiNewSet(char[] gameBoard, char opponent) {
 
         //Maak een kopie van het spelbord die het algoritme kan gebruiken voor simulaties
         GameModel AiModel = new GameModel(gameBoard.length);
         AiModel.setGameBoard(gameBoard);
 
         //Bepaal de zet met hoogste score, dus de zet die de grootste kans heeft om een overwinning op te leveren
-        int bestMove = findBestMove(AiModel);
+        int bestMove = findBestMove(AiModel, opponent);
 
         //Laat de AI een zet doen
         boolean choice = false;

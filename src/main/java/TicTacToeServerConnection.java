@@ -10,8 +10,9 @@ public class TicTacToeServerConnection implements Runnable {
     private boolean run;
     private GUI view;
     private GameModel model;
+    private boolean opponentStart;
 
-    public TicTacToeServerConnection(GUI view, GameModel model, String playerName){
+    public TicTacToeServerConnection(GUI view, GameModel model, String playerName) {
         this.Hostname = "192.168.78.227"; // actual server: 145.33.225.170
         this.portNumber = 7789;
         this.playerName = playerName;
@@ -29,7 +30,7 @@ public class TicTacToeServerConnection implements Runnable {
     }
 
     @Override
-    public void run(){
+    public void run() {
         try (
                 Socket socket = new Socket(this.Hostname, this.portNumber);
                 PrintWriter out =
@@ -53,45 +54,76 @@ public class TicTacToeServerConnection implements Runnable {
 
     /**
      * The "main" when connected to a server for a tic-tac-toe match
+     *
      * @param out For sending messages to the server
-     * @param in For receiving messages from the server
+     * @param in  For receiving messages from the server
      * @throws IOException
      */
     private void connectedMain(PrintWriter out, BufferedReader in) throws IOException {
-        in.readLine(); in.readLine();  // remove first two lines the server returns upon connection
+        in.readLine();
+        in.readLine();  // remove first two lines the server returns upon connection
         out.println("login " + this.playerName);
         in.readLine(); // message: OK
         out.println("subscribe tic-tac-toe");
         this.view.setText(DEFAULT);
+
+        boolean firstMoveDone = false;
         while (isRun()) {
-            if(in.ready()){
+            if (in.ready()) {
                 String input = in.readLine();
-                System.out.println("input: "+ input);
-                if(input.contains("SVR GAME MATCH")) {
+                System.out.println("input: " + input);
+                if (input.contains("SVR GAME MATCH")) {
                     this.opponentName = input.substring(input.indexOf("OPPONENT: \"") + 11);
-                    this.opponentName = this.opponentName.substring(0,this.opponentName.indexOf("\""));
+                    this.opponentName = this.opponentName.substring(0, this.opponentName.indexOf("\""));
                 }
-                if(input.contains("SVR GAME YOURTURN")){
-                    this.view.setText("turn: "+ this.playerName);
-                    out.println("move " + this.model.aiSet());
-                }else{
-                    this.view.setText("turn: "+ this.opponentName);
+                if (input.contains("SVR GAME YOURTURN")) {
+                    if (!firstMoveDone) {
+                        System.out.println("TESTT");
+                        opponentStart = false;
+                        firstMoveDone = true;
+                        if (opponentStart) {
+                            model.setCurrentPlayer('X');
+                        } else {
+                            model.setCurrentPlayer('O');
+                        }
+                    }
+                    this.view.setText("turn: " + this.playerName);
+                    if (opponentStart) {
+                        out.println("move " + this.model.aiSet('X'));
+                    }else {
+                        out.println("move " + this.model.aiSet('O'));
+                    }
+                } else {
+                    this.view.setText("turn: " + this.opponentName);
                 }
-                if(input.contains("SVR GAME MOVE")){
+                if (input.contains("SVR GAME MOVE")) {
+                    if (!firstMoveDone) {
+                        System.out.println("TESTT");
+                        opponentStart = true;
+                        firstMoveDone = true;
+                        if (opponentStart) {
+                            model.setCurrentPlayer('X');
+                        } else {
+                            model.setCurrentPlayer('O');
+                        }
+                    }
                     this.updateBoard(input);
                 }
-                if(input.contains("SVR GAME WIN")){
+                if (input.contains("SVR GAME WIN")) {
                     String message = String.format("Last match winner: %s", this.playerName);
                     resetBoard(message);
+                    firstMoveDone = false;
                 }
 
-                if(input.contains("SVR GAME DRAW")){
+                if (input.contains("SVR GAME DRAW")) {
                     resetBoard("Last match: Draw");
+                    firstMoveDone = false;
                 }
 
-                if(input.contains("SVR GAME LOSS")){
+                if (input.contains("SVR GAME LOSS")) {
                     String message = String.format("Last match winner: %s", this.opponentName);
                     resetBoard(message);
+                    firstMoveDone = false;
                 }
             }
         }
@@ -100,9 +132,10 @@ public class TicTacToeServerConnection implements Runnable {
 
     /**
      * Update the board after a move has been played
+     *
      * @param input The message from the server
      */
-    private void updateBoard(String input){ // String input
+    private void updateBoard(String input) { // String input
         int index = input.indexOf("MOVE: \"");
         int move = Integer.parseInt(input.substring(index + 7, index + 8));
         this.model.userSet(move);
@@ -114,8 +147,8 @@ public class TicTacToeServerConnection implements Runnable {
      * to play a new game.
      */
     public void resetBoard(String message) {
-        this.model.resetGame(false, false, 'X');
+//        this.model.resetGame(false, false, 'X');
         this.view.update(this.model);
-        this.view.setText(String.format("<html>%s<br />%s</html>", message,DEFAULT));
+        this.view.setText(String.format("<html>%s<br />%s</html>", message, DEFAULT));
     }
 }

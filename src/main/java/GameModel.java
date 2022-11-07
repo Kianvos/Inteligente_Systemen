@@ -35,17 +35,18 @@ public class GameModel {
         //Alleen als het spel nog niet geeindigd is.
         //Alleen als er tegen de AI gespeeld wordt.
         if (!isWinner && !isTie && againstAi) {
-            int i = ai.aiNewSet(gameBoard);
+            int i = ai.aiNewSet(gameBoard, 'X');
             userSet(i);
         }
     }
 
     /**
      * Laat de ai een zet doen
+     * @param opponent geeft mee welke speler de tegenstander is.
      * @return geeft de index terug waar de ai een zet op wil doen.
      */
-    public int aiSet(){
-        int i = ai.aiNewSet(gameBoard);
+    public int aiSet(char opponent){
+        int i = ai.aiNewSet(gameBoard, opponent);
         userSet(i);
         return i;
     }
@@ -195,7 +196,7 @@ public class GameModel {
         startPlayer = start;
         winner = ' ';
         if (AiStart && playAi){
-            gameBoard[ai.aiNewSet(gameBoard)] = 'O';
+            gameBoard[ai.aiNewSet(gameBoard, 'X')] = 'O';
         }
     }
 
@@ -211,6 +212,10 @@ public class GameModel {
      */
     public char getCurrentPlayer(){
         return currentPlayer;
+    }
+
+    public void setCurrentPlayer(char currentPlayer) {
+        this.currentPlayer = currentPlayer;
     }
 
     /**
