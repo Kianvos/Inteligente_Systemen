@@ -77,35 +77,25 @@ public class TicTacToeServerConnection implements Runnable {
                     this.opponentName = this.opponentName.substring(0, this.opponentName.indexOf("\""));
                 }
                 if (input.contains("SVR GAME YOURTURN")) {
+                    this.view.setText("turn: " + this.playerName);
                     if (!firstMoveDone) {
-                        System.out.println("TESTT");
                         opponentStart = false;
                         firstMoveDone = true;
-                        if (opponentStart) {
-                            model.setCurrentPlayer('X');
-                        } else {
-                            model.setCurrentPlayer('X');
-                        }
+                        model.setCurrentPlayer('X');
                     }
                     this.view.setText("turn: " + this.playerName);
                     if (opponentStart) {
                         out.println("move " + this.model.aiSet('X'));
-                    }else {
+                    } else {
                         out.println("move " + this.model.aiSet('O'));
                     }
-                } else {
                     this.view.setText("turn: " + this.opponentName);
                 }
                 if (input.contains("SVR GAME MOVE")) {
                     if (!firstMoveDone) {
-                        System.out.println("TESTT");
                         opponentStart = true;
                         firstMoveDone = true;
-                        if (opponentStart) {
-                            model.setCurrentPlayer('X');
-                        } else {
-                            model.setCurrentPlayer('X');
-                        }
+                        model.setCurrentPlayer('X');
                     }
                     this.updateBoard(input);
                 }
@@ -147,7 +137,7 @@ public class TicTacToeServerConnection implements Runnable {
      * to play a new game.
      */
     public void resetBoard(String message) {
-//        this.model.resetGame(false, false, 'X');
+        this.model.resetGame(false, false, 'X');
         this.view.update(this.model);
         this.view.setText(String.format("<html>%s<br />%s</html>", message, DEFAULT));
     }
