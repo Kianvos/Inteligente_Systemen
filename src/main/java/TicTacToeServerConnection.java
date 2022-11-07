@@ -114,7 +114,7 @@ public class TicTacToeServerConnection implements Runnable {
      * to play a new game.
      */
     public void resetBoard(String message) {
-        this.model.resetGame();
+        this.model.resetGame(false, false, 'X');
         this.view.update(this.model);
         this.view.setText(String.format("<html>%s<br />%s</html>", message,DEFAULT));
     }

@@ -45,7 +45,7 @@ public class GameModel {
      * @return geeft de index terug waar de ai een zet op wil doen.
      */
     public int aiSet(){
-        int i = ai.aiNewSet(gameBoard, this);
+        int i = ai.aiNewSet(gameBoard);
         userSet(i);
         return i;
     }
@@ -195,7 +195,7 @@ public class GameModel {
         startPlayer = start;
         winner = ' ';
         if (AiStart && playAi){
-            gameBoard[ai.aiNewSet(gameBoard, this)] = 'O';
+            gameBoard[ai.aiNewSet(gameBoard)] = 'O';
         }
     }
 
