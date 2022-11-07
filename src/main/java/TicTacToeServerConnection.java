@@ -13,10 +13,10 @@ public class TicTacToeServerConnection implements Runnable {
     private GUI view;
     private GameModel model;
 
-    public TicTacToeServerConnection(GUI view, GameModel model){
+    public TicTacToeServerConnection(GUI view, GameModel model, String playerName){
         this.Hostname = "127.0.0.1"; // actual server: 145.33.225.170
         this.portNumber = 7789;
-        this.playerName = "groep3ai";
+        this.playerName = playerName;
         this.run = true;
         this.forfeit = false;
         this.view = view;

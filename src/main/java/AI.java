@@ -73,7 +73,7 @@ public class AI {
                 board[i] = 'O';
 
                 int moveVal = minimax(board, 0, false, AiModel);
-                System.out.println(moveVal);
+//                System.out.println(moveVal);
                 board[i] = '\u0000';
 
                 if (moveVal > bestVal) {
@@ -82,7 +82,7 @@ public class AI {
                 }
             }
         }
-        System.out.println("De waarde van de beste zet: " + bestVal);
+//        System.out.println("De waarde van de beste zet: " + bestVal);
 
         return bestMove;
     }
@@ -94,7 +94,7 @@ public class AI {
         AiModel.setGameBoard(gameBoard);
 
         int bestMove = findBestMove(gameBoard, AiModel);
-        System.out.println(bestMove);
+//        System.out.println(bestMove);
 
         boolean choice = false;
         int pos = -1;
