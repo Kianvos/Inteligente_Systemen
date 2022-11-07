@@ -84,7 +84,7 @@ public class TicTacToeServerConnection implements Runnable {
                         if (opponentStart) {
                             model.setCurrentPlayer('X');
                         } else {
-                            model.setCurrentPlayer('O');
+                            model.setCurrentPlayer('X');
                         }
                     }
                     this.view.setText("turn: " + this.playerName);
@@ -104,7 +104,7 @@ public class TicTacToeServerConnection implements Runnable {
                         if (opponentStart) {
                             model.setCurrentPlayer('X');
                         } else {
-                            model.setCurrentPlayer('O');
+                            model.setCurrentPlayer('X');
                         }
                     }
                     this.updateBoard(input);
