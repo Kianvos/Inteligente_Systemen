@@ -13,7 +13,7 @@ public class TicTacToeServerConnection implements Runnable {
     private boolean opponentStart;
 
     public TicTacToeServerConnection(GUI view, GameModel model, String playerName) {
-        this.Hostname = "192.168.78.227"; // actual server: 145.33.225.170
+        this.Hostname = "145.33.225.170"; // actual server: 145.33.225.170
         this.portNumber = 7789;
         this.playerName = playerName;
         this.run = true;
@@ -64,7 +64,7 @@ public class TicTacToeServerConnection implements Runnable {
         in.readLine();  // remove first two lines the server returns upon connection
         out.println("login " + this.playerName);
         in.readLine(); // message: OK
-        out.println("subscribe tic-tac-toe");
+//        out.println("subscribe tic-tac-toe");
         this.view.setText(DEFAULT);
 
         boolean firstMoveDone = false;
