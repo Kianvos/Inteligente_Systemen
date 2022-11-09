@@ -6,46 +6,31 @@ public class GUI {
     private JFrame frame;
     
     private JLabel textfield;
-    private JPanel top_panel;
-
-    // Buttons
-    private JButton localButton = new JButton("Local");
-    private JButton serverButton = new JButton("Server");
     private JButton disconnectButton = new JButton("Disconnect");
-    // private JButton quitButton = new JButton("quit");
-
     private JButton resetButton = new JButton("Reset");
     private JButton menuButton = new JButton("Menu");
 
     // Cards
     private CardLayout layout = new CardLayout();
     private JPanel rightTop = new JPanel();
-    private JPanel rightTopGame = new JPanel();
-    private JPanel rightTopOnlineGame = new JPanel();
-    private JPanel rightTopMenu = new JPanel();
 
     // Game
     private JButton[] buttons;
     private JPanel gamePanel;
-    // private GameGUI game;
-    // private JPanel gamePanel;
 
-    public GUI(GameModel model, int size) {
+
+    public GUI(int size) {
         this.frame = new JFrame();
         this.textfield = new JLabel();
         settingsTextField();
 
-        this.top_panel = new JPanel();
         buildTopMenu();
-
-        // this.game = new GameGUI(this, size);
-        // this.game.update(model);
 
         this.buttons = new JButton[size * size];
         this.gamePanel = new JPanel(new GridLayout(size, size));
         buildGameButtons(size);
 
-        frameSettings();   
+        frameSettings();
     }
 
     /**
@@ -57,7 +42,6 @@ public class GUI {
         this.frame.setSize(500, 650);
         this.frame.setLayout(new BorderLayout());
         
-        this.frame.add(top_panel, BorderLayout.NORTH);
         this.frame.add(gamePanel);
         
         gamePanel.setVisible(false);
@@ -68,6 +52,10 @@ public class GUI {
      * Boven het spel is er een menu. Hier worden de settings hiervoor gezet.
      */
     public void buildTopMenu() {
+        JPanel top_panel = new JPanel();
+        JPanel rightTopGame;
+        JPanel rightTopMenu;
+        JPanel rightTopOnlineGame;
         top_panel = settingsTopPanel(top_panel, 500);
         top_panel.add(this.textfield);
 
@@ -76,16 +64,10 @@ public class GUI {
         rightTopGame = settingsRightTopPanel(new JPanel());
         rightTopOnlineGame = settingsRightTopPanel(new JPanel());
 
-        localButton = settingsRightTopButtons(localButton);
-        serverButton = settingsRightTopButtons(serverButton);
         disconnectButton = settingsRightTopButtons(disconnectButton);
-        // quitButton = settingsRightTopButtons(quitButton);
 
         resetButton = settingsRightTopButtons(resetButton);
         menuButton = settingsRightTopButtons(menuButton);
-        rightTopMenu.add(localButton);
-        rightTopMenu.add(serverButton);
-        // rightTopMenu.add(quitButton);
 
         rightTopGame.add(resetButton);
         rightTopGame.add(menuButton);
@@ -98,6 +80,7 @@ public class GUI {
 
         layout.show(rightTop, "menu");
         top_panel.add(rightTop);
+        frame.add(top_panel, BorderLayout.NORTH);
     }
 
     public JButton settingsRightTopButtons(JButton button) {
@@ -191,13 +174,6 @@ public class GUI {
         // game.update(model);
     }
 
-    public JButton getLocalButton() {
-        return localButton;
-    }
-
-    public JButton getServerButton() {
-        return serverButton;
-    }
     public JButton getDisconnectButton() { return disconnectButton; }
 
     public JButton getResetButton() {

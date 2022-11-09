@@ -3,7 +3,6 @@ public class GameModel {
     private boolean againstAi;
     private char[] gameBoard;
     private char currentPlayer;
-    private char startPlayer;
     private boolean isWinner;
     private boolean isTie;
     private boolean isOnline;
@@ -32,7 +31,7 @@ public class GameModel {
         }
         userSet(idx);
 
-        //Alleen als het spel nog niet geeindigd is.
+        //Alleen als het spel nog niet geëindigd is.
         //Alleen als er tegen de AI gespeeld wordt.
         if (!isWinner && !isTie && againstAi) {
             int i = ai.aiNewSet(gameBoard, 'X');
@@ -193,7 +192,6 @@ public class GameModel {
         isWinner = false;
         isTie = false;
         againstAi = playAi;
-        startPlayer = start;
         winner = ' ';
         if (AiStart && playAi){
             gameBoard[ai.aiNewSet(gameBoard, 'X')] = 'O';
