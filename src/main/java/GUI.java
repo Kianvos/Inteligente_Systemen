@@ -12,6 +12,7 @@ public class GUI {
 
     // Cards
     private CardLayout layout = new CardLayout();
+    private JPanel top_panel = new JPanel();
     private JPanel rightTop = new JPanel();
 
     // Game
@@ -41,10 +42,11 @@ public class GUI {
         this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.frame.setSize(500, 650);
         this.frame.setLayout(new BorderLayout());
-        
+
+        frame.add(top_panel, BorderLayout.NORTH);
         this.frame.add(gamePanel);
         
-        gamePanel.setVisible(false);
+        gamePanel.setVisible(true);
         this.frame.setVisible(false);
     }
 
@@ -52,7 +54,7 @@ public class GUI {
      * Boven het spel is er een menu. Hier worden de settings hiervoor gezet.
      */
     public void buildTopMenu() {
-        JPanel top_panel = new JPanel();
+
         JPanel rightTopGame;
         JPanel rightTopMenu;
         JPanel rightTopOnlineGame;
@@ -80,7 +82,6 @@ public class GUI {
 
         layout.show(rightTop, "menu");
         top_panel.add(rightTop);
-        frame.add(top_panel, BorderLayout.NORTH);
     }
 
     public JButton settingsRightTopButtons(JButton button) {
