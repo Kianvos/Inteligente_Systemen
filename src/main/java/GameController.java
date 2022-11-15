@@ -24,7 +24,7 @@ public class GameController {
      * Zet de instellingen voor de knoppen die op de menu view te zien zijn.
      */
     private void createMenuListeners() {
-        menu.getAiVersusAiButton().addActionListener(new ActionListener() {
+        menu.getMultiplayerButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String playerName = JOptionPane.showInputDialog(menu.getFrame(),"Wat is jullie gebruikersnaam?", "Groep3A");
@@ -40,42 +40,31 @@ public class GameController {
                 System.out.println(playerName);
             }
         });
-        String[] buttonsPlayerAi = {"Cancel", "AI", "Speler"};
-        menu.getPlayerVersusAiButton().addActionListener(new ActionListener() {
+
+        menu.getSingleplayerButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                int a = JOptionPane.showOptionDialog(menu.getFrame(), "Wie mag er beginnen? ", "Test", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, buttonsPlayerAi, buttonsPlayerAi[0]);
-                System.out.println(a);
+                JComboBox[] dropdowns = menu.getDropdowns();
 
-                if (a != 0){
-                    menu.setVisible(false);
-                    view.show("game");
-                    model.resetGame(true, a==1, 'X');
-                    view.update(model);
-                }
-            }
-        });
-        String[] buttonsPlayerPlayer = {"Cancel", "O", "X"};
-        menu.getPlayerVersusPlayerButton().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int a = JOptionPane.showOptionDialog(menu.getFrame(), "Start X of O? ", "Test", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, buttonsPlayerPlayer, buttonsPlayerPlayer[0]);
-                // Kijkt welke knop er in gedrukt is en wie er dus mag beginnen
-                char playerStart = 0;
-                if (a == 1){
-                    playerStart = 'O';
-                } else if (a == 2) {
-                    playerStart = 'X';
+                String p1 = (String) dropdowns[0].getSelectedItem();
+                String p2 = (String) dropdowns[1].getSelectedItem();
+
+                if (p1.equals("ai") && p2.equals("ai")) {
+                    System.out.println("Cannot play ai vs ai");
+                    return;
                 }
 
-                if (a != 0){
-                    menu.setVisible(false);
-                    view.show("game");
-                    model.resetGame(false,false, playerStart);
-                    view.setText(playerStart + " is aan de beurt");
-                    view.update(model);
-                }
+                System.out.println(p1);
+                System.out.println(p2);
+
+                Boolean playerVsAi = p1.equals("ai") || p2.equals("ai");
+
+                menu.setVisible(false);
+                view.show("game");
+                model.resetGame(playerVsAi, p1.equals("ai"), 'X');
+                view.update(model);
             }
+
         });
     }
 
