@@ -3,6 +3,7 @@ abstract public class GameModel {
     private boolean againstAi;
     private char[] gameBoard;
     private char currentPlayer;
+    private char startPlayer;
     private boolean isWinner;
     private boolean isTie;
     private boolean isOnline;
@@ -158,6 +159,7 @@ abstract public class GameModel {
         isWinner = false;
         isTie = false;
         againstAi = playAi;
+        startPlayer = start;
         winner = ' ';
         if (AiStart && playAi){
             gameBoard[ai.aiNewSet(gameBoard, 'X')] = 'O';
@@ -187,7 +189,7 @@ abstract public class GameModel {
      * @return geeft terug wie er begonnen is.
      */
     public char getStartPlayer(){
-        return currentPlayer;
+        return startPlayer;
     }
 
     /**

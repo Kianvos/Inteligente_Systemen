@@ -17,24 +17,19 @@ public class OthelloModel extends GameModel {
 
     public OthelloModel() {
         super(8);
-
-        char[] gameBoardStatus = getBoardData();
-        for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < 8; j++) {
-                int idx = i * 8 + j;
-                System.out.print(" " + gameBoardStatus[idx]);
-            }
-            System.out.println();
+        ArrayList<Integer> availableBlack = getAvailableMoves(BLACK);
+        ArrayList<Integer> availableWhite = getAvailableMoves(WHITE);
+        for (Integer availableB : availableBlack) {
+            System.out.println(availableB);
+        }
+        for (Integer availableW : availableWhite) {
+            System.out.println(availableW);
         }
     }
 
 
     @Override
     public boolean checkWinner(char player) {
-        ArrayList<Integer> indexes = getAvailableMoves(BLACK);
-        for (Integer index : indexes) {
-            System.out.println(index);
-        }
         return false;
     }
 
@@ -61,8 +56,9 @@ public class OthelloModel extends GameModel {
         }
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
-                if (isValidMove((i * size + j), player, opponent)) {
-                    availableMoves.add(i * size + j);
+                int idx = i * size + j;
+                if (isValidMove(idx, player, opponent)) {
+                    availableMoves.add(idx);
                 }
             }
 
@@ -71,33 +67,35 @@ public class OthelloModel extends GameModel {
     }
 
     public boolean isValidMove(int idx, char player, char opponent) {
-        if (!checkPlace(idx)) {
+        if (!checkPlace(idx)){
             return false;
         }
+
+        //26 en 37
         int size = getSize();
         char[] gameBoard = getBoardData();
+        int row = Math.floorDiv(idx, size);
+        int col = (idx - size * row);
 
-        int tmpRow = Math.floorDiv(idx, size);
-        int tmpCol = idx - size * tmpRow;
-        boolean isValid = false;
         for (int i = 0; i < size; i++) {
+            int tmpRow = row + OFFSET_ROW[i];
+            int tmpCol = col + OFFSET_ROW[i];
             boolean hasOpponentBetween = false;
-            while (tmpRow >= 0 && tmpCol < size && tmpCol >= 0 && tmpRow < size) {
-                if (gameBoard[idx] == opponent) {
+            while (tmpRow >= 0 && tmpRow < size && tmpCol >= 0 && tmpCol < size) {
+                int tmpIdx = tmpCol + tmpRow * size;
+                if (gameBoard[tmpIdx] == opponent) {
                     hasOpponentBetween = true;
-                } else if (gameBoard[idx] == player && hasOpponentBetween) {
-                    isValid = true;
+                } else if (gameBoard[tmpIdx] == player && hasOpponentBetween) {
+                    return true;
+                }
+                else {
                     break;
                 }
                 tmpRow += OFFSET_ROW[i];
                 tmpCol += OFFSET_COL[i];
             }
-            if (isValid) {
-                break;
-            }
         }
-
-        return isValid;
+        return false;
     }
 
     public char[] buildGameBoard() {
