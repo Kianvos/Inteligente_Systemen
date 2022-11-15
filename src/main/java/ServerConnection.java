@@ -1,18 +1,18 @@
 import java.net.*;
 import java.io.*;
 
-public class TicTacToeServerConnection implements Runnable {
+public class ServerConnection implements Runnable {
     final private String playerName;
     final private String Hostname;
     final private int portNumber;
     final private String DEFAULT = "Searching for opponent...";
     private String opponentName;
     private boolean run;
-    private GUI view;
-    private GameModel model;
+    private View view;
+    private Model model;
     private boolean opponentStart;
 
-    public TicTacToeServerConnection(GUI view, GameModel model, String playerName) {
+    public ServerConnection(View view, Model model, String playerName) {
         this.Hostname = "145.33.225.170"; // actual server: 145.33.225.170
         this.portNumber = 7789;
         this.playerName = playerName;
@@ -41,11 +41,11 @@ public class TicTacToeServerConnection implements Runnable {
         ) {
             connectedMain(out, in);
         } catch (UnknownHostException e) {
-            this.view.setText("Server not found.");
+            this.view.getGameView().setText("Server not found.");
             System.err.println("Don't know about host " + this.Hostname);
             //System.exit(1);
         } catch (IOException e) {
-            this.view.setText("Could not connect to server.");
+            this.view.getGameView().setText("Could not connect to server.");
             System.err.println("Couldn't get I/O for the connection to " +
                     this.Hostname);
             //System.exit(1);
@@ -65,7 +65,7 @@ public class TicTacToeServerConnection implements Runnable {
         out.println("login " + this.playerName);
         in.readLine(); // message: OK
 //        out.println("subscribe tic-tac-toe");
-        this.view.setText(DEFAULT);
+        this.view.getGameView().setText(DEFAULT);
 
         boolean firstMoveDone = false;
         while (isRun()) {
@@ -77,19 +77,19 @@ public class TicTacToeServerConnection implements Runnable {
                     this.opponentName = this.opponentName.substring(0, this.opponentName.indexOf("\""));
                 }
                 if (input.contains("SVR GAME YOURTURN")) {
-                    this.view.setText("turn: " + this.playerName);
+                    this.view.getGameView().setText("turn: " + this.playerName);
                     if (!firstMoveDone) {
                         opponentStart = false;
                         firstMoveDone = true;
                         model.setCurrentPlayer('X');
                     }
-                    this.view.setText("turn: " + this.playerName);
+                    this.view.getGameView().setText("turn: " + this.playerName);
                     if (opponentStart) {
                         out.println("move " + this.model.aiSet('X'));
                     } else {
                         out.println("move " + this.model.aiSet('O'));
                     }
-                    this.view.setText("turn: " + this.opponentName);
+                    this.view.getGameView().setText("turn: " + this.opponentName);
                 }
                 if (input.contains("SVR GAME MOVE")) {
                     if (!firstMoveDone) {
@@ -129,7 +129,7 @@ public class TicTacToeServerConnection implements Runnable {
         int index = input.indexOf("MOVE: \"");
         int move = Integer.parseInt(input.substring(index + 7, index + 8));
         this.model.userSet(move);
-        this.view.update(this.model);
+        this.view.getGameView().update(this.model);
     }
 
     /**
@@ -138,7 +138,7 @@ public class TicTacToeServerConnection implements Runnable {
      */
     public void resetBoard(String message) {
         this.model.resetGame(false, false, 'X');
-        this.view.update(this.model);
-        this.view.setText(String.format("<html>%s<br />%s</html>", message, DEFAULT));
+        this.view.getGameView().update(this.model);
+        this.view.getGameView().setText(String.format("<html>%s<br />%s</html>", message, DEFAULT));
     }
 }

@@ -1,7 +1,8 @@
-public class GameModel {
+
+public class Model {
 
     private boolean againstAi;
-    private char[] gameBoard;
+    private char[] board;
     private char currentPlayer;
     private boolean isWinner;
     private boolean isTie;
@@ -10,14 +11,14 @@ public class GameModel {
     private int size;
     private AI ai;
 
-    public GameModel(int size) {
+    public Model(int size) {
         this.size = size;
-        this.gameBoard = new char[size * size];
+        this.board = new char[size * size];
         this.isWinner = false;
         this.isTie = false;
         this.isOnline = false;
         this.winner = ' ';
-        this.ai = new AI(size);
+        this.ai = new AI();
     }
 
 
@@ -34,8 +35,9 @@ public class GameModel {
         //Alleen als het spel nog niet geëindigd is.
         //Alleen als er tegen de AI gespeeld wordt.
         if (!isWinner && !isTie && againstAi) {
-            int i = ai.aiNewSet(gameBoard, 'X');
-            userSet(i);
+            aiSet('X');
+            // int i = ai.aiNewSet(board, 'X');
+            // userSet(i);
         }
     }
 
@@ -45,7 +47,7 @@ public class GameModel {
      * @return geeft de index terug waar de ai een zet op wil doen.
      */
     public int aiSet(char opponent){
-        int i = ai.aiNewSet(gameBoard, opponent);
+        int i = ai.aiNewSet(board, opponent);
         userSet(i);
         return i;
     }
@@ -60,7 +62,7 @@ public class GameModel {
         if (!checkPlace(idx)) {
             return;
         }
-        gameBoard[idx] = currentPlayer;
+        board[idx] = currentPlayer;
         isWinner = checkWinner(currentPlayer);
         if (isWinner) {
             winner = currentPlayer;
@@ -83,8 +85,8 @@ public class GameModel {
      */
     public boolean checkPlace(int idx) {
         // Checkt of 'idx' buiten het speelveld valt en of het vakje al bezet is of niet
-        if (idx >= 0 && idx < this.gameBoard.length) {
-            if (this.gameBoard[idx] == '\u0000') {
+        if (idx >= 0 && idx < this.board.length) {
+            if (this.board[idx] == '\u0000') {
                 return true;
             }
         }
@@ -100,22 +102,22 @@ public class GameModel {
     public boolean checkWinner(char player) {
         // Check vertical
         for (int i = 0; i < 3; i++) {
-            if (this.gameBoard[i] == this.gameBoard[i + 3] && this.gameBoard[i + 3] == this.gameBoard[i + 6] && this.gameBoard[i] == player) {
+            if (this.board[i] == this.board[i + 3] && this.board[i + 3] == this.board[i + 6] && this.board[i] == player) {
                 return true;
             }
         }
         // Check horizontal
-        for (int i = 0; i < this.gameBoard.length; i++) {
+        for (int i = 0; i < this.board.length; i++) {
             if (i % 3 == 2) {
-                if (this.gameBoard[i] == this.gameBoard[i - 1] && this.gameBoard[i - 1] == this.gameBoard[i - 2] && this.gameBoard[i] == player) {
+                if (this.board[i] == this.board[i - 1] && this.board[i - 1] == this.board[i - 2] && this.board[i] == player) {
                     return true;
                 }
             }
         }
         // Check diagonal
-        if (this.gameBoard[0] == this.gameBoard[4] && this.gameBoard[4] == this.gameBoard[8] && this.gameBoard[0] == player) {
+        if (this.board[0] == this.board[4] && this.board[4] == this.board[8] && this.board[0] == player) {
             return true;
-        } else if (this.gameBoard[2] == this.gameBoard[4] && this.gameBoard[4] == this.gameBoard[6] && this.gameBoard[2] == player) {
+        } else if (this.board[2] == this.board[4] && this.board[4] == this.board[6] && this.board[2] == player) {
             return true;
         }
         return false;
@@ -127,8 +129,8 @@ public class GameModel {
      */
     public boolean checkTie() {
         // Check tie/Check of er nog plaats is op het speelveld
-        for (int i = 0; i < gameBoard.length; i++) {
-            if (gameBoard[i] == '\u0000') {
+        for (int i = 0; i < board.length; i++) {
+            if (board[i] == '\u0000') {
                 return false;
             }
         }
@@ -139,16 +141,16 @@ public class GameModel {
     /**
      * @return geeft de huidige bord terug.
      */
-    public char[] getBoardData() {
-        return gameBoard;
+    public char[] getBoard() {
+        return board;
     }
 
     /**
      * Vervangt het huidige bord met de nieuwe.
-     * @param newGameBoard geeft de nieuwe bord status mee
+     * @param newBoard geeft de nieuwe bord status mee
      */
-    public void setGameBoard(char[] newGameBoard) {
-        gameBoard = newGameBoard;
+    public void setBoard(char[] newBoard) {
+        board = newBoard;
     }
 
     /**
@@ -187,14 +189,14 @@ public class GameModel {
      * @param start welke speler er mag starten
      */
     public void resetGame(boolean playAi, boolean AiStart, char start) {
-        gameBoard = new char[size * size];
+        board = new char[size * size];
         currentPlayer = start;
         isWinner = false;
         isTie = false;
         againstAi = playAi;
         winner = ' ';
         if (AiStart && playAi){
-            gameBoard[ai.aiNewSet(gameBoard, 'X')] = 'O';
+            board[ai.aiNewSet(board, 'X')] = 'O';
         }
     }
 
