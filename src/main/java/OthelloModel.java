@@ -1,8 +1,8 @@
 import java.util.ArrayList;
 
 public class OthelloModel extends GameModel {
-    private final char BLACK = 'X';
-    private final char WHITE = 'O';
+    private final char BLACK = 'O';
+    private final char WHITE = 'X';
 
 
     /**
@@ -34,6 +34,14 @@ public class OthelloModel extends GameModel {
         return false;
     }
 
+    public boolean validMove(int idx) {
+        char opponent = 'X';
+        if (getCurrentPlayer() == 'X'){
+            opponent = 'O';
+        }
+        return isValidMove(idx, getCurrentPlayer(), opponent);
+    }
+
     /**
      * Zoekt naar alle mogelijke zetten
      *
@@ -63,8 +71,7 @@ public class OthelloModel extends GameModel {
     }
 
     public boolean isValidMove(int idx, char player, char opponent) {
-
-        if (!checkPlace(idx)){
+        if (!isEmptyColumn(idx)){
             return false;
         }
 

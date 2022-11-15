@@ -51,6 +51,10 @@ public class TicTacToeModel extends GameModel{
         return true;
     }
 
+    public boolean validMove(int idx) {
+        return isEmptyColumn(idx);
+    }
+
     public char[] buildGameBoard() {
         int size = getSize();
         return new char[size*size];
