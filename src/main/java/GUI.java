@@ -160,6 +160,8 @@ public class GUI {
                 // buttons[i].setBackground(new Color(169, 169, 169));
                 buttons[i].setForeground(new Color(17, 55, 190));
                 buttons[i].setText("O");
+            } else if (boardData[i] == '-'){
+                buttons[i].setText("-");
             } else {
 //                buttons[i].setBackground(new Color(220, 220, 220));
                 buttons[i].setForeground(new Color(220, 220, 220));

@@ -34,9 +34,67 @@ public class OthelloModel extends GameModel {
         return false;
     }
 
+    public char[] move(int idx, char[] currentBoard, char currentPlayer) {
+        char tmp = 'X';
+        if (currentPlayer == 'X') {
+            tmp = 'O';
+        }
+        currentBoard[idx] = currentPlayer;
+        for (int i = 0; i < currentBoard.length; i++) {
+            if (currentBoard[i] == '-') {
+                currentBoard[i] = '\u0000';
+            }
+        }
+        moveT(idx, currentBoard, currentPlayer);
+        ArrayList<Integer> availableMoves = getAvailableMoves(tmp);
+        for (Integer availableMove : availableMoves) {
+            currentBoard[availableMove] = '-';
+        }
+
+        return currentBoard;
+    }
+
+    public char[] moveT(int idx, char[] gameBoard, char player) {
+        int size = getSize();
+        int row = Math.floorDiv(idx, size);
+        int col = (idx - size * row);
+        for (int i = 0; i < size; i++) {
+            int tmpRow = row + OFFSET_ROW[i];
+            int tmpCol = col + OFFSET_COL[i];
+            boolean hasOpponentBetween = false;
+
+            while (tmpRow >= 0 && tmpRow < size && tmpCol >= 0 && tmpCol < size) {
+                int tmpIdx = tmpCol + tmpRow * size;
+                if (isEmptyColumn(tmpIdx)) {
+                    break;
+                }
+                if (gameBoard[tmpIdx] == player){
+                    hasOpponentBetween = true;
+                }
+                if(gameBoard[tmpIdx] == player && hasOpponentBetween){
+                    int effectRow = row + OFFSET_ROW[i];
+                    int effectCol = col + OFFSET_COL[i];
+                    int effectIdx = effectCol + effectRow * size;
+                    while (effectRow != tmpRow || effectCol != tmpCol)
+                    {
+//                        Reversi.getInstance().setEffectedPiece(effectPieceRow, effectPieceCol);
+                        gameBoard[effectIdx] = player;
+                        effectRow += OFFSET_ROW[i];
+                        effectCol += OFFSET_COL[i];
+                    }
+
+                    break;
+                }
+                tmpRow += OFFSET_ROW[i];
+                tmpCol += OFFSET_COL[i];
+            }
+        }
+        return gameBoard;
+    }
+
     public boolean validMove(int idx) {
         char opponent = 'X';
-        if (getCurrentPlayer() == 'X'){
+        if (getCurrentPlayer() == 'X') {
             opponent = 'O';
         }
         return isValidMove(idx, getCurrentPlayer(), opponent);
@@ -71,7 +129,7 @@ public class OthelloModel extends GameModel {
     }
 
     public boolean isValidMove(int idx, char player, char opponent) {
-        if (!isEmptyColumn(idx)){
+        if (!isEmptyColumn(idx)) {
             return false;
         }
 
@@ -93,8 +151,7 @@ public class OthelloModel extends GameModel {
                     hasOpponentBetween = true;
                 } else if (gameBoard[tmpIdx] == player && hasOpponentBetween) {
                     return true;
-                }
-                else {
+                } else {
                     break;
                 }
                 tmpRow += OFFSET_ROW[i];

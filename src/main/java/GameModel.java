@@ -62,7 +62,7 @@ abstract public class GameModel {
         if (!validMove(idx)){
             return;
         }
-        gameBoard[idx] = currentPlayer;
+        gameBoard = move(idx, gameBoard, currentPlayer);
         isWinner = checkWinner(currentPlayer);
         if (isWinner) {
             winner = currentPlayer;
@@ -86,13 +86,15 @@ abstract public class GameModel {
     public boolean isEmptyColumn(int idx) {
         // Checkt of 'idx' buiten het speelveld valt en of het vakje al bezet is of niet
         if (idx >= 0 && idx < gameBoard.length) {
-            if (gameBoard[idx] == '\u0000') {
+            if (gameBoard[idx] == '\u0000' || gameBoard[idx] == '-') {
                 return true;
             }
         }
 
         return false;
     }
+
+    abstract public char[] move(int idx, char[] currentBoard, char currentPlayer);
 
     abstract public boolean validMove(int idx);
 

@@ -1,13 +1,12 @@
-public class TicTacToeModel extends GameModel{
-    public TicTacToeModel(){
+public class TicTacToeModel extends GameModel {
+    public TicTacToeModel() {
         super(3);
 
     }
 
-
-
     /**
      * Checkt of de player winnaar is.
+     *
      * @param player is degene waarvoor hij controleert of er een winnaar is.
      * @return geeft terug of de speler gewonnen heeft.
      */
@@ -38,6 +37,7 @@ public class TicTacToeModel extends GameModel{
 
     /**
      * Checkt of het een gelijkspel is.
+     *
      * @return geeft terug of er een gelijkspel is.
      */
     public boolean checkTie() {
@@ -51,12 +51,17 @@ public class TicTacToeModel extends GameModel{
         return true;
     }
 
+    public char[] move(int idx, char[] currentBoard, char currentPlayer) {
+        currentBoard[idx] = currentPlayer;
+        return currentBoard;
+    }
+
     public boolean validMove(int idx) {
         return isEmptyColumn(idx);
     }
 
     public char[] buildGameBoard() {
         int size = getSize();
-        return new char[size*size];
+        return new char[size * size];
     }
 }
