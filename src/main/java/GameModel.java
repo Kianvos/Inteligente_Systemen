@@ -1,4 +1,4 @@
-public class GameModel {
+abstract public class GameModel {
 
     private boolean againstAi;
     private char[] gameBoard;
@@ -12,13 +12,14 @@ public class GameModel {
 
     public GameModel(int size) {
         this.size = size;
-        this.gameBoard = new char[size * size];
+        this.gameBoard = buildGameBoard();
         this.isWinner = false;
         this.isTie = false;
         this.isOnline = false;
         this.winner = ' ';
         this.ai = new AI(size);
     }
+
 
 
     /**
@@ -82,9 +83,10 @@ public class GameModel {
      * @return geeft terug of er nog plaats is op het bord.
      */
     public boolean checkPlace(int idx) {
+        char[] gameBoard = getBoardData();
         // Checkt of 'idx' buiten het speelveld valt en of het vakje al bezet is of niet
-        if (idx >= 0 && idx < this.gameBoard.length) {
-            if (this.gameBoard[idx] == '\u0000') {
+        if (idx >= 0 && idx < gameBoard.length) {
+            if (gameBoard[idx] == '\u0000') {
                 return true;
             }
         }
@@ -92,48 +94,10 @@ public class GameModel {
         return false;
     }
 
-    /**
-     * Checkt of de player winnaar is.
-     * @param player is degene waarvoor hij controleert of er een winnaar is.
-     * @return geeft terug of de speler gewonnen heeft.
-     */
-    public boolean checkWinner(char player) {
-        // Check vertical
-        for (int i = 0; i < 3; i++) {
-            if (this.gameBoard[i] == this.gameBoard[i + 3] && this.gameBoard[i + 3] == this.gameBoard[i + 6] && this.gameBoard[i] == player) {
-                return true;
-            }
-        }
-        // Check horizontal
-        for (int i = 0; i < this.gameBoard.length; i++) {
-            if (i % 3 == 2) {
-                if (this.gameBoard[i] == this.gameBoard[i - 1] && this.gameBoard[i - 1] == this.gameBoard[i - 2] && this.gameBoard[i] == player) {
-                    return true;
-                }
-            }
-        }
-        // Check diagonal
-        if (this.gameBoard[0] == this.gameBoard[4] && this.gameBoard[4] == this.gameBoard[8] && this.gameBoard[0] == player) {
-            return true;
-        } else if (this.gameBoard[2] == this.gameBoard[4] && this.gameBoard[4] == this.gameBoard[6] && this.gameBoard[2] == player) {
-            return true;
-        }
-        return false;
-    }
+    abstract public boolean checkWinner(char player);
 
-    /**
-     * Checkt of het een gelijkspel is.
-     * @return geeft terug of er een gelijkspel is.
-     */
-    public boolean checkTie() {
-        // Check tie/Check of er nog plaats is op het speelveld
-        for (int i = 0; i < gameBoard.length; i++) {
-            if (gameBoard[i] == '\u0000') {
-                return false;
-            }
-        }
-        return true;
-    }
+    abstract public boolean checkTie();
+
 
 
     /**
@@ -180,6 +144,8 @@ public class GameModel {
         return String.valueOf(winner);
     }
 
+    abstract public char[] buildGameBoard();
+
     /**
      * Het resetten van het spel.
      * @param playAi geeft aan of je tegen de ai speelt
@@ -187,7 +153,7 @@ public class GameModel {
      * @param start welke speler er mag starten
      */
     public void resetGame(boolean playAi, boolean AiStart, char start) {
-        gameBoard = new char[size * size];
+        gameBoard = buildGameBoard();
         currentPlayer = start;
         isWinner = false;
         isTie = false;
@@ -197,6 +163,7 @@ public class GameModel {
             gameBoard[ai.aiNewSet(gameBoard, 'X')] = 'O';
         }
     }
+
 
     /**
      * @return geeft aan of je tegen ai speelt

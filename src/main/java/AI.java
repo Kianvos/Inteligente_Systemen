@@ -149,7 +149,7 @@ public class AI {
     public int aiNewSet(char[] gameBoard, char opponent) {
 
         //Maak een kopie van het spelbord die het algoritme kan gebruiken voor simulaties
-        GameModel AiModel = new GameModel(gameBoard.length);
+        TicTacToeModel AiModel = new TicTacToeModel();
         AiModel.setGameBoard(gameBoard);
 
         //Bepaal de zet met hoogste score, dus de zet die de grootste kans heeft om een overwinning op te leveren
