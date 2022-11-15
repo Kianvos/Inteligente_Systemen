@@ -17,11 +17,7 @@ public class OthelloModel extends GameModel {
 
     public OthelloModel() {
         super(8);
-        ArrayList<Integer> availableBlack = getAvailableMoves(BLACK);
         ArrayList<Integer> availableWhite = getAvailableMoves(WHITE);
-        for (Integer availableB : availableBlack) {
-            System.out.println(availableB);
-        }
         for (Integer availableW : availableWhite) {
             System.out.println(availableW);
         }
@@ -67,6 +63,7 @@ public class OthelloModel extends GameModel {
     }
 
     public boolean isValidMove(int idx, char player, char opponent) {
+
         if (!checkPlace(idx)){
             return false;
         }
@@ -76,12 +73,14 @@ public class OthelloModel extends GameModel {
         char[] gameBoard = getBoardData();
         int row = Math.floorDiv(idx, size);
         int col = (idx - size * row);
-
+//        System.out.println("Row: " + row + " col: "+ col);
         for (int i = 0; i < size; i++) {
             int tmpRow = row + OFFSET_ROW[i];
-            int tmpCol = col + OFFSET_ROW[i];
+            int tmpCol = col + OFFSET_COL[i];
+
             boolean hasOpponentBetween = false;
             while (tmpRow >= 0 && tmpRow < size && tmpCol >= 0 && tmpCol < size) {
+//                System.out.println("TMProw: " + tmpRow + " TMProw: "+ tmpCol);
                 int tmpIdx = tmpCol + tmpRow * size;
                 if (gameBoard[tmpIdx] == opponent) {
                     hasOpponentBetween = true;

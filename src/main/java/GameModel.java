@@ -84,7 +84,6 @@ abstract public class GameModel {
      * @return geeft terug of er nog plaats is op het bord.
      */
     public boolean checkPlace(int idx) {
-        char[] gameBoard = getBoardData();
         // Checkt of 'idx' buiten het speelveld valt en of het vakje al bezet is of niet
         if (idx >= 0 && idx < gameBoard.length) {
             if (gameBoard[idx] == '\u0000') {
