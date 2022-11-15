@@ -24,6 +24,11 @@ public class OthelloModel extends GameModel {
     }
 
 
+    //todo controleer of speler nog minstens 1 steen hebben
+    //todo controleer wie er aan het eind van het spel de meeste blokjes te hebben
+    //todo getAvailableMoves werkt nog niet helemaal zoals het moet, voornamelijk isValidMove naar kijken
+    //todo tussenliggende items in zet doet het nog niet helemaal.
+
     @Override
     public boolean checkWinner(char player) {
         return false;
@@ -77,7 +82,6 @@ public class OthelloModel extends GameModel {
                     int effectIdx = effectCol + effectRow * size;
                     while (effectRow != tmpRow || effectCol != tmpCol)
                     {
-//                        Reversi.getInstance().setEffectedPiece(effectPieceRow, effectPieceCol);
                         gameBoard[effectIdx] = player;
                         effectRow += OFFSET_ROW[i];
                         effectCol += OFFSET_COL[i];
@@ -133,12 +137,11 @@ public class OthelloModel extends GameModel {
             return false;
         }
 
-        //26 en 37
         int size = getSize();
         char[] gameBoard = getBoardData();
         int row = Math.floorDiv(idx, size);
         int col = (idx - size * row);
-//        System.out.println("Row: " + row + " col: "+ col);
+
         for (int i = 0; i < size; i++) {
             int tmpRow = row + OFFSET_ROW[i];
             int tmpCol = col + OFFSET_COL[i];
