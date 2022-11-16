@@ -1,8 +1,9 @@
-public class GameModel {
+abstract public class Model {
 
     private boolean againstAi;
     private char[] gameBoard;
     private char currentPlayer;
+    private char startPlayer;
     private boolean isWinner;
     private boolean isTie;
     private boolean isOnline;
@@ -10,9 +11,9 @@ public class GameModel {
     private int size;
     private AI ai;
 
-    public GameModel(int size) {
+    public Model(int size) {
         this.size = size;
-        this.gameBoard = new char[size * size];
+        this.gameBoard = buildGameBoard();
         this.isWinner = false;
         this.isTie = false;
         this.isOnline = false;
@@ -20,13 +21,12 @@ public class GameModel {
         this.ai = new AI(size);
     }
 
-
     /**
      * Als een speler een zet heeft gedaan doet de AI eventueel daarna meteen een zet.
      * @param idx geeft de index mee waar een zet op gedaan is.
      */
     public void sets(int idx) {
-        if (!checkPlace(idx)){
+        if (!isEmptyColumn(idx)){
             return;
         }
         userSet(idx);
@@ -57,10 +57,10 @@ public class GameModel {
      */
     public void userSet(int idx) {
         //Controleert of er nog plaats is.
-        if (!checkPlace(idx)) {
+        if (!validMove(idx, gameBoard)){
             return;
         }
-        gameBoard[idx] = currentPlayer;
+        gameBoard = move(idx, gameBoard, currentPlayer);
         isWinner = checkWinner(currentPlayer);
         if (isWinner) {
             winner = currentPlayer;
@@ -81,10 +81,10 @@ public class GameModel {
      * @param idx de index waar de zet op gedaan wordt.
      * @return geeft terug of er nog plaats is op het bord.
      */
-    public boolean checkPlace(int idx) {
+    public boolean isEmptyColumn(int idx) {
         // Checkt of 'idx' buiten het speelveld valt en of het vakje al bezet is of niet
-        if (idx >= 0 && idx < this.gameBoard.length) {
-            if (this.gameBoard[idx] == '\u0000') {
+        if (idx >= 0 && idx < gameBoard.length) {
+            if (gameBoard[idx] == '\u0000' || gameBoard[idx] == '-') {
                 return true;
             }
         }
@@ -92,48 +92,14 @@ public class GameModel {
         return false;
     }
 
-    /**
-     * Checkt of de player winnaar is.
-     * @param player is degene waarvoor hij controleert of er een winnaar is.
-     * @return geeft terug of de speler gewonnen heeft.
-     */
-    public boolean checkWinner(char player) {
-        // Check vertical
-        for (int i = 0; i < 3; i++) {
-            if (this.gameBoard[i] == this.gameBoard[i + 3] && this.gameBoard[i + 3] == this.gameBoard[i + 6] && this.gameBoard[i] == player) {
-                return true;
-            }
-        }
-        // Check horizontal
-        for (int i = 0; i < this.gameBoard.length; i++) {
-            if (i % 3 == 2) {
-                if (this.gameBoard[i] == this.gameBoard[i - 1] && this.gameBoard[i - 1] == this.gameBoard[i - 2] && this.gameBoard[i] == player) {
-                    return true;
-                }
-            }
-        }
-        // Check diagonal
-        if (this.gameBoard[0] == this.gameBoard[4] && this.gameBoard[4] == this.gameBoard[8] && this.gameBoard[0] == player) {
-            return true;
-        } else if (this.gameBoard[2] == this.gameBoard[4] && this.gameBoard[4] == this.gameBoard[6] && this.gameBoard[2] == player) {
-            return true;
-        }
-        return false;
-    }
+    abstract public char[] move(int idx, char[] currentBoard, char currentPlayer);
 
-    /**
-     * Checkt of het een gelijkspel is.
-     * @return geeft terug of er een gelijkspel is.
-     */
-    public boolean checkTie() {
-        // Check tie/Check of er nog plaats is op het speelveld
-        for (int i = 0; i < gameBoard.length; i++) {
-            if (gameBoard[i] == '\u0000') {
-                return false;
-            }
-        }
-        return true;
-    }
+    abstract public boolean validMove(int idx, char[] gameBoard);
+
+    abstract public boolean checkWinner(char player);
+
+    abstract public boolean checkTie();
+
 
 
     /**
@@ -180,6 +146,8 @@ public class GameModel {
         return String.valueOf(winner);
     }
 
+    abstract public char[] buildGameBoard();
+
     /**
      * Het resetten van het spel.
      * @param playAi geeft aan of je tegen de ai speelt
@@ -187,16 +155,18 @@ public class GameModel {
      * @param start welke speler er mag starten
      */
     public void resetGame(boolean playAi, boolean AiStart, char start) {
-        gameBoard = new char[size * size];
+        gameBoard = buildGameBoard();
         currentPlayer = start;
         isWinner = false;
         isTie = false;
         againstAi = playAi;
+        startPlayer = start;
         winner = ' ';
         if (AiStart && playAi){
             gameBoard[ai.aiNewSet(gameBoard, 'X')] = 'O';
         }
     }
+
 
     /**
      * @return geeft aan of je tegen ai speelt
@@ -220,7 +190,7 @@ public class GameModel {
      * @return geeft terug wie er begonnen is.
      */
     public char getStartPlayer(){
-        return currentPlayer;
+        return startPlayer;
     }
 
     /**

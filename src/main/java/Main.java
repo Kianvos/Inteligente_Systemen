@@ -2,10 +2,9 @@
 public class Main {
     public static void main(String[] args) {
         int size = 3;
-        GameModel model = new GameModel(size);
-        MenuGUI menu = new MenuGUI();
-        GUI view = new GUI(size);
+        Othello model = new Othello();
+        View view = new View("Framework ITV2A3", size * size);
         
-        GameController controller = new GameController(model, menu, view);
+        Controller controller = new Controller(model, view);
     }
 }
