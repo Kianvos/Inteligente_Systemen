@@ -56,7 +56,8 @@ public class TicTacToeModel extends GameModel {
         return currentBoard;
     }
 
-    public boolean validMove(int idx) {
+
+    public boolean validMove(int idx, char[] gameBoard) {
         return isEmptyColumn(idx);
     }
 

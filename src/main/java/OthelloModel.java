@@ -17,10 +17,6 @@ public class OthelloModel extends GameModel {
 
     public OthelloModel() {
         super(8);
-        ArrayList<Integer> availableWhite = getAvailableMoves(WHITE);
-        for (Integer availableW : availableWhite) {
-            System.out.println(availableW);
-        }
     }
 
 
@@ -50,16 +46,13 @@ public class OthelloModel extends GameModel {
                 currentBoard[i] = '\u0000';
             }
         }
-        moveT(idx, currentBoard, currentPlayer);
-        ArrayList<Integer> availableMoves = getAvailableMoves(tmp);
-        for (Integer availableMove : availableMoves) {
-            currentBoard[availableMove] = '-';
-        }
+        currentBoard =  moveColBetweeen(idx, currentBoard, currentPlayer);
+        getAvailableMoves(currentBoard, tmp);
 
         return currentBoard;
     }
 
-    public char[] moveT(int idx, char[] gameBoard, char player) {
+    public char[] moveColBetweeen(int idx, char[] gameBoard, char player) {
         int size = getSize();
         int row = Math.floorDiv(idx, size);
         int col = (idx - size * row);
@@ -79,9 +72,9 @@ public class OthelloModel extends GameModel {
                 if(gameBoard[tmpIdx] == player && hasOpponentBetween){
                     int effectRow = row + OFFSET_ROW[i];
                     int effectCol = col + OFFSET_COL[i];
-                    int effectIdx = effectCol + effectRow * size;
                     while (effectRow != tmpRow || effectCol != tmpCol)
                     {
+                        int effectIdx = effectCol + effectRow * size;
                         gameBoard[effectIdx] = player;
                         effectRow += OFFSET_ROW[i];
                         effectCol += OFFSET_COL[i];
@@ -96,12 +89,12 @@ public class OthelloModel extends GameModel {
         return gameBoard;
     }
 
-    public boolean validMove(int idx) {
+    public boolean validMove(int idx, char[] gameBoard) {
         char opponent = 'X';
         if (getCurrentPlayer() == 'X') {
             opponent = 'O';
         }
-        return isValidMove(idx, getCurrentPlayer(), opponent);
+        return isValidMove(idx, getCurrentPlayer(), opponent, gameBoard);
     }
 
     /**
@@ -111,7 +104,7 @@ public class OthelloModel extends GameModel {
      * @return geeft de indexes terug waar op een zet gedaan kan worden.
      */
 
-    public ArrayList<Integer> getAvailableMoves(char player) {
+    public ArrayList<Integer> getAvailableMoves(char[] gameBoard, char player) {
         ArrayList<Integer> availableMoves = new ArrayList<>();
         int size = getSize();
         char opponent;
@@ -123,8 +116,9 @@ public class OthelloModel extends GameModel {
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
                 int idx = i * size + j;
-                if (isValidMove(idx, player, opponent)) {
+                if (isValidMove(idx, player, opponent, gameBoard)) {
                     availableMoves.add(idx);
+                    gameBoard[idx] = '-';
                 }
             }
 
@@ -132,13 +126,12 @@ public class OthelloModel extends GameModel {
         return availableMoves;
     }
 
-    public boolean isValidMove(int idx, char player, char opponent) {
+    public boolean isValidMove(int idx, char player, char opponent, char[] gameBoard) {
         if (!isEmptyColumn(idx)) {
             return false;
         }
 
         int size = getSize();
-        char[] gameBoard = getBoardData();
         int row = Math.floorDiv(idx, size);
         int col = (idx - size * row);
 
@@ -148,7 +141,6 @@ public class OthelloModel extends GameModel {
 
             boolean hasOpponentBetween = false;
             while (tmpRow >= 0 && tmpRow < size && tmpCol >= 0 && tmpCol < size) {
-//                System.out.println("TMProw: " + tmpRow + " TMProw: "+ tmpCol);
                 int tmpIdx = tmpCol + tmpRow * size;
                 if (gameBoard[tmpIdx] == opponent) {
                     hasOpponentBetween = true;

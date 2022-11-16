@@ -59,7 +59,7 @@ abstract public class GameModel {
      */
     public void userSet(int idx) {
         //Controleert of er nog plaats is.
-        if (!validMove(idx)){
+        if (!validMove(idx, gameBoard)){
             return;
         }
         gameBoard = move(idx, gameBoard, currentPlayer);
@@ -96,7 +96,7 @@ abstract public class GameModel {
 
     abstract public char[] move(int idx, char[] currentBoard, char currentPlayer);
 
-    abstract public boolean validMove(int idx);
+    abstract public boolean validMove(int idx, char[] gameBoard);
 
     abstract public boolean checkWinner(char player);
 
