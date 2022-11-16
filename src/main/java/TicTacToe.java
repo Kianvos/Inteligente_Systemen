@@ -1,5 +1,5 @@
-public class TicTacToeModel extends GameModel {
-    public TicTacToeModel() {
+public class TicTacToe extends Model {
+    public TicTacToe() {
         super(3);
 
     }

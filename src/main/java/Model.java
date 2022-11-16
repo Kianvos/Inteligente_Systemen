@@ -1,4 +1,4 @@
-abstract public class GameModel {
+abstract public class Model {
 
     private boolean againstAi;
     private char[] gameBoard;
@@ -11,7 +11,7 @@ abstract public class GameModel {
     private int size;
     private AI ai;
 
-    public GameModel(int size) {
+    public Model(int size) {
         this.size = size;
         this.gameBoard = buildGameBoard();
         this.isWinner = false;
@@ -20,8 +20,6 @@ abstract public class GameModel {
         this.winner = ' ';
         this.ai = new AI(size);
     }
-
-
 
     /**
      * Als een speler een zet heeft gedaan doet de AI eventueel daarna meteen een zet.

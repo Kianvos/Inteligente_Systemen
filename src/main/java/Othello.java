@@ -1,6 +1,6 @@
 import java.util.ArrayList;
 
-public class OthelloModel extends GameModel {
+public class Othello extends Model {
     private final char BLACK = 'O';
     private final char WHITE = 'X';
 
@@ -15,7 +15,7 @@ public class OthelloModel extends GameModel {
      */
     private static final int[] OFFSET_COL = {-1, 0, 1, -1, 1, -1, 0, 1};
 
-    public OthelloModel() {
+    public Othello() {
         super(8);
     }
 

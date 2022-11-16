@@ -12,7 +12,7 @@ public class AI {
      * @param AiModel Kopie van het echte spelbord waar de experimentele zetten op gedaan worden
      * @return score van de zet
      */
-    static int evaluate(GameModel AiModel, char opponent, char player) {
+    static int evaluate(Model AiModel, char opponent, char player) {
 
         //Als de maximizer wint, tel dan 10 op bij de score
         if(AiModel.checkWinner(player)) {
@@ -40,7 +40,7 @@ public class AI {
      * @param opponent geeft mee welke speler de tegenstander is.
      * @return De score van het beste mogelijke zet
      */
-    static int minimax(GameModel AiModel, boolean isMax, int depth, char opponent, char player) {
+    static int minimax(Model AiModel, boolean isMax, int depth, char opponent, char player) {
 
         //Stop met puntentelling als de maximale diepte is bereikt
         if (depth <= 0) {
@@ -105,7 +105,7 @@ public class AI {
      * @param opponent geeft mee welke speler de tegenstander is.
      * @return Lege positie op het bord
      */
-    static int findBestMove(GameModel AiModel, char opponent) {
+    static int findBestMove(Model AiModel, char opponent) {
 
         char[] boardData = AiModel.getBoardData();
 
@@ -149,7 +149,7 @@ public class AI {
     public int aiNewSet(char[] gameBoard, char opponent) {
 
         //Maak een kopie van het spelbord die het algoritme kan gebruiken voor simulaties
-        TicTacToeModel AiModel = new TicTacToeModel();
+        TicTacToe AiModel = new TicTacToe();
         AiModel.setGameBoard(gameBoard);
 
         //Bepaal de zet met hoogste score, dus de zet die de grootste kans heeft om een overwinning op te leveren
