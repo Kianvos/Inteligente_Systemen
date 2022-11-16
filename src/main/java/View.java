@@ -1,5 +1,7 @@
 
+import javax.sound.sampled.Line;
 import javax.swing.*;
+import javax.swing.border.LineBorder;
 import java.awt.*;
 
 public class View {
@@ -184,6 +186,7 @@ class GameView extends JPanel {
         // first construct JPanel before constructing GameView
         super(new BorderLayout());
 
+
         this.size = size;
         this.buttons = new JButton[size];
 
@@ -274,24 +277,25 @@ class GameView extends JPanel {
      * @param model model die beheert over alle game logica
      */
     public void update(Model model) {
-        char[] board = model.getBoardData();
+        int[] board = model.getBoardData();
 
         for (int i = 0; i < size; i++) {
-            if (board[i] == 'X') {
-                buttons[i].setForeground(new Color(164, 0, 0));
-                buttons[i].setBackground(Color.WHITE);
-                buttons[i].setText("");
+
+            if (board[i] == 1) {
+                buttons[i].setForeground(new Color(255, 255, 255));
+//                buttons[i].setBackground(Color.WHITE);
+                buttons[i].setText("⚫");
                 continue;
             }
-            if (board[i] == 'O') {
-                buttons[i].setForeground(new Color(17, 55, 190));
-                buttons[i].setBackground(Color.BLACK);
-                buttons[i].setText("");
+            if (board[i] == 2) {
+                buttons[i].setForeground(new Color(0, 0, 0));
+//                buttons[i].setBackground(Color.BLACK);
+                buttons[i].setText("⚫");
                 continue;
             }
-            if (board[i] == '-'){
+            if (board[i] == 3){
                 buttons[i].setForeground(new Color(150, 150, 150));
-                buttons[i].setText("-");
+                buttons[i].setText("○");
                 continue;
             }
 
@@ -317,7 +321,9 @@ class GameView extends JPanel {
     public void styleButton(JButton button) {
         button.setFocusable(false);
         button.setFont(new Font(button.getFont().toString(), Font.BOLD, 40));
-        button.setBackground(new Color(220, 220, 220));
+        button.setBackground(new Color(0, 102, 34));
+        button.setBorder(new LineBorder(new Color(0, 26, 9)));
+
     }
 
     /**

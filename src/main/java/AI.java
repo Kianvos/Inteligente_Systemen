@@ -12,7 +12,7 @@ public class AI {
      * @param AiModel Kopie van het echte spelbord waar de experimentele zetten op gedaan worden
      * @return score van de zet
      */
-    static int evaluate(Model AiModel, char opponent, char player) {
+    static int evaluate(Model AiModel, int opponent, int player) {
 
         //Als de maximizer wint, tel dan 10 op bij de score
         if(AiModel.checkWinner(player)) {
@@ -40,7 +40,7 @@ public class AI {
      * @param opponent geeft mee welke speler de tegenstander is.
      * @return De score van het beste mogelijke zet
      */
-    static int minimax(Model AiModel, boolean isMax, int depth, char opponent, char player) {
+    static int minimax(Model AiModel, boolean isMax, int depth, int opponent, int player) {
 
         //Stop met puntentelling als de maximale diepte is bereikt
         if (depth <= 0) {
@@ -60,7 +60,7 @@ public class AI {
         }
 
         //Haal het spelbord op waarmee de functie is aangeroepen
-        char[] boardData = AiModel.getBoardData();
+        int[] boardData = AiModel.getBoardData();
 
         //Bepaal de hoogst mogelijke score voor de maximizer en minimizer
         int best;
@@ -105,9 +105,9 @@ public class AI {
      * @param opponent geeft mee welke speler de tegenstander is.
      * @return Lege positie op het bord
      */
-    static int findBestMove(Model AiModel, char opponent) {
+    static int findBestMove(Model AiModel, int opponent) {
 
-        char[] boardData = AiModel.getBoardData();
+        int[] boardData = AiModel.getBoardData();
 
         //Bepaal de hoogst mogelijke score die een bord zou kunnen hebben voor de minimizer
         int bestVal = -1000;
@@ -146,7 +146,7 @@ public class AI {
      * @param opponent geeft mee welke speler de tegenstander is.
      * @return Een lege positie waar de zet opgedaan word
      */
-    public int aiNewSet(char[] gameBoard, char opponent) {
+    public int aiNewSet(int[] gameBoard, int opponent) {
 
         //Maak een kopie van het spelbord die het algoritme kan gebruiken voor simulaties
         TicTacToe AiModel = new TicTacToe();
