@@ -41,7 +41,7 @@ public class Controller {
 
                 String game = view.getMenuView().getSelected()[0];
 
-                if (game.equals("tictactoe")) {
+                if (game.equals("TicTacToe")) {
                     model = new TicTacToe();
                     view.getGameView().setBoardSize(3 * 3);
                     model.toggleIsOnline();
@@ -55,14 +55,12 @@ public class Controller {
                     executor.shutdown();
                 }
 
-                if (game.equals("othello")) {
+                if (game.equals("Othello")) {
                     System.out.println("Othello still w.i.p.");
                     model = new Othello();
                     view.getGameView().setBoardSize(8 * 8);
                 }
 
-                // }
-                // System.out.println(playerName);
             }
         });
 
@@ -75,18 +73,24 @@ public class Controller {
                 String p1 = selected[1];
                 String p2 = selected[2];
 
-                if (game.equals("tictactoe")) {
+                if (game.equals("TicTacToe")) {
                     model = new TicTacToe();
                     view.getGameView().setBoardSize(3 * 3);
+                    for (int i = 0; i < 3*3; i++) {
+                        createActionListener(i);
+                    }
                 }
 
-                if (game.equals("othello")) {
+                if (game.equals("Othello")) {
                     System.out.println("Othello still w.i.p.");
                     model = new Othello();
                     view.getGameView().setBoardSize(8 * 8);
+                    for (int i = 0; i < 8*8; i++) {
+                        createActionListener(i);
+                    }
                 }
 
-                if (p1.equals("ai") && p2.equals("ai")) {
+                if (p1.equals("AI") && p2.equals("AI")) {
                     System.out.println("Cannot play ai vs ai");
                     return;
                 }
@@ -94,7 +98,7 @@ public class Controller {
                 System.out.println(p1);
                 System.out.println(p2);
 
-                Boolean playerVsAi = p1.equals("ai") || p2.equals("ai");
+                Boolean playerVsAi = p1.equals("AI") || p2.equals("AI");
 
                 view.show("game");
                 view.getGameView().show("local");
@@ -111,8 +115,7 @@ public class Controller {
      */
     private void createGameListeners() {
         int size = model.getSize();
-
-        for (int i = 0; i < size; i++) {
+        for (int i = 0; i < size*size; i++) {
             createActionListener(i);
         }
 
@@ -151,7 +154,7 @@ public class Controller {
             public void actionPerformed(ActionEvent e) {
                 if (model.getAgainstAi()){
                     model.resetGame(model.getAgainstAi(), Math.random() < 0.5, model.getStartPlayer());
-                    view.getGameView().setText(model.getCurrentPlayer() + " is aan de beurt");
+                    view.getGameView().setText(model.getCurrentPlayerChar() + " is aan de beurt");
                 } else {
                     Random r = new Random();
                     int c = r.nextBoolean() ? PLAYER_ONE : PLAYER_TWO;
@@ -174,7 +177,7 @@ public class Controller {
             public void actionPerformed(ActionEvent e) {
                 if (!model.isWinner() && !model.isTie() && !model.isOnline()) {
                     model.sets(idx);
-                    view.getGameView().setText(model.getCurrentPlayer() + " is aan de beurt");
+                    view.getGameView().setText(model.getCurrentPlayerChar() + " is aan de beurt");
                     view.getGameView().update(model);
                 }
             }

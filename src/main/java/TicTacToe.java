@@ -58,11 +58,28 @@ public class TicTacToe extends Model {
 
 
     public boolean validMove(int idx, int[] gameBoard) {
-        return isEmptyColumn(idx);
+        return isEmptyColumn(idx, gameBoard);
     }
 
     public int[] buildGameBoard() {
         int size = getSize();
         return new int[size * size];
+    }
+
+    /**
+     * @return geeft de huidige speler terug
+     */
+    public char getCurrentPlayerChar(){
+        if (getCurrentPlayer() == 1){
+            return 'X';
+        }
+        return 'O';
+    }
+
+    public String getStringWinner() {
+        if (getWinner() == 1){
+            return "X";
+        }
+        return "O";
     }
 }

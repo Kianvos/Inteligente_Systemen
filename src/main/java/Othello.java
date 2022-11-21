@@ -37,13 +37,13 @@ public class Othello extends Model {
         ArrayList<Integer> blackMoves = this.getAvailableMoves(gameBoard, BLACK);
         ArrayList<Integer> whiteMoves = this.getAvailableMoves(gameBoard, WHITE);
 
-        if(blackMoves.isEmpty() && whiteMoves.isEmpty()){
-            for (int c:gameBoard
-                 ) {
-                if(c == player){
+        if (blackMoves.isEmpty() && whiteMoves.isEmpty()) {
+            for (int c : gameBoard
+            ) {
+                if (c == player) {
                     currentPlayer++;
                 }
-                if(c != player && c != EMPTY){
+                if (c != player && c != EMPTY) {
                     opponent++;
                 }
             }
@@ -60,13 +60,13 @@ public class Othello extends Model {
         ArrayList<Integer> blackMoves = this.getAvailableMoves(gameBoard, BLACK);
         ArrayList<Integer> whiteMoves = this.getAvailableMoves(gameBoard, WHITE);
 
-        if(blackMoves.isEmpty() && whiteMoves.isEmpty()){
-            for (int c:gameBoard
+        if (blackMoves.isEmpty() && whiteMoves.isEmpty()) {
+            for (int c : gameBoard
             ) {
-                if(c == BLACK){
+                if (c == BLACK) {
                     currentPlayer++;
                 }
-                if(c == WHITE){
+                if (c == WHITE) {
                     opponent++;
                 }
             }
@@ -75,10 +75,11 @@ public class Othello extends Model {
         return false;
     }
 
+
     public int[] move(int idx, int[] currentBoard, int currentPlayer) {
-        int tmp = BLACK;
+        int opponent = BLACK;
         if (currentPlayer == BLACK) {
-            tmp = WHITE;
+            opponent = WHITE;
         }
 
         currentBoard[idx] = currentPlayer;
@@ -87,8 +88,8 @@ public class Othello extends Model {
                 currentBoard[i] = EMPTY;
             }
         }
-        currentBoard =  moveColBetweeen(idx, currentBoard, currentPlayer);
-        getAvailableMoves(currentBoard, tmp);
+        currentBoard = moveColBetweeen(idx, currentBoard, currentPlayer);
+        getAvailableMoves(currentBoard, opponent);
 
         return currentBoard;
     }
@@ -104,17 +105,16 @@ public class Othello extends Model {
 
             while (tmpRow >= 0 && tmpRow < size && tmpCol >= 0 && tmpCol < size) {
                 int tmpIdx = tmpCol + tmpRow * size;
-                if (isEmptyColumn(tmpIdx)) {
+                if (isEmptyColumn(tmpIdx, gameBoard)) {
                     break;
                 }
-                if (gameBoard[tmpIdx] == player){
+                if (gameBoard[tmpIdx] == player) {
                     hasOpponentBetween = true;
                 }
-                if(gameBoard[tmpIdx] == player && hasOpponentBetween){
+                if (gameBoard[tmpIdx] == player && hasOpponentBetween) {
                     int effectRow = row + OFFSET_ROW[i];
                     int effectCol = col + OFFSET_COL[i];
-                    while (effectRow != tmpRow || effectCol != tmpCol)
-                    {
+                    while (effectRow != tmpRow || effectCol != tmpCol) {
                         int effectIdx = effectCol + effectRow * size;
                         gameBoard[effectIdx] = player;
                         effectRow += OFFSET_ROW[i];
@@ -168,7 +168,7 @@ public class Othello extends Model {
     }
 
     public boolean isValidMove(int idx, int player, int opponent, int[] gameBoard) {
-        if (!isEmptyColumn(idx)) {
+        if (!isEmptyColumn(idx, gameBoard)) {
             return false;
         }
 
@@ -200,10 +200,29 @@ public class Othello extends Model {
     public int[] buildGameBoard() {
         int size = getSize();
         int[] gameBoard = new int[size * size];
-        gameBoard[27] = BLACK;
-        gameBoard[28] = WHITE;
-        gameBoard[35] = WHITE;
-        gameBoard[36] = BLACK;
+        gameBoard[27] = WHITE;
+        gameBoard[28] = BLACK;
+        gameBoard[35] = BLACK;
+        gameBoard[36] = WHITE;
+        ArrayList<Integer> test = getAvailableMoves(gameBoard, getCurrentPlayer());
+        System.out.println(test);
         return gameBoard;
+    }
+
+    /**
+     * @return geeft de huidige speler terug
+     */
+    public char getCurrentPlayerChar() {
+        if (getCurrentPlayer() == BLACK) {
+            return '⚫';
+        }
+        return '○';
+    }
+
+    public String getStringWinner() {
+        if (getWinner() == BLACK) {
+            return "⚫";
+        }
+        return "○";
     }
 }

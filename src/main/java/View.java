@@ -77,15 +77,15 @@ class MenuView extends JPanel {
         super(new GridLayout(3, 1));
         setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
-        String[] gameTypes = { "tictactoe", "othello" };
+        String[] gameTypes = { "TicTacToe", "Othello" };
         this.games = new JComboBox<String>(gameTypes);
 
-        String[] playerTypes = { "player", "ai" };
+        String[] playerTypes = { "Player", "AI" };
         this.p1 = new JComboBox<String>(playerTypes);
         this.p2 = new JComboBox<String>(playerTypes);
 
-        this.singleplayerButton = new JButton("singleplayer");
-        this.multiplayerButton = new JButton("multiplayer");
+        this.singleplayerButton = new JButton("Singleplayer");
+        this.multiplayerButton = new JButton("Multiplayer");
 
         setupMenuView();
     }
@@ -191,9 +191,9 @@ class GameView extends JPanel {
         this.size = size;
         this.buttons = new JButton[size];
 
-        this.resetButton = new JButton("reset");
-        this.menuButton = new JButton("menu");
-        this.disconnectButton = new JButton("disconnect");
+        this.resetButton = new JButton("Reset");
+        this.menuButton = new JButton("Menu");
+        this.disconnectButton = new JButton("Disconnect");
 
         setupGameView();
     }
@@ -263,7 +263,6 @@ class GameView extends JPanel {
 
     /**
      * Hier worden de knoppen ingesteld waar je op moet drukken om een zet te doen.
-     * @param size is de lengte van het bord.
      */
     public void setupButtons() {
         this.buttonPanel = new JPanel(new GridLayout((int) Math.sqrt(size), (int) Math.sqrt(size)));
@@ -288,22 +287,25 @@ class GameView extends JPanel {
         int[] board = model.getBoardData();
 
         for (int i = 0; i < size; i++) {
+            final int PLAYER_ONE = 1;
+            final int PLAYER_TWO = 2;
+            final int SUGGESTED = 3;
 
-            if (board[i] == 1) {
+            if (board[i] == PLAYER_ONE) {
                 buttons[i].setForeground(new Color(255, 255, 255));
 //                buttons[i].setBackground(Color.WHITE);
                 buttons[i].setText("⚫");
                 continue;
             }
-            if (board[i] == 2) {
+            if (board[i] == PLAYER_TWO) {
                 buttons[i].setForeground(new Color(0, 0, 0));
 //                buttons[i].setBackground(Color.BLACK);
-                buttons[i].setText("⚫");
+                buttons[i].setText("○");
                 continue;
             }
-            if (board[i] == 3){
+            if (board[i] == SUGGESTED){
                 buttons[i].setForeground(new Color(150, 150, 150));
-                buttons[i].setText("○");
+                buttons[i].setText("-");
                 continue;
             }
 
@@ -312,7 +314,7 @@ class GameView extends JPanel {
         }
 
         if (model.isWinner()) {
-            textfield.setText(model.getWinner() + " heeft gewonnen!");
+            textfield.setText(model.getStringWinner() + " heeft gewonnen!");
          } else if (model.isTie()) {
             textfield.setText("Gelijkspel");
         }

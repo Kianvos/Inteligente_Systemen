@@ -32,7 +32,7 @@ abstract public class Model {
      * @param idx geeft de index mee waar een zet op gedaan is.
      */
     public void sets(int idx) {
-        if (!isEmptyColumn(idx)){
+        if (!isEmptyColumn(idx, gameBoard)){
             return;
         }
         userSet(idx);
@@ -87,7 +87,7 @@ abstract public class Model {
      * @param idx de index waar de zet op gedaan wordt.
      * @return geeft terug of er nog plaats is op het bord.
      */
-    public boolean isEmptyColumn(int idx) {
+    public boolean isEmptyColumn(int idx, int[] gameBoard) {
         // Checkt of 'idx' buiten het speelveld valt en of het vakje al bezet is of niet
         if (idx >= 0 && idx < gameBoard.length) {
             if (gameBoard[idx] == 0 || gameBoard[idx] == 3) {
@@ -148,9 +148,15 @@ abstract public class Model {
     /**
      * @return geeft de winnaar terug.
      */
-    public String getWinner() {
-        return String.valueOf(winner);
+    public int getWinner() {
+        return winner;
     }
+
+    /**
+     * @return geeft de winnaar in een string terug.
+     */
+    abstract public String getStringWinner();
+
 
     abstract public int[] buildGameBoard();
 
@@ -191,6 +197,8 @@ abstract public class Model {
     public void setCurrentPlayer(int currentPlayer) {
         this.currentPlayer = currentPlayer;
     }
+
+    abstract char getCurrentPlayerChar();
 
     /**
      * @return geeft terug wie er begonnen is.

@@ -116,7 +116,6 @@ public class AI {
         if (opponent == 'X'){
             player = 'O';
         }
-        System.out.println("\n\n\n"+player+", "+opponent+"\n\n\n");
         //Zoek naar een leeg vakje
         for (int i = 0; i < boardData.length; i++) {
             if (boardData[i] == '\u0000') {
