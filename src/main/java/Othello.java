@@ -27,11 +27,47 @@ public class Othello extends Model {
 
     @Override
     public boolean checkWinner(char player) {
+        char[] gameBoard = getBoardData();
+        int currentPlayer = 0;
+        int opponent = 0;
+        ArrayList<Integer> X = this.getAvailableMoves(gameBoard, 'X');
+        ArrayList<Integer> O = this.getAvailableMoves(gameBoard, 'O');
+
+        if(X.isEmpty() && O.isEmpty()){
+            for (char c:gameBoard
+                 ) {
+                if(c == player){
+                    currentPlayer++;
+                }
+                if(c != player && c != '\u0000'){
+                    opponent++;
+                }
+            }
+            return currentPlayer > opponent;
+        }
         return false;
     }
 
     @Override
     public boolean checkTie() {
+        char[] gameBoard = getBoardData();
+        int currentPlayer = 0;
+        int opponent = 0;
+        ArrayList<Integer> X = this.getAvailableMoves(gameBoard, 'X');
+        ArrayList<Integer> O = this.getAvailableMoves(gameBoard, 'O');
+
+        if(X.isEmpty() && O.isEmpty()){
+            for (char c:gameBoard
+            ) {
+                if(c == 'X'){
+                    currentPlayer++;
+                }
+                if(c == 'O'){
+                    opponent++;
+                }
+            }
+            return currentPlayer == opponent;
+        }
         return false;
     }
 
