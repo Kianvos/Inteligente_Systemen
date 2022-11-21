@@ -1,8 +1,12 @@
 import java.util.ArrayList;
 
 public class Othello extends Model {
-    private final char BLACK = 'O';
-    private final char WHITE = 'X';
+
+    private final int EMPTY = 0;
+    private final int BLACK = 1;
+    private final int WHITE = 2;
+
+    private final int SUGGESTED = 3;
 
 
     /**
@@ -71,15 +75,16 @@ public class Othello extends Model {
         return false;
     }
 
-    public char[] move(int idx, char[] currentBoard, char currentPlayer) {
-        char tmp = 'X';
-        if (currentPlayer == 'X') {
-            tmp = 'O';
+    public int[] move(int idx, int[] currentBoard, int currentPlayer) {
+        char tmp = BLACK;
+        if (currentPlayer == BLACK) {
+            tmp = WHITE;
         }
+
         currentBoard[idx] = currentPlayer;
         for (int i = 0; i < currentBoard.length; i++) {
-            if (currentBoard[i] == '-') {
-                currentBoard[i] = '\u0000';
+            if (currentBoard[i] == SUGGESTED) {
+                currentBoard[i] = EMPTY;
             }
         }
         currentBoard =  moveColBetweeen(idx, currentBoard, currentPlayer);
@@ -88,7 +93,7 @@ public class Othello extends Model {
         return currentBoard;
     }
 
-    public char[] moveColBetweeen(int idx, char[] gameBoard, char player) {
+    public int[] moveColBetweeen(int idx, int[] gameBoard, int player) {
         int size = getSize();
         int row = Math.floorDiv(idx, size);
         int col = (idx - size * row);
@@ -125,10 +130,10 @@ public class Othello extends Model {
         return gameBoard;
     }
 
-    public boolean validMove(int idx, char[] gameBoard) {
-        char opponent = 'X';
-        if (getCurrentPlayer() == 'X') {
-            opponent = 'O';
+    public boolean validMove(int idx, int[] gameBoard) {
+        char opponent = BLACK;
+        if (getCurrentPlayer() == BLACK) {
+            opponent = WHITE;
         }
         return isValidMove(idx, getCurrentPlayer(), opponent, gameBoard);
     }
@@ -140,10 +145,10 @@ public class Othello extends Model {
      * @return geeft de indexes terug waar op een zet gedaan kan worden.
      */
 
-    public ArrayList<Integer> getAvailableMoves(char[] gameBoard, char player) {
+    public ArrayList<Integer> getAvailableMoves(int[] gameBoard, int player) {
         ArrayList<Integer> availableMoves = new ArrayList<>();
         int size = getSize();
-        char opponent;
+        int opponent;
         if (player == BLACK) {
             opponent = WHITE;
         } else {
@@ -154,7 +159,7 @@ public class Othello extends Model {
                 int idx = i * size + j;
                 if (isValidMove(idx, player, opponent, gameBoard)) {
                     availableMoves.add(idx);
-                    gameBoard[idx] = '-';
+                    gameBoard[idx] = SUGGESTED;
                 }
             }
 
@@ -162,7 +167,7 @@ public class Othello extends Model {
         return availableMoves;
     }
 
-    public boolean isValidMove(int idx, char player, char opponent, char[] gameBoard) {
+    public boolean isValidMove(int idx, int player, int opponent, int[] gameBoard) {
         if (!isEmptyColumn(idx)) {
             return false;
         }
@@ -192,9 +197,9 @@ public class Othello extends Model {
         return false;
     }
 
-    public char[] buildGameBoard() {
+    public int[] buildGameBoard() {
         int size = getSize();
-        char[] gameBoard = new char[size * size];
+        int[] gameBoard = new int[size * size];
         gameBoard[27] = BLACK;
         gameBoard[28] = WHITE;
         gameBoard[35] = WHITE;

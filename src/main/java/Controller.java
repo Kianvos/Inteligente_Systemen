@@ -11,6 +11,13 @@ public class Controller {
     private View view;
     private ServerConnection serverConnection;
 
+    private final int EMPTY = 0;
+
+    private final int PLAYER_ONE = 1;
+    private final int PLAYER_TWO = 2;
+
+    private final int SUGGESTED = 3;
+
     public Controller(Model model, View view) {
         this.model = model;
         this.view = view;
@@ -92,7 +99,7 @@ public class Controller {
                 view.show("game");
                 view.getGameView().show("local");
 
-                model.resetGame(playerVsAi, p1.equals("ai"), 'X');
+                model.resetGame(playerVsAi, p1.equals("ai"), PLAYER_ONE);
                 view.getGameView().update(model);
             }
 
@@ -114,7 +121,7 @@ public class Controller {
             public void actionPerformed(ActionEvent e) {
                 if (serverConnection != null) {
                     serverConnection.disconnect();
-                    model.resetGame(false, false, 'X');
+                    model.resetGame(false, false, PLAYER_ONE);
                     view.getGameView().update(model);
                     view.getGameView().setText("Boter kaas en eieren");
                     
@@ -134,7 +141,7 @@ public class Controller {
                 view.show("menu");
                 // menu.setVisible(true);
                 view.getGameView().setText("Boter kaas en eieren");
-                model.resetGame(false,false, 'X');
+                model.resetGame(false,false, PLAYER_ONE);
                 view.getGameView().update(model);
             }
         });
@@ -147,7 +154,7 @@ public class Controller {
                     view.getGameView().setText(model.getCurrentPlayer() + " is aan de beurt");
                 } else {
                     Random r = new Random();
-                    char c = r.nextBoolean() ? 'X' : 'O';
+                    int c = r.nextBoolean() ? PLAYER_ONE : PLAYER_TWO;
                     model.resetGame(model.getAgainstAi(), Math.random() < 0.5, c);
                     view.getGameView().setText(c + " is aan de beurt");
                 }
