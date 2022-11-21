@@ -30,20 +30,20 @@ public class Othello extends Model {
     //todo tussenliggende items in zet doet het nog niet helemaal.
 
     @Override
-    public boolean checkWinner(char player) {
-        char[] gameBoard = getBoardData();
+    public boolean checkWinner(int player) {
+        int[] gameBoard = getBoardData();
         int currentPlayer = 0;
         int opponent = 0;
-        ArrayList<Integer> X = this.getAvailableMoves(gameBoard, 'X');
-        ArrayList<Integer> O = this.getAvailableMoves(gameBoard, 'O');
+        ArrayList<Integer> blackMoves = this.getAvailableMoves(gameBoard, BLACK);
+        ArrayList<Integer> whiteMoves = this.getAvailableMoves(gameBoard, WHITE);
 
-        if(X.isEmpty() && O.isEmpty()){
-            for (char c:gameBoard
+        if(blackMoves.isEmpty() && whiteMoves.isEmpty()){
+            for (int c:gameBoard
                  ) {
                 if(c == player){
                     currentPlayer++;
                 }
-                if(c != player && c != '\u0000'){
+                if(c != player && c != EMPTY){
                     opponent++;
                 }
             }
@@ -54,19 +54,19 @@ public class Othello extends Model {
 
     @Override
     public boolean checkTie() {
-        char[] gameBoard = getBoardData();
+        int[] gameBoard = getBoardData();
         int currentPlayer = 0;
         int opponent = 0;
-        ArrayList<Integer> X = this.getAvailableMoves(gameBoard, 'X');
-        ArrayList<Integer> O = this.getAvailableMoves(gameBoard, 'O');
+        ArrayList<Integer> blackMoves = this.getAvailableMoves(gameBoard, BLACK);
+        ArrayList<Integer> whiteMoves = this.getAvailableMoves(gameBoard, WHITE);
 
-        if(X.isEmpty() && O.isEmpty()){
-            for (char c:gameBoard
+        if(blackMoves.isEmpty() && whiteMoves.isEmpty()){
+            for (int c:gameBoard
             ) {
-                if(c == 'X'){
+                if(c == BLACK){
                     currentPlayer++;
                 }
-                if(c == 'O'){
+                if(c == WHITE){
                     opponent++;
                 }
             }
@@ -76,7 +76,7 @@ public class Othello extends Model {
     }
 
     public int[] move(int idx, int[] currentBoard, int currentPlayer) {
-        char tmp = BLACK;
+        int tmp = BLACK;
         if (currentPlayer == BLACK) {
             tmp = WHITE;
         }
@@ -131,7 +131,7 @@ public class Othello extends Model {
     }
 
     public boolean validMove(int idx, int[] gameBoard) {
-        char opponent = BLACK;
+        int opponent = BLACK;
         if (getCurrentPlayer() == BLACK) {
             opponent = WHITE;
         }
