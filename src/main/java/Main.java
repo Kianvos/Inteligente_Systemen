@@ -4,7 +4,6 @@ public class Main {
         int size = 8;
         Othello model = new Othello();
         View view = new View("Framework ITV2A3", size * size);
-        
         Controller controller = new Controller(model, view);
     }
 }

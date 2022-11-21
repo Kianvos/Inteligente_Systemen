@@ -42,23 +42,24 @@ public class Controller {
                 String game = view.getMenuView().getSelected()[0];
 
                 if (game.equals("tictactoe")) {
-                    // Alles voor tictactoe
+                    model = new TicTacToe();
+                    view.getGameView().setBoardSize(3 * 3);
+                    model.toggleIsOnline();
+                    ExecutorService executor = Executors.newSingleThreadExecutor();
+                    serverConnection = new ServerConnection(view, model, playerName);
+
+                    view.show("game");
+                    view.getGameView().show("online");
+
+                    executor.submit(serverConnection);
+                    executor.shutdown();
                 }
 
                 if (game.equals("othello")) {
                     System.out.println("Othello still w.i.p.");
-                    return;
+                    model = new Othello();
+                    view.getGameView().setBoardSize(8 * 8);
                 }
-
-                model.toggleIsOnline();
-                ExecutorService executor = Executors.newSingleThreadExecutor();
-                serverConnection = new ServerConnection(view, model, playerName);
-
-                view.show("game");
-                view.getGameView().show("online");
-
-                executor.submit(serverConnection);
-                executor.shutdown();
 
                 // }
                 // System.out.println(playerName);
@@ -75,12 +76,14 @@ public class Controller {
                 String p2 = selected[2];
 
                 if (game.equals("tictactoe")) {
-                    // Alles voor tictactoe
+                    model = new TicTacToe();
+                    view.getGameView().setBoardSize(3 * 3);
                 }
 
                 if (game.equals("othello")) {
                     System.out.println("Othello still w.i.p.");
-                    return;
+                    model = new Othello();
+                    view.getGameView().setBoardSize(8 * 8);
                 }
 
                 if (p1.equals("ai") && p2.equals("ai")) {
@@ -109,7 +112,7 @@ public class Controller {
     private void createGameListeners() {
         int size = model.getSize();
 
-        for (int i = 0; i < size * size; i++) {
+        for (int i = 0; i < size; i++) {
             createActionListener(i);
         }
 

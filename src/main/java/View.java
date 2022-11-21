@@ -169,6 +169,7 @@ class GameView extends JPanel {
     // for tictactoe instead of 3 the size will be 9
     // size stands for the entire board size instead of the size of one row  
     private int size;
+    private JPanel buttonPanel;
     private JButton[] buttons;
 
     // Just making the GameView nicer to look at
@@ -197,7 +198,14 @@ class GameView extends JPanel {
         setupGameView();
     }
 
-    
+    public void setBoardSize(int size) {
+        this.size = size;
+        this.buttons = new JButton[this.size];
+        remove(this.buttonPanel);
+        setupButtons();
+    }
+
+
     public void setupGameView() {
         setupTextfield();
         setupTopPanel();
@@ -258,18 +266,18 @@ class GameView extends JPanel {
      * @param size is de lengte van het bord.
      */
     public void setupButtons() {
-        JPanel buttonPanel = new JPanel(new GridLayout((int) Math.sqrt(size), (int) Math.sqrt(size)));
-        buttonPanel.setSize(new Dimension(500, 500));
-        buttonPanel.setPreferredSize(new Dimension(500, 500));
+        this.buttonPanel = new JPanel(new GridLayout((int) Math.sqrt(size), (int) Math.sqrt(size)));
+        this.buttonPanel.setSize(new Dimension(500, 500));
+        this.buttonPanel.setPreferredSize(new Dimension(500, 500));
 
         for (int i = 0; i < size; i++) {
             buttons[i] = new JButton();
             styleButton(buttons[i]);
 
-            buttonPanel.add(buttons[i]);
+            this.buttonPanel.add(buttons[i]);
         }
 
-        add(buttonPanel);
+        add(this.buttonPanel);
     }
 
     /**
