@@ -89,7 +89,10 @@ public class Othello extends Model {
             }
         }
         currentBoard = moveColBetweeen(idx, currentBoard, currentPlayer);
-        getAvailableMoves(currentBoard, opponent);
+        ArrayList<Integer> availableMoves = getAvailableMoves(currentBoard, opponent);
+        for (Integer availableMove : availableMoves) {
+            currentBoard[availableMove] = SUGGESTED;
+        }
 
         return currentBoard;
     }
@@ -159,7 +162,6 @@ public class Othello extends Model {
                 int idx = i * size + j;
                 if (isValidMove(idx, player, opponent, gameBoard)) {
                     availableMoves.add(idx);
-                    gameBoard[idx] = SUGGESTED;
                 }
             }
 
@@ -204,8 +206,10 @@ public class Othello extends Model {
         gameBoard[28] = BLACK;
         gameBoard[35] = BLACK;
         gameBoard[36] = WHITE;
-        ArrayList<Integer> test = getAvailableMoves(gameBoard, getCurrentPlayer());
-        System.out.println(test);
+        ArrayList<Integer> availableMoves = getAvailableMoves(gameBoard, BLACK);
+        for (Integer availableMove : availableMoves) {
+            gameBoard[availableMove] = SUGGESTED;
+        }
         return gameBoard;
     }
 
