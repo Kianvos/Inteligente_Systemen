@@ -26,8 +26,6 @@ public class Othello extends Model {
 
     //todo controleer of speler nog minstens 1 steen hebben
     //todo controleer wie er aan het eind van het spel de meeste blokjes te hebben
-    //todo getAvailableMoves werkt nog niet helemaal zoals het moet, voornamelijk isValidMove naar kijken
-    //todo tussenliggende items in zet doet het nog niet helemaal.
 
     @Override
     public boolean checkWinner(int player) {
@@ -197,6 +195,23 @@ public class Othello extends Model {
             }
         }
         return false;
+    }
+
+    public boolean anyMovesLeft() {
+        int currentPlayer = getCurrentPlayer();
+        int otherPlayer = BLACK;
+        if (currentPlayer == BLACK) {
+            otherPlayer = WHITE;
+        }
+        ArrayList<Integer> availableMovesCurrentPlayer = getAvailableMoves(getBoardData(), currentPlayer);
+        ArrayList<Integer> availableMovesOtherPlayer = getAvailableMoves(getBoardData(), otherPlayer);
+
+        if ((availableMovesCurrentPlayer.size() + availableMovesOtherPlayer.size()) == 0) {
+            //TODO game eindigen, er is geen mogelijkheid meer
+        } else if (availableMovesCurrentPlayer.size() == 0) {
+            //TODO verander current speler
+        }
+        return true;
     }
 
     public int[] buildGameBoard() {

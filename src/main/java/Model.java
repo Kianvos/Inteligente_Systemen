@@ -17,6 +17,9 @@ abstract public class Model {
 
     private final int PLAYER_TWO = 2;
 
+    private final int SUGGESTED = 3;
+
+
     public Model(int size) {
         this.size = size;
         this.gameBoard = buildGameBoard();
@@ -90,7 +93,7 @@ abstract public class Model {
     public boolean isEmptyColumn(int idx, int[] gameBoard) {
         // Checkt of 'idx' buiten het speelveld valt en of het vakje al bezet is of niet
         if (idx >= 0 && idx < gameBoard.length) {
-            if (gameBoard[idx] == 0 || gameBoard[idx] == 3) {
+            if (gameBoard[idx] == EMPTY || gameBoard[idx] == SUGGESTED) {
                 return true;
             }
         }
