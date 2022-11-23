@@ -76,8 +76,8 @@ public class Controller {
                     view.getGameView().setBoardBgColor(new Color(0, 102, 34));
 
                     //Kleur van de steentjes zwart en wit maken
-                    view.getGameView().setPlayerOneColor(new Color(255, 255, 255));
-                    view.getGameView().setPlayerTwoColor(new Color(0, 0, 0));
+                    view.getGameView().setPlayerOneColor(new Color(0, 0, 0));
+                    view.getGameView().setPlayerTwoColor(new Color(255, 255, 255));
 
 
                     System.out.println("Othello still w.i.p.");
@@ -129,8 +129,8 @@ public class Controller {
                     view.getGameView().setBoardBgColor(new Color(0, 102, 34));
 
                     //Kleur van de steentjes zwart en wit maken
-                    view.getGameView().setPlayerOneColor(new Color(255, 255, 255));
-                    view.getGameView().setPlayerTwoColor(new Color(0, 0, 0));
+                    view.getGameView().setPlayerOneColor(new Color(0, 0, 0));
+                    view.getGameView().setPlayerTwoColor(new Color(255, 255, 255));
                     model = new Othello();
                     view.getGameView().setBoardSize(8 * 8);
 
