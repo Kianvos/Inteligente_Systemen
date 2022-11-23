@@ -15,12 +15,12 @@ public class AI {
     static int evaluate(Model AiModel, int opponent, int player) {
 
         //Als de maximizer wint, tel dan 10 op bij de score
-        if(AiModel.checkWinner(player)) {
+        if(AiModel.checkWinner() != 0 && AiModel.checkWinner() != opponent) {
             return + 10;
         }
 
         //Als de minimizer wint, trek dan 10 af van de score
-        else if(AiModel.checkWinner(opponent)) {
+        else if(AiModel.checkWinner() != 0 && AiModel.checkWinner() != player) {
             return - 10;
         }
 

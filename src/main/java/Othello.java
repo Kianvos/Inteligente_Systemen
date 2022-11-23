@@ -25,12 +25,31 @@ public class Othello extends Model {
         super(8);
     }
 
+    public boolean isFinished() {
+        int[] currentBoard = getBoardData();
+
+        for (int i = 0; i < currentBoard.length; i++) {
+            if (currentBoard[i] == EMPTY){
+                break;
+            }
+            return true;
+        }
+        int currentPlayer = getCurrentPlayer();
+        int otherPlayer = BLACK;
+        if (currentPlayer == BLACK) {
+            otherPlayer = WHITE;
+        }
+        ArrayList<Integer> availableMovesCurrentPlayer = getAvailableMoves(getBoardData(), currentPlayer);
+        ArrayList<Integer> availableMovesOtherPlayer = getAvailableMoves(getBoardData(), otherPlayer);
+
+        return (availableMovesCurrentPlayer.size() + availableMovesOtherPlayer.size()) == 0;
+    }
 
     //todo controleer of speler nog minstens 1 steen hebben
     //todo controleer wie er aan het eind van het spel de meeste blokjes te hebben
 
     @Override
-    public boolean checkWinner(int player) {
+    public int checkWinner() {
         int[] gameBoard = getBoardData();
         int currentPlayer = 0;
         int opponent = 0;
@@ -40,16 +59,20 @@ public class Othello extends Model {
         if (blackMoves.isEmpty() && whiteMoves.isEmpty()) {
             for (int c : gameBoard
             ) {
-                if (c == player) {
+                if (c == BLACK) {
                     currentPlayer++;
                 }
-                if (c != player && c != EMPTY) {
+                if (c != BLACK && c != EMPTY) {
                     opponent++;
                 }
             }
-            return currentPlayer > opponent;
+            if (currentPlayer > opponent){
+                return BLACK;
+            } else {
+                return WHITE;
+            }
         }
-        return false;
+        return EMPTY;
     }
 
     @Override
@@ -90,6 +113,9 @@ public class Othello extends Model {
         }
         currentBoard = moveColBetweeen(idx, currentBoard, currentPlayer);
         ArrayList<Integer> availableMoves = getAvailableMoves(currentBoard, opponent);
+        if (availableMoves.size() == 0){
+            availableMoves = getAvailableMoves(currentBoard, currentPlayer);
+        }
         for (Integer availableMove : availableMoves) {
             currentBoard[availableMove] = SUGGESTED;
         }
@@ -199,21 +225,12 @@ public class Othello extends Model {
         return false;
     }
 
-    public boolean anyMovesLeft() {
+    public boolean availabeMovePlayer() {
         int currentPlayer = getCurrentPlayer();
-        int otherPlayer = BLACK;
-        if (currentPlayer == BLACK) {
-            otherPlayer = WHITE;
-        }
-        ArrayList<Integer> availableMovesCurrentPlayer = getAvailableMoves(getBoardData(), currentPlayer);
-        ArrayList<Integer> availableMovesOtherPlayer = getAvailableMoves(getBoardData(), otherPlayer);
 
-        if ((availableMovesCurrentPlayer.size() + availableMovesOtherPlayer.size()) == 0) {
-            //TODO game eindigen, er is geen mogelijkheid meer
-        } else if (availableMovesCurrentPlayer.size() == 0) {
-            //TODO verander current speler
-        }
-        return true;
+        ArrayList<Integer> availableMovesCurrentPlayer = getAvailableMoves(getBoardData(), currentPlayer);
+
+        return availableMovesCurrentPlayer.size() > 0;
     }
 
     public int[] buildGameBoard() {

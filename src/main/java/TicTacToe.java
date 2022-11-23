@@ -8,35 +8,49 @@ public class TicTacToe extends Model {
         super(3);
     }
 
+    public boolean isFinished() {
+        if (checkWinner() != 0){
+            return true;
+        } else if (checkTie()) {
+            return true;
+        }
+        return false;
+    }
+
+
     /**
      * Checkt of de player winnaar is.
      *
      * @param player is degene waarvoor hij controleert of er een winnaar is.
      * @return geeft terug of de speler gewonnen heeft.
      */
-    public boolean checkWinner(int player) {
+    public int checkWinner() {
         int[] gameBoard = getBoardData();
         // Check vertical
         for (int i = 0; i < 3; i++) {
-            if (gameBoard[i] == gameBoard[i + 3] && gameBoard[i + 3] == gameBoard[i + 6] && gameBoard[i] == player) {
-                return true;
+            if (gameBoard[i] == gameBoard[i + 3] && gameBoard[i + 3] == gameBoard[i + 6]) {
+                return gameBoard[i];
             }
         }
         // Check horizontal
         for (int i = 0; i < gameBoard.length; i++) {
             if (i % 3 == 2) {
-                if (gameBoard[i] == gameBoard[i - 1] && gameBoard[i - 1] == gameBoard[i - 2] && gameBoard[i] == player) {
-                    return true;
+                if (gameBoard[i] == gameBoard[i - 1] && gameBoard[i - 1] == gameBoard[i - 2]) {
+                    return gameBoard[i];
                 }
             }
         }
         // Check diagonal
-        if (gameBoard[0] == gameBoard[4] && gameBoard[4] == gameBoard[8] && gameBoard[0] == player) {
-            return true;
-        } else if (gameBoard[2] == gameBoard[4] && gameBoard[4] == gameBoard[6] && gameBoard[2] == player) {
-            return true;
+        if (gameBoard[0] == gameBoard[4] && gameBoard[4] == gameBoard[8]) {
+            return gameBoard[0];
+        } else if (gameBoard[2] == gameBoard[4] && gameBoard[4] == gameBoard[6]) {
+            return gameBoard[2];
         }
-        return false;
+        return EMPTY;
+    }
+
+    public boolean availabeMovePlayer() {
+        return true;
     }
 
     /**
