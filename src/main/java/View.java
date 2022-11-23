@@ -62,6 +62,7 @@ public class View {
     public GameView getGameView() {
         return gameView;
     }
+
 }
 
 class MenuView extends JPanel {
@@ -183,6 +184,10 @@ class GameView extends JPanel {
     private JButton menuButton;
     private JButton disconnectButton;
 
+    private String playerOnePiece;
+
+    private String playerTwoPiece;
+
     public GameView(int size) {
         // first construct JPanel before constructing GameView
         super(new BorderLayout());
@@ -294,13 +299,13 @@ class GameView extends JPanel {
             if (board[i] == PLAYER_ONE) {
                 buttons[i].setForeground(new Color(255, 255, 255));
 //                buttons[i].setBackground(Color.WHITE);
-                buttons[i].setText("⚫");
+                buttons[i].setText(playerOnePiece);
                 continue;
             }
             if (board[i] == PLAYER_TWO) {
                 buttons[i].setForeground(new Color(0, 0, 0));
 //                buttons[i].setBackground(Color.BLACK);
-                buttons[i].setText("○");
+                buttons[i].setText(playerTwoPiece);
                 continue;
             }
             if (board[i] == SUGGESTED){
@@ -366,5 +371,21 @@ class GameView extends JPanel {
 
     public JButton getDisconnectButton() {
         return disconnectButton;
+    }
+
+    public String getPlayerOnePiece() {
+        return playerOnePiece;
+    }
+
+    public void setPlayerOnePiece(String playerOnePiece) {
+        this.playerOnePiece = playerOnePiece;
+    }
+
+    public String getPlayerTwoPiece() {
+        return playerTwoPiece;
+    }
+
+    public void setPlayerTwoPiece(String playerTwoPiece) {
+        this.playerTwoPiece = playerTwoPiece;
     }
 }

@@ -42,6 +42,9 @@ public class Controller {
                 String game = view.getMenuView().getSelected()[0];
 
                 if (game.equals("TicTacToe")) {
+                    //View karakters voor boter kaas en eieren
+                    view.getGameView().setPlayerOnePiece("X");
+                    view.getGameView().setPlayerTwoPiece("O");
                     model = new TicTacToe();
                     view.getGameView().setBoardSize(3 * 3);
                     model.toggleIsOnline();
@@ -56,6 +59,9 @@ public class Controller {
                 }
 
                 if (game.equals("Othello")) {
+                    //View karakters voor Othello
+                    view.getGameView().setPlayerOnePiece("O");
+                    view.getGameView().setPlayerTwoPiece("O");
                     System.out.println("Othello still w.i.p.");
                     model = new Othello();
                     view.getGameView().setBoardSize(8 * 8);
@@ -74,6 +80,8 @@ public class Controller {
                 String p2 = selected[2];
 
                 if (game.equals("TicTacToe")) {
+                    view.getGameView().setPlayerOnePiece("X");
+                    view.getGameView().setPlayerTwoPiece("O");
                     model = new TicTacToe();
                     view.getGameView().setBoardSize(3 * 3);
                     for (int i = 0; i < 3*3; i++) {
@@ -83,6 +91,8 @@ public class Controller {
 
                 if (game.equals("Othello")) {
                     System.out.println("Othello still w.i.p.");
+                    view.getGameView().setPlayerOnePiece("O");
+                    view.getGameView().setPlayerTwoPiece("O");
                     model = new Othello();
                     view.getGameView().setBoardSize(8 * 8);
                     for (int i = 0; i < 8*8; i++) {
