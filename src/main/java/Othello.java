@@ -1,5 +1,7 @@
 import java.util.ArrayList;
 
+//TODO win en gelijk fixen
+
 public class Othello extends Model {
 
     private final int EMPTY = 0;
@@ -221,7 +223,7 @@ public class Othello extends Model {
         gameBoard[28] = BLACK;
         gameBoard[35] = BLACK;
         gameBoard[36] = WHITE;
-        ArrayList<Integer> availableMoves = getAvailableMoves(gameBoard, BLACK);
+        ArrayList<Integer> availableMoves = getAvailableMoves(gameBoard, getCurrentPlayer());
         for (Integer availableMove : availableMoves) {
             gameBoard[availableMove] = SUGGESTED;
         }

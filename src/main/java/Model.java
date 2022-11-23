@@ -22,6 +22,7 @@ abstract public class Model {
 
     public Model(int size) {
         this.size = size;
+        this.currentPlayer = PLAYER_ONE;
         this.gameBoard = buildGameBoard();
         this.isWinner = false;
         this.isTie = false;
@@ -170,8 +171,8 @@ abstract public class Model {
      * @param start welke speler er mag starten
      */
     public void resetGame(boolean playAi, boolean AiStart, int start) {
-        gameBoard = buildGameBoard();
         currentPlayer = start;
+        gameBoard = buildGameBoard();
         isWinner = false;
         isTie = false;
         againstAi = playAi;
