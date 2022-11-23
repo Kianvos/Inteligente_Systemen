@@ -188,6 +188,8 @@ class GameView extends JPanel {
 
     private String playerTwoPiece;
 
+    private Color playerOneColor;
+    private Color playerTwoColor;
     private Color boardBgColor;
 
     public GameView(int size) {
@@ -299,14 +301,12 @@ class GameView extends JPanel {
             final int SUGGESTED = 3;
 
             if (board[i] == PLAYER_ONE) {
-                buttons[i].setForeground(new Color(255, 255, 255));
-//                buttons[i].setBackground(Color.WHITE);
+                buttons[i].setForeground(playerOneColor);
                 buttons[i].setText(playerOnePiece);
                 continue;
             }
             if (board[i] == PLAYER_TWO) {
-                buttons[i].setForeground(new Color(0, 0, 0));
-//                buttons[i].setBackground(Color.BLACK);
+                buttons[i].setForeground(playerTwoColor);
                 buttons[i].setText(playerTwoPiece);
                 continue;
             }
@@ -396,5 +396,21 @@ class GameView extends JPanel {
 
     public void setBoardBgColor(Color boardBgColor) {
         this.boardBgColor = boardBgColor;
+    }
+
+    public Color getPlayerOneColor() {
+        return playerOneColor;
+    }
+
+    public void setPlayerOneColor(Color playerOneColor) {
+        this.playerOneColor = playerOneColor;
+    }
+
+    public Color getPlayerTwoColor() {
+        return playerTwoColor;
+    }
+
+    public void setPlayerTwoColor(Color playerTwoColor) {
+        this.playerTwoColor = playerTwoColor;
     }
 }
