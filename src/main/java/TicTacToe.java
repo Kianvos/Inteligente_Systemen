@@ -1,7 +1,11 @@
 public class TicTacToe extends Model {
+
+    private final int EMPTY = 0;
+    private final int PLAYER_X = 1;
+    private final int PLAYER_O = 2;
+
     public TicTacToe() {
         super(3);
-
     }
 
     /**
@@ -44,7 +48,7 @@ public class TicTacToe extends Model {
         int[] gameBoard = getBoardData();
         // Check tie/Check of er nog plaats is op het speelveld
         for (int i = 0; i < gameBoard.length; i++) {
-            if (gameBoard[i] == 0) {
+            if (gameBoard[i] == EMPTY) {
                 return false;
             }
         }
@@ -70,14 +74,14 @@ public class TicTacToe extends Model {
      * @return geeft de huidige speler terug
      */
     public char getCurrentPlayerChar(){
-        if (getCurrentPlayer() == 1){
+        if (getCurrentPlayer() == PLAYER_X){
             return 'X';
         }
         return 'O';
     }
 
     public String getStringWinner() {
-        if (getWinner() == 1){
+        if (getWinner() == PLAYER_X){
             return "X";
         }
         return "O";

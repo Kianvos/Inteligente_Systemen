@@ -17,8 +17,12 @@ abstract public class Model {
 
     private final int PLAYER_TWO = 2;
 
+    private final int SUGGESTED = 3;
+
+
     public Model(int size) {
         this.size = size;
+        this.currentPlayer = PLAYER_ONE;
         this.gameBoard = buildGameBoard();
         this.isWinner = false;
         this.isTie = false;
@@ -90,7 +94,7 @@ abstract public class Model {
     public boolean isEmptyColumn(int idx, int[] gameBoard) {
         // Checkt of 'idx' buiten het speelveld valt en of het vakje al bezet is of niet
         if (idx >= 0 && idx < gameBoard.length) {
-            if (gameBoard[idx] == 0 || gameBoard[idx] == 3) {
+            if (gameBoard[idx] == EMPTY || gameBoard[idx] == SUGGESTED) {
                 return true;
             }
         }
@@ -167,8 +171,8 @@ abstract public class Model {
      * @param start welke speler er mag starten
      */
     public void resetGame(boolean playAi, boolean AiStart, int start) {
-        gameBoard = buildGameBoard();
         currentPlayer = start;
+        gameBoard = buildGameBoard();
         isWinner = false;
         isTie = false;
         againstAi = playAi;
