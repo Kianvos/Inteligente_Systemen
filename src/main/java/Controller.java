@@ -1,4 +1,5 @@
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Random;
@@ -45,6 +46,9 @@ public class Controller {
                     //View karakters voor boter kaas en eieren
                     view.getGameView().setPlayerOnePiece("X");
                     view.getGameView().setPlayerTwoPiece("O");
+
+                    //Achtergrond van het bord wit maken
+                    view.getGameView().setBoardBgColor(new Color(220, 220, 220));
                     model = new TicTacToe();
                     view.getGameView().setBoardSize(3 * 3);
                     model.toggleIsOnline();
@@ -62,6 +66,9 @@ public class Controller {
                     //View karakters voor Othello
                     view.getGameView().setPlayerOnePiece("O");
                     view.getGameView().setPlayerTwoPiece("O");
+
+                    //Achtergrond van het bord groen maken
+                    view.getGameView().setBoardBgColor(new Color(0, 102, 34));
                     System.out.println("Othello still w.i.p.");
                     model = new Othello();
                     view.getGameView().setBoardSize(8 * 8);
@@ -80,8 +87,13 @@ public class Controller {
                 String p2 = selected[2];
 
                 if (game.equals("TicTacToe")) {
+
+                    //View karakters voor Othello
                     view.getGameView().setPlayerOnePiece("X");
                     view.getGameView().setPlayerTwoPiece("O");
+
+                    //Achtergrond van het bord wit maken
+                    view.getGameView().setBoardBgColor(new Color(220, 220, 220));
                     model = new TicTacToe();
                     view.getGameView().setBoardSize(3 * 3);
                     for (int i = 0; i < 3*3; i++) {
@@ -91,8 +103,13 @@ public class Controller {
 
                 if (game.equals("Othello")) {
                     System.out.println("Othello still w.i.p.");
+
+                    //View karakters voor Othello
                     view.getGameView().setPlayerOnePiece("O");
                     view.getGameView().setPlayerTwoPiece("O");
+
+                    //Achtergrond van het bord groen maken
+                    view.getGameView().setBoardBgColor(new Color(0, 102, 34));
                     model = new Othello();
                     view.getGameView().setBoardSize(8 * 8);
                     for (int i = 0; i < 8*8; i++) {

@@ -188,6 +188,8 @@ class GameView extends JPanel {
 
     private String playerTwoPiece;
 
+    private Color boardBgColor;
+
     public GameView(int size) {
         // first construct JPanel before constructing GameView
         super(new BorderLayout());
@@ -336,9 +338,8 @@ class GameView extends JPanel {
     public void styleButton(JButton button) {
         button.setFocusable(false);
         button.setFont(new Font(button.getFont().toString(), Font.BOLD, 40));
-        button.setBackground(new Color(0, 102, 34));
+        button.setBackground(boardBgColor);
         button.setBorder(new LineBorder(new Color(0, 26, 9)));
-
     }
 
     /**
@@ -387,5 +388,13 @@ class GameView extends JPanel {
 
     public void setPlayerTwoPiece(String playerTwoPiece) {
         this.playerTwoPiece = playerTwoPiece;
+    }
+
+    public Color getBoardBgColor() {
+        return boardBgColor;
+    }
+
+    public void setBoardBgColor(Color boardBgColor) {
+        this.boardBgColor = boardBgColor;
     }
 }
