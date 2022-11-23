@@ -1,5 +1,4 @@
 
-import javax.sound.sampled.Line;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
@@ -292,15 +291,15 @@ class GameView extends JPanel {
             final int SUGGESTED = 3;
 
             if (board[i] == PLAYER_ONE) {
-                buttons[i].setForeground(new Color(255, 255, 255));
+                buttons[i].setForeground(Color.BLACK);
 //                buttons[i].setBackground(Color.WHITE);
-                buttons[i].setText("⚫");
+                buttons[i].setText("O");
                 continue;
             }
             if (board[i] == PLAYER_TWO) {
-                buttons[i].setForeground(new Color(0, 0, 0));
+                buttons[i].setForeground(Color.WHITE);
 //                buttons[i].setBackground(Color.BLACK);
-                buttons[i].setText("○");
+                buttons[i].setText("O");
                 continue;
             }
             if (board[i] == SUGGESTED){

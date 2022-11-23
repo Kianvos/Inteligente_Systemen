@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 abstract public class Model {
 
     private boolean againstAi;
@@ -28,7 +30,7 @@ abstract public class Model {
         this.isTie = false;
         this.isOnline = false;
         this.winner = EMPTY;
-        this.ai = new AI(size);
+        this.ai = new AI();
     }
 
     /**
@@ -45,8 +47,7 @@ abstract public class Model {
         //Alleen als het spel nog niet geëindigd is.
         //Alleen als er tegen de AI gespeeld wordt.
         if (!isWinner && !isTie && againstAi) {
-            int i = ai.aiNewSet(gameBoard, PLAYER_ONE);
-            userSet(i);
+            aiSet(PLAYER_ONE);
         }
     }
 
@@ -57,7 +58,7 @@ abstract public class Model {
      * @return geeft de index terug waar de ai een zet op wil doen.
      */
     public int aiSet(int opponent) {
-        int i = ai.aiNewSet(gameBoard, opponent);
+        int i = ai.aiNewSet(gameBoard, opponent, this);
         userSet(i);
         return i;
     }
@@ -84,6 +85,7 @@ abstract public class Model {
         isTie = checkTie();
         //Veranderd wie er aan de beurt is.
         changeTurn();
+
         if (!availabeMovePlayer()) {
             changeTurn();
         }
@@ -91,11 +93,7 @@ abstract public class Model {
 
 
     public void changeTurn() {
-        if (currentPlayer == PLAYER_ONE) {
-            currentPlayer = PLAYER_TWO;
-        } else {
-            currentPlayer = PLAYER_ONE;
-        }
+        currentPlayer = (currentPlayer == PLAYER_ONE) ? PLAYER_TWO : PLAYER_ONE;
     }
 
     /**
@@ -116,16 +114,13 @@ abstract public class Model {
     }
 
     abstract public int[] move(int idx, int[] currentBoard, int currentPlayer);
-
     abstract public boolean validMove(int idx, int[] gameBoard);
-
-    abstract public boolean isFinished();
-
-    abstract public int checkWinner();
-
+    abstract public ArrayList<Integer> getAvailableMoves(int[] gameBoard, int player);
     abstract public boolean availabeMovePlayer();
 
+    abstract public int checkWinner();
     abstract public boolean checkTie();
+    abstract public boolean isFinished();
 
 
     /**
@@ -177,8 +172,6 @@ abstract public class Model {
      * @return geeft de winnaar in een string terug.
      */
     abstract public String getStringWinner();
-
-
     abstract public int[] buildGameBoard();
 
     /**
@@ -197,7 +190,7 @@ abstract public class Model {
         startPlayer = start;
         winner = EMPTY;
         if (AiStart && playAi) {
-            gameBoard[ai.aiNewSet(gameBoard, PLAYER_ONE)] = PLAYER_TWO;
+            gameBoard[ai.aiNewSet(gameBoard, PLAYER_ONE, this)] = PLAYER_TWO;
         }
     }
 
