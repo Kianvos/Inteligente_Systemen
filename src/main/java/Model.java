@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 abstract public class Model {
 
     private boolean againstAi;
@@ -28,15 +30,16 @@ abstract public class Model {
         this.isTie = false;
         this.isOnline = false;
         this.winner = EMPTY;
-        this.ai = new AI(size);
+        this.ai = new AI();
     }
 
     /**
      * Als een speler een zet heeft gedaan doet de AI eventueel daarna meteen een zet.
+     *
      * @param idx geeft de index mee waar een zet op gedaan is.
      */
     public void sets(int idx) {
-        if (!isEmptyColumn(idx, gameBoard)){
+        if (!isEmptyColumn(idx, gameBoard)) {
             return;
         }
         userSet(idx);
@@ -44,18 +47,18 @@ abstract public class Model {
         //Alleen als het spel nog niet geëindigd is.
         //Alleen als er tegen de AI gespeeld wordt.
         if (!isWinner && !isTie && againstAi) {
-            int i = ai.aiNewSet(gameBoard, PLAYER_ONE);
-            userSet(i);
+            aiSet(PLAYER_ONE);
         }
     }
 
     /**
      * Laat de ai een zet doen
+     *
      * @param opponent geeft mee welke speler de tegenstander is.
      * @return geeft de index terug waar de ai een zet op wil doen.
      */
-    public int aiSet(int opponent){
-        int i = ai.aiNewSet(gameBoard, opponent);
+    public int aiSet(int opponent) {
+        int i = ai.aiNewSet(gameBoard, opponent, this);
         userSet(i);
         return i;
     }
@@ -63,31 +66,39 @@ abstract public class Model {
 
     /**
      * Zet de zet op het bord en handelt de vervolgstappen af.
+     *
      * @param idx geeft de index mee waar een zet op gedaan moet worden.
      */
     public void userSet(int idx) {
         //Controleert of er nog plaats is.
-        if (!validMove(idx, gameBoard)){
+        if (!validMove(idx, gameBoard)) {
             return;
         }
         gameBoard = move(idx, gameBoard, currentPlayer);
-        isWinner = checkWinner(currentPlayer);
-        if (isWinner) {
-            winner = currentPlayer;
+        if (isFinished()) {
+            winner = checkWinner();
+            if (winner == PLAYER_ONE || winner == PLAYER_TWO) {
+                isWinner = true;
+            }
         }
 
         isTie = checkTie();
         //Veranderd wie er aan de beurt is.
-        if(currentPlayer == PLAYER_ONE){
-            currentPlayer = PLAYER_TWO;
-        }else {
-            currentPlayer = PLAYER_ONE;
+        changeTurn();
+
+        if (!availabeMovePlayer()) {
+            changeTurn();
         }
     }
 
 
+    public void changeTurn() {
+        currentPlayer = (currentPlayer == PLAYER_ONE) ? PLAYER_TWO : PLAYER_ONE;
+    }
+
     /**
      * Controleert of er nog plaats is waar de nieuwe set gedaan wordt.
+     *
      * @param idx de index waar de zet op gedaan wordt.
      * @return geeft terug of er nog plaats is op het bord.
      */
@@ -103,13 +114,13 @@ abstract public class Model {
     }
 
     abstract public int[] move(int idx, int[] currentBoard, int currentPlayer);
-
     abstract public boolean validMove(int idx, int[] gameBoard);
+    abstract public ArrayList<Integer> getAvailableMoves(int[] gameBoard, int player);
+    abstract public boolean availabeMovePlayer();
 
-    abstract public boolean checkWinner(int player);
-
+    abstract public int checkWinner();
     abstract public boolean checkTie();
-
+    abstract public boolean isFinished();
 
 
     /**
@@ -121,6 +132,7 @@ abstract public class Model {
 
     /**
      * Vervangt het huidige bord met de nieuwe.
+     *
      * @param newGameBoard geeft de nieuwe bord status mee
      */
     public void setGameBoard(int[] newGameBoard) {
@@ -141,7 +153,7 @@ abstract public class Model {
         return isTie;
     }
 
-    public boolean isOnline(){
+    public boolean isOnline() {
         return isOnline;
     }
 
@@ -160,15 +172,14 @@ abstract public class Model {
      * @return geeft de winnaar in een string terug.
      */
     abstract public String getStringWinner();
-
-
     abstract public int[] buildGameBoard();
 
     /**
      * Het resetten van het spel.
-     * @param playAi geeft aan of je tegen de ai speelt
+     *
+     * @param playAi  geeft aan of je tegen de ai speelt
      * @param AiStart geeft aan of de ai mag beginnen
-     * @param start welke speler er mag starten
+     * @param start   welke speler er mag starten
      */
     public void resetGame(boolean playAi, boolean AiStart, int start) {
         currentPlayer = start;
@@ -178,8 +189,8 @@ abstract public class Model {
         againstAi = playAi;
         startPlayer = start;
         winner = EMPTY;
-        if (AiStart && playAi){
-            gameBoard[ai.aiNewSet(gameBoard, PLAYER_ONE)] = PLAYER_TWO;
+        if (AiStart && playAi) {
+            gameBoard[ai.aiNewSet(gameBoard, PLAYER_ONE, this)] = PLAYER_TWO;
         }
     }
 
@@ -187,14 +198,14 @@ abstract public class Model {
     /**
      * @return geeft aan of je tegen ai speelt
      */
-    public boolean getAgainstAi(){
+    public boolean getAgainstAi() {
         return againstAi;
     }
 
     /**
      * @return geeft de huidige speler terug
      */
-    public int getCurrentPlayer(){
+    public int getCurrentPlayer() {
         return currentPlayer;
     }
 
@@ -207,7 +218,7 @@ abstract public class Model {
     /**
      * @return geeft terug wie er begonnen is.
      */
-    public int getStartPlayer(){
+    public int getStartPlayer() {
         return startPlayer;
     }
 

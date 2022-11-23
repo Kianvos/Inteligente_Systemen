@@ -112,6 +112,7 @@ public class Controller {
 
                     model = new TicTacToe();
                     view.getGameView().setBoardSize(3 * 3);
+
                     for (int i = 0; i < 3*3; i++) {
                         createActionListener(i);
                     }
@@ -130,9 +131,9 @@ public class Controller {
                     //Kleur van de steentjes zwart en wit maken
                     view.getGameView().setPlayerOneColor(new Color(255, 255, 255));
                     view.getGameView().setPlayerTwoColor(new Color(0, 0, 0));
-
                     model = new Othello();
                     view.getGameView().setBoardSize(8 * 8);
+
                     for (int i = 0; i < 8*8; i++) {
                         createActionListener(i);
                     }
@@ -143,8 +144,8 @@ public class Controller {
                     return;
                 }
 
-                System.out.println(p1);
-                System.out.println(p2);
+                // System.out.println(p1);
+                // System.out.println(p2);
 
                 Boolean playerVsAi = p1.equals("AI") || p2.equals("AI");
 
