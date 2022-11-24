@@ -235,8 +235,11 @@ public class Othello extends Model {
      * @return geeft de huidige speler terug
      */
     @Override
-    public char getCurrentPlayerChar() {
-        return 'O';
+    public String getCurrentPlayerString() {
+        if (getCurrentPlayer() == BLACK) {
+            return "Zwart";
+        }
+        return "Wit";
     }
 
     @Override

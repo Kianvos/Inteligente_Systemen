@@ -110,11 +110,11 @@ public class TicTacToe extends Model {
      * @return geeft de huidige speler terug
      */
     @Override
-    public char getCurrentPlayerChar(){
+    public String getCurrentPlayerString(){
         if (getCurrentPlayer() == PLAYER_X){
-            return 'X';
+            return "X";
         }
-        return 'O';
+        return "O";
     }
 
     @Override

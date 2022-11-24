@@ -203,7 +203,7 @@ public class Controller {
             public void actionPerformed(ActionEvent e) {
                 if (model.getAgainstAi()){
                     model.resetGame(model.getAgainstAi(), Math.random() < 0.5, model.getStartPlayer());
-                    view.getGameView().setText(model.getCurrentPlayerChar() + " is aan de beurt");
+                    view.getGameView().setText(model.getCurrentPlayerString() + " is aan de beurt");
                 } else {
                     Random r = new Random();
                     int c = r.nextBoolean() ? PLAYER_ONE : PLAYER_TWO;
@@ -226,7 +226,7 @@ public class Controller {
             public void actionPerformed(ActionEvent e) {
                 if (!model.isWinner() && !model.isTie() && !model.isOnline()) {
                     model.sets(idx);
-                    view.getGameView().setText(model.getCurrentPlayerChar() + " is aan de beurt");
+                    view.getGameView().setText(model.getCurrentPlayerString() + " is aan de beurt");
                     view.getGameView().update(model);
                 }
             }

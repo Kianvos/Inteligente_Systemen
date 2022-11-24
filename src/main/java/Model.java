@@ -39,7 +39,7 @@ abstract public class Model {
      * @param idx geeft de index mee waar een zet op gedaan is.
      */
     public void sets(int idx) {
-        if (!isEmptyColumn(idx, gameBoard)) {
+        if (!validMove(idx, gameBoard)) {
             return;
         }
         userSet(idx);
@@ -213,7 +213,7 @@ abstract public class Model {
         this.currentPlayer = currentPlayer;
     }
 
-    abstract char getCurrentPlayerChar();
+    abstract String getCurrentPlayerString();
 
     /**
      * @return geeft terug wie er begonnen is.
