@@ -1,5 +1,4 @@
 
-import javax.sound.sampled.Line;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
@@ -62,6 +61,7 @@ public class View {
     public GameView getGameView() {
         return gameView;
     }
+
 }
 
 class MenuView extends JPanel {
@@ -183,6 +183,14 @@ class GameView extends JPanel {
     private JButton menuButton;
     private JButton disconnectButton;
 
+    private String playerOnePiece;
+
+    private String playerTwoPiece;
+
+    private Color playerOneColor;
+    private Color playerTwoColor;
+    private Color boardBgColor;
+
     public GameView(int size) {
         // first construct JPanel before constructing GameView
         super(new BorderLayout());
@@ -292,15 +300,13 @@ class GameView extends JPanel {
             final int SUGGESTED = 3;
 
             if (board[i] == PLAYER_ONE) {
-                buttons[i].setForeground(new Color(255, 255, 255));
-//                buttons[i].setBackground(Color.WHITE);
-                buttons[i].setText("⚫");
+                buttons[i].setForeground(playerOneColor);
+                buttons[i].setText(playerOnePiece);
                 continue;
             }
             if (board[i] == PLAYER_TWO) {
-                buttons[i].setForeground(new Color(0, 0, 0));
-//                buttons[i].setBackground(Color.BLACK);
-                buttons[i].setText("○");
+                buttons[i].setForeground(playerTwoColor);
+                buttons[i].setText(playerTwoPiece);
                 continue;
             }
             if (board[i] == SUGGESTED){
@@ -331,9 +337,9 @@ class GameView extends JPanel {
     public void styleButton(JButton button) {
         button.setFocusable(false);
         button.setFont(new Font(button.getFont().toString(), Font.BOLD, 40));
-        button.setBackground(new Color(0, 102, 34));
+        button.setBackground(boardBgColor);
+        button.setOpaque(true);
         button.setBorder(new LineBorder(new Color(0, 26, 9)));
-
     }
 
     /**
@@ -366,5 +372,45 @@ class GameView extends JPanel {
 
     public JButton getDisconnectButton() {
         return disconnectButton;
+    }
+
+    public String getPlayerOnePiece() {
+        return playerOnePiece;
+    }
+
+    public void setPlayerOnePiece(String playerOnePiece) {
+        this.playerOnePiece = playerOnePiece;
+    }
+
+    public String getPlayerTwoPiece() {
+        return playerTwoPiece;
+    }
+
+    public void setPlayerTwoPiece(String playerTwoPiece) {
+        this.playerTwoPiece = playerTwoPiece;
+    }
+
+    public Color getBoardBgColor() {
+        return boardBgColor;
+    }
+
+    public void setBoardBgColor(Color boardBgColor) {
+        this.boardBgColor = boardBgColor;
+    }
+
+    public Color getPlayerOneColor() {
+        return playerOneColor;
+    }
+
+    public void setPlayerOneColor(Color playerOneColor) {
+        this.playerOneColor = playerOneColor;
+    }
+
+    public Color getPlayerTwoColor() {
+        return playerTwoColor;
+    }
+
+    public void setPlayerTwoColor(Color playerTwoColor) {
+        this.playerTwoColor = playerTwoColor;
     }
 }
