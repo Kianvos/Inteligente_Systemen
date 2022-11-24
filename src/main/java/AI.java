@@ -2,24 +2,37 @@
 import java.util.ArrayList;
 
 public class AI {
+
+    private final int[] boardScore = {
+            100, -1, 5, 2, 2, 5, -1, 100,
+            -1, -10, 1, 1, 1, 1, -10, -1,
+            5, 1, 1, 1, 1, 1, 1, 5,
+            2, 1, 1, 0, 0, 1, 1, 2,
+            2, 1, 1, 0, 0, 1, 1, 2,
+            5, 1, 1, 1, 1, 1, 1, 5,
+            -1, -10, 1, 1, 1, 1, -10, -1,
+            100, -1, 5, 2, 2, 5, -1, 100,
+    };
+
     /**
      * Controleert het bord of de maximizer of minimizer heeft gewonnen
+     *
      * @param AiModel Kopie van het echte spelbord waar de experimentele zetten op gedaan worden
      * @return score van de zet
      */
-    static int evaluate(Model AiModel, int opponent, int player) {
+    private int evaluate(Model AiModel, int opponent, int player) {
         //Als de maximizer wint, tel dan 10 op bij de score
-        if(AiModel.checkWinner() != 0 && AiModel.checkWinner() != opponent) {
-            return + 100;
+        if (AiModel.checkWinner() != 0 && AiModel.checkWinner() != opponent) {
+            return +100;
         }
 
         //Als de minimizer wint, trek dan 10 af van de score
-        else if(AiModel.checkWinner() != 0 && AiModel.checkWinner() != player) {
-            return - 100;
+        else if (AiModel.checkWinner() != 0 && AiModel.checkWinner() != player) {
+            return -100;
         }
 
         //Niemand wint, dus geen punten er bij optellen
-        return + 0;
+        return +0;
     }
 
     /**
@@ -28,15 +41,18 @@ public class AI {
      * omzetbeurten een zet te laten doen op elk leeg vakje op het spelbord. Elke keer als deze
      * functie wordt aangeroepen, wordt er eerste gekeken welke speler wint en geeft op basis
      * daarvan punten terug.
-     * @param AiModel Kopie van het echte spelbord waar de experimentele zetten op gedaan worden
-     * @param isMax Of de maximizer aan de beurt is of niet
-     * @param depth Tot hoe diep het algoritme experimentele zetten mag doen
+     *
+     * @param AiModel  Kopie van het echte spelbord waar de experimentele zetten op gedaan worden
+     * @param isMax    Of de maximizer aan de beurt is of niet
+     * @param depth    Tot hoe diep het algoritme experimentele zetten mag doen
      * @param opponent geeft mee welke speler de tegenstander is.
      * @return De score van het beste mogelijke zet
      */
-    static int minimax(Model AiModel, boolean isMax, int depth, int a, int b, int opponent, int player) {
+    private int minimax(Model AiModel, boolean isMax, int depth, int a, int b, int opponent, int player) {
         //Stop met puntentelling als de maximale diepte is bereikt
-        if (depth <= 0) { return + 0;}
+        if (depth <= 0) {
+            return +0;
+        }
 
         //Controleer de score van de zet waarmee de functie is aangeroepen
         int score = evaluate(AiModel, opponent, player);
@@ -47,7 +63,7 @@ public class AI {
 
         //Geef niks terug als er gelijkspel is
         if (AiModel.checkTie()) {
-            return + 0;
+            return +0;
         }
 
         //Haal het spelbord op waarmee de functie is aangeroepen
@@ -96,11 +112,12 @@ public class AI {
     /**
      * Geeft een lege positie op het bord terug waarbij de kans het grootste
      * is dat het een overwinning oplevert
-     * @param AiModel Kopie van het echte spelbord waar de experimentele zetten op gedaan worden
+     *
+     * @param AiModel  Kopie van het echte spelbord waar de experimentele zetten op gedaan worden
      * @param opponent geeft mee welke speler de tegenstander is.
      * @return Lege positie op het bord
      */
-    static int findBestMove(Model AiModel, int opponent) {
+    private int findBestMove(Model AiModel, int opponent) {
         int[] boardData = AiModel.getBoardData();
 
         //Bepaal de hoogst mogelijke score die een bord zou kunnen hebben voor de minimizer
@@ -118,6 +135,8 @@ public class AI {
             //Bepaal de score van de zet door een zet te doen als de minimizer
             int moveVal = minimax(AiModel, false, 7, -1000, 1000, opponent, player);
 
+            moveVal += boardScore[move];
+
             //Maak het vakje van deze zet weer leeg om andere zetten toe te staan als het bord veranderd is
             boardData[move] = 0;
 
@@ -133,8 +152,9 @@ public class AI {
 
     /**
      * Laat de AI een zet doen
+     *
      * @param gameBoard Bord van het huidige potje
-     * @param opponent geeft mee welke speler de tegenstander is.
+     * @param opponent  geeft mee welke speler de tegenstander is.
      * @return Een lege positie waar de zet opgedaan word
      */
     public int aiNewSet(int[] gameBoard, int opponent, Model model) {
