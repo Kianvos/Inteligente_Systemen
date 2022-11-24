@@ -338,6 +338,7 @@ class GameView extends JPanel {
         button.setFocusable(false);
         button.setFont(new Font(button.getFont().toString(), Font.BOLD, 40));
         button.setBackground(boardBgColor);
+        button.setOpaque(true);
         button.setBorder(new LineBorder(new Color(0, 26, 9)));
     }
 
