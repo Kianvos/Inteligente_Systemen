@@ -10,12 +10,12 @@ public class AI {
     static int evaluate(Model AiModel, int opponent, int player) {
         //Als de maximizer wint, tel dan 10 op bij de score
         if(AiModel.checkWinner() != 0 && AiModel.checkWinner() != opponent) {
-            return + 10;
+            return + 100;
         }
 
         //Als de minimizer wint, trek dan 10 af van de score
         else if(AiModel.checkWinner() != 0 && AiModel.checkWinner() != player) {
-            return - 10;
+            return - 100;
         }
 
         //Niemand wint, dus geen punten er bij optellen
@@ -34,14 +34,14 @@ public class AI {
      * @param opponent geeft mee welke speler de tegenstander is.
      * @return De score van het beste mogelijke zet
      */
-    static int minimax(Model AiModel, boolean isMax, int depth, int opponent, int player) {
+    static int minimax(Model AiModel, boolean isMax, int depth, int a, int b, int opponent, int player) {
         //Stop met puntentelling als de maximale diepte is bereikt
         if (depth <= 0) { return + 0;}
 
         //Controleer de score van de zet waarmee de functie is aangeroepen
         int score = evaluate(AiModel, opponent, player);
         //Geef de score terug als de maximizer of minimizer gewonnen heeft
-        if (score == 10 || score == -10) {
+        if (score != 0) {
             return score;
         }
 
@@ -55,7 +55,7 @@ public class AI {
         ArrayList<Integer> moves = isMax ? AiModel.getAvailableMoves(boardData, player) : AiModel.getAvailableMoves(boardData, opponent);
 
         //Bepaal de hoogst mogelijke score voor de maximizer en minimizer
-        int best = isMax ? -1000 : 1000;
+        int best = isMax ? -10000 : 10000;
 
         for (int move : moves) {
             if (isMax) {
@@ -63,13 +63,27 @@ public class AI {
                 boardData[move] = player;
 
                 //Bepaal de beste score door de functie opnieuw aan te roepen en een zet te doen als de minimizer
-                best = Math.max(best, minimax(AiModel, false, depth - 1, opponent, player));
+                best = Math.max(best, minimax(AiModel, false, depth - 1, a, b, opponent, player));
+
+                if (best >= b) {
+                    boardData[move] = 0;
+                    break;
+                }
+
+                a = Math.max(a, best);
             } else {
                 //Doe een zet als de minimizer
                 boardData[move] = opponent;
 
                 //Bepaal de beste score door de functie opnieuw aan te roepen en een zet te doen als de maximizer
-                best = Math.min(best, minimax(AiModel, true, depth - 1, opponent, player));
+                best = Math.min(best, minimax(AiModel, true, depth - 1, a, b, opponent, player));
+
+                if (best <= a) {
+                    boardData[move] = 0;
+                    break;
+                }
+
+                b = Math.min(b, best);
             }
 
             boardData[move] = 0;
@@ -102,7 +116,7 @@ public class AI {
             boardData[move] = player;
 
             //Bepaal de score van de zet door een zet te doen als de minimizer
-            int moveVal = minimax(AiModel, false, 5, opponent, player);
+            int moveVal = minimax(AiModel, false, 7, -1000, 1000, opponent, player);
 
             //Maak het vakje van deze zet weer leeg om andere zetten toe te staan als het bord veranderd is
             boardData[move] = 0;
@@ -113,26 +127,6 @@ public class AI {
                 bestVal = moveVal;
             }
         }
-
-        // //Zoek naar een leeg vakje
-        // for (int i = 0; i < boardData.length; i++) {
-        //     if (boardData[i] == 0) {
-        //         //Doe een zet als de maximizer
-        //         boardData[i] = player;
-
-        //         //Bepaal de score van de zet door een zet te doen als de minimizer
-        //         int moveVal = minimax(AiModel, false, 10, opponent, player);
-
-        //         //Maak het vakje van deze zet weer leeg om andere zetten toe te staan als het bord veranderd is
-        //         boardData[i] = 0;
-
-        //         //Als de score van de zet groter is dan de hoogst mogelijk score, kies dan deze zet op het echte bord
-        //         if (moveVal > bestVal) {
-        //             bestMove = i;
-        //             bestVal = moveVal;
-        //         }
-        //     }
-        // }
 
         return bestMove;
     }
