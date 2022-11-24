@@ -114,12 +114,17 @@ abstract public class Model {
     }
 
     abstract public int[] move(int idx, int[] currentBoard, int currentPlayer);
+
     abstract public boolean validMove(int idx, int[] gameBoard);
+
     abstract public ArrayList<Integer> getAvailableMoves(int[] gameBoard, int player);
+
     abstract public boolean availabeMovePlayer();
 
     abstract public int checkWinner();
+
     abstract public boolean checkTie();
+
     abstract public boolean isFinished();
 
 
@@ -172,6 +177,7 @@ abstract public class Model {
      * @return geeft de winnaar in een string terug.
      */
     abstract public String getStringWinner();
+
     abstract public int[] buildGameBoard();
 
     /**
@@ -190,7 +196,8 @@ abstract public class Model {
         startPlayer = start;
         winner = EMPTY;
         if (AiStart && playAi) {
-            gameBoard[ai.aiNewSet(gameBoard, PLAYER_ONE, this)] = PLAYER_TWO;
+            int idx = ai.aiNewSet(gameBoard, PLAYER_ONE, this);
+            userSet(idx);
         }
     }
 

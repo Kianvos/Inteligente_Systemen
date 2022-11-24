@@ -147,7 +147,12 @@ public class Controller {
             view.show("game");
             view.getGameView().show("local");
 
-            model.resetGame(playerVsAi, p1.equals("AI"), PLAYER_ONE);
+            int startPlayer = PLAYER_ONE;
+            if (p1.equals("AI")){
+                startPlayer = PLAYER_TWO;
+            }
+
+            model.resetGame(playerVsAi, p1.equals("AI"), startPlayer);
             view.getGameView().update(model);
             view.getGameView().setText(model.getCurrentPlayerString() + " is aan de beurt");
 
@@ -192,11 +197,17 @@ public class Controller {
 
         view.getGameView().getResetButton().addActionListener(e -> {
             if (model.getAgainstAi()){
-                model.resetGame(model.getAgainstAi(), Math.random() < 0.5, model.getStartPlayer());
+                boolean AiStart = Math.random() < 0.5;
+                if (AiStart){
+                    model.resetGame(model.getAgainstAi(), AiStart, PLAYER_TWO);
+                } else {
+                    model.resetGame(model.getAgainstAi(), AiStart, PLAYER_ONE);
+                }
                 view.getGameView().setText(model.getCurrentPlayerString() + " is aan de beurt");
             } else {
                 Random r = new Random();
                 int c = r.nextBoolean() ? PLAYER_ONE : PLAYER_TWO;
+
                 model.resetGame(model.getAgainstAi(), Math.random() < 0.5, c);
                 view.getGameView().setText(model.getCurrentPlayerString() + " is aan de beurt");
             }
