@@ -3,7 +3,7 @@ import java.util.ArrayList;
 
 public class AI {
 
-    private final int[] boardScore = {
+    private int[] boardScore = {
             100, -1, 5, 2, 2, 5, -1, 100,
             -1, -10, 1, 1, 1, 1, -10, -1,
             5, 1, 1, 1, 1, 1, 1, 5,
@@ -102,6 +102,7 @@ public class AI {
                 b = Math.min(b, best);
             }
 
+            best += isMax ? boardScore[move] : -boardScore[move];
             boardData[move] = 0;
         }
 
@@ -135,7 +136,7 @@ public class AI {
             //Bepaal de score van de zet door een zet te doen als de minimizer
             int moveVal = minimax(AiModel, false, 7, -1000, 1000, opponent, player);
 
-            moveVal += boardScore[move];
+            // moveVal += boardScore[move];
 
             //Maak het vakje van deze zet weer leeg om andere zetten toe te staan als het bord veranderd is
             boardData[move] = 0;
@@ -158,8 +159,15 @@ public class AI {
      * @return Een lege positie waar de zet opgedaan word
      */
     public int aiNewSet(int[] gameBoard, int opponent, Model model) {
+        boolean isOthello = model instanceof Othello;
+
+        if (!isOthello) {
+            int[] tttScore = { 1, 0, 1, 0, 100, 0, 1, 0, 1 };
+            this.boardScore = tttScore;
+        }
+
         //Maak een kopie van het spelbord die het algoritme kan gebruiken voor simulaties
-        Model AiModel = (model instanceof Othello) ? new Othello() : new TicTacToe();
+        Model AiModel = isOthello ? new Othello() : new TicTacToe();
         AiModel.setGameBoard(gameBoard);
 
         //Bepaal de zet met hoogste score, dus de zet die de grootste kans heeft om een overwinning op te leveren
