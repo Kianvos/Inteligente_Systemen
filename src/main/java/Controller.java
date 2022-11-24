@@ -147,7 +147,7 @@ public class Controller {
             view.show("game");
             view.getGameView().show("local");
 
-            model.resetGame(playerVsAi, p1.equals("ai"), PLAYER_ONE);
+            model.resetGame(playerVsAi, p1.equals("AI"), PLAYER_ONE);
             view.getGameView().update(model);
         });
     }
