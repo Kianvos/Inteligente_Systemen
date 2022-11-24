@@ -149,6 +149,8 @@ public class Controller {
 
             model.resetGame(playerVsAi, p1.equals("AI"), PLAYER_ONE);
             view.getGameView().update(model);
+            view.getGameView().setText(model.getCurrentPlayerString() + " is aan de beurt");
+
         });
     }
 
@@ -196,7 +198,7 @@ public class Controller {
                 Random r = new Random();
                 int c = r.nextBoolean() ? PLAYER_ONE : PLAYER_TWO;
                 model.resetGame(model.getAgainstAi(), Math.random() < 0.5, c);
-                view.getGameView().setText(c + " is aan de beurt");
+                view.getGameView().setText(model.getCurrentPlayerString() + " is aan de beurt");
             }
 
             view.getGameView().update(model);
