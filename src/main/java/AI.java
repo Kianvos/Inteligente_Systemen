@@ -102,7 +102,6 @@ public class AI {
                 b = Math.min(b, best);
             }
 
-            best += isMax ? boardScore[move] : -boardScore[move];
             boardData[move] = 0;
         }
 
@@ -132,11 +131,14 @@ public class AI {
         for (int move : moves) {
             //Doe een zet als de maximizer
             boardData[move] = player;
-
+            if (evaluate(AiModel, opponent, player) == 100){
+                boardData[move] = 0;
+                return move;
+            }
             //Bepaal de score van de zet door een zet te doen als de minimizer
-            int moveVal = minimax(AiModel, false, 7, -1000, 1000, opponent, player);
+            int moveVal = minimax(AiModel, false, 5, -1000, 1000, opponent, player);
 
-            // moveVal += boardScore[move];
+             moveVal += boardScore[move];
 
             //Maak het vakje van deze zet weer leeg om andere zetten toe te staan als het bord veranderd is
             boardData[move] = 0;
