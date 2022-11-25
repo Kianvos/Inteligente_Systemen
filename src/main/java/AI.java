@@ -69,7 +69,9 @@ public class AI {
         //Haal het spelbord op waarmee de functie is aangeroepen
         int[] boardData = AiModel.getBoardData();
         ArrayList<Integer> moves = isMax ? AiModel.getAvailableMoves(boardData, player) : AiModel.getAvailableMoves(boardData, opponent);
-
+        if (moves.size() == 0){
+            return score;
+        }
         //Bepaal de hoogst mogelijke score voor de maximizer en minimizer
         int best = isMax ? -10000 : 10000;
 
@@ -136,7 +138,7 @@ public class AI {
                 return move;
             }
             //Bepaal de score van de zet door een zet te doen als de minimizer
-            int moveVal = minimax(AiModel, false, 5, -1000, 1000, opponent, player);
+            int moveVal = minimax(AiModel, false, 8, -1000, 1000, opponent, player);
 
              moveVal += boardScore[move];
 
