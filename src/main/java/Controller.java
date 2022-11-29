@@ -54,15 +54,7 @@ public class Controller {
 
                 model = new TicTacToe();
                 view.getGameView().setBoardSize(3 * 3);
-                model.toggleIsOnline();
-                ExecutorService executor = Executors.newSingleThreadExecutor();
-                serverConnection = new ServerConnection(view, model, playerName);
 
-                view.show("game");
-                view.getGameView().show("online");
-
-                executor.submit(serverConnection);
-                executor.shutdown();
             }
 
             if (game.equals("Othello")) {
@@ -82,7 +74,15 @@ public class Controller {
                 model = new Othello();
                 view.getGameView().setBoardSize(8 * 8);
             }
+            model.toggleIsOnline();
+            ExecutorService executor = Executors.newSingleThreadExecutor();
+            serverConnection = new ServerConnection(view, model, playerName);
 
+            view.show("game");
+            view.getGameView().show("online");
+
+            executor.submit(serverConnection);
+            executor.shutdown();
         });
 
         view.getMenuView().getSingleplayerButton().addActionListener(e -> {
