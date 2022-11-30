@@ -82,6 +82,7 @@ public class AI {
 
                 //Bepaal de beste score door de functie opnieuw aan te roepen en een zet te doen als de minimizer
                 best = Math.max(best, minimax(AiModel, false, depth - 1, a, b, opponent, player));
+                best += boardScore[move];
 
                 if (best >= b) {
                     boardData[move] = 0;
@@ -95,6 +96,7 @@ public class AI {
 
                 //Bepaal de beste score door de functie opnieuw aan te roepen en een zet te doen als de maximizer
                 best = Math.min(best, minimax(AiModel, true, depth - 1, a, b, opponent, player));
+                best += boardScore[move];
 
                 if (best <= a) {
                     boardData[move] = 0;
@@ -133,25 +135,30 @@ public class AI {
         for (int move : moves) {
             //Doe een zet als de maximizer
             boardData[move] = player;
-            if (evaluate(AiModel, opponent, player) == 100){
+
+            if (evaluate(AiModel, opponent, player) == 100) {
+                System.out.println("Exited because of evaluation at move " + move);
                 boardData[move] = 0;
                 return move;
             }
+
             //Bepaal de score van de zet door een zet te doen als de minimizer
             int moveVal = minimax(AiModel, false, 8, -1000, 1000, opponent, player);
-
-             moveVal += boardScore[move];
+            moveVal += boardScore[move];
 
             //Maak het vakje van deze zet weer leeg om andere zetten toe te staan als het bord veranderd is
             boardData[move] = 0;
 
             //Als de score van de zet groter is dan de hoogst mogelijk score, kies dan deze zet op het echte bord
+            System.out.println(moveVal + " " + bestMove);
             if (moveVal > bestVal) {
+                System.out.println("New best: " + moveVal + " " + bestMove);
                 bestMove = move;
                 bestVal = moveVal;
             }
         }
 
+        System.out.println("Final bestMove: " + bestVal + " " + bestMove);
         return bestMove;
     }
 
