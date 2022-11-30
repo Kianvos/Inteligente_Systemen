@@ -13,7 +13,7 @@ public class ServerConnection implements Runnable {
     private boolean opponentStart;
 
     public ServerConnection(View view, Model model, String playerName) {
-        this.Hostname = "145.33.225.170"; // actual server: 145.33.225.170
+        this.Hostname = "127.0.0.1"; // actual server: 145.33.225.170
         this.portNumber = 7789;
         this.playerName = playerName;
         this.run = true;
@@ -26,7 +26,7 @@ public class ServerConnection implements Runnable {
     }
 
     public void disconnect() {
-        this.run = !(this.run);
+        this.run = false;
     }
 
     @Override
@@ -64,10 +64,15 @@ public class ServerConnection implements Runnable {
         in.readLine();  // remove first two lines the server returns upon connection
         out.println("login " + this.playerName);
         in.readLine(); // message: OK
-//        out.println("subscribe tic-tac-toe");
+        if(this.model instanceof Othello){
+            out.println("subscribe reversi");
+        }else{
+            out.println("subscribe tic-tac-toe");
+        }
         this.view.getGameView().setText(DEFAULT);
 
         boolean firstMoveDone = false;
+        this.model.setCurrentPlayer(2);
         while (isRun()) {
             if (in.ready()) {
                 String input = in.readLine();
@@ -79,23 +84,42 @@ public class ServerConnection implements Runnable {
                 if (input.contains("SVR GAME YOURTURN")) {
                     this.view.getGameView().setText("turn: " + this.playerName);
                     if (!firstMoveDone) {
-                        opponentStart = false;
+                        this.opponentStart = false;
                         firstMoveDone = true;
-                        model.setCurrentPlayer('X');
+                        if(this.model instanceof Othello){
+                            this.model.setCurrentPlayer(1);
+                        } else{
+                            this.model.setCurrentPlayer('X');
+                        }
+                        System.out.println(model.getStartPlayer());
                     }
                     this.view.getGameView().setText("turn: " + this.playerName);
-                    if (opponentStart) {
-                        out.println("move " + this.model.aiSet('X'));
-                    } else {
-                        out.println("move " + this.model.aiSet('O'));
+                    if (this.opponentStart) {
+                        if(this.model instanceof Othello){
+                            out.println("move " + this.model.aiSet(1));
+                        }
+                        else{
+                            out.println("move " + this.model.aiSet('X'));
+                        }
+                    }
+                    else {
+                        if(this.model instanceof Othello){
+                            out.println("move " + this.model.aiSet(2));
+                        } else{
+                            out.println("move " + this.model.aiSet('O'));
+                        }
                     }
                     this.view.getGameView().setText("turn: " + this.opponentName);
                 }
                 if (input.contains("SVR GAME MOVE")) {
                     if (!firstMoveDone) {
-                        opponentStart = true;
+                        this.opponentStart = true;
                         firstMoveDone = true;
-                        model.setCurrentPlayer('X');
+                        if(this.model instanceof Othello){
+                            this.model.setCurrentPlayer(1);
+                        } else{
+                            this.model.setCurrentPlayer('X');
+                        }
                     }
                     this.updateBoard(input);
                 }
@@ -127,7 +151,8 @@ public class ServerConnection implements Runnable {
      */
     private void updateBoard(String input) { // String input
         int index = input.indexOf("MOVE: \"");
-        int move = Integer.parseInt(input.substring(index + 7, index + 8));
+        String temp = input.substring(index + 7);
+        int move = Integer.parseInt(temp.substring(0, temp.indexOf("\"")));
         this.model.userSet(move);
         this.view.getGameView().update(this.model);
     }
@@ -137,7 +162,11 @@ public class ServerConnection implements Runnable {
      * to play a new game.
      */
     public void resetBoard(String message) {
-        this.model.resetGame(false, false, 'X');
+        if(model instanceof Othello){
+            this.model.resetGame(false, false, '1');
+        } else{
+            this.model.resetGame(false, false, 'X');
+        }
         this.view.getGameView().update(this.model);
         this.view.getGameView().setText(String.format("<html>%s<br />%s</html>", message, DEFAULT));
     }
