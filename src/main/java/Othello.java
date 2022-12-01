@@ -224,6 +224,11 @@ public class Othello extends Model {
         gameBoard[28] = BLACK;
         gameBoard[35] = BLACK;
         gameBoard[36] = WHITE;
+
+//        gameBoard[27] = BLACK;
+//        gameBoard[28] = WHITE;
+//        gameBoard[35] = WHITE;
+//        gameBoard[36] = BLACK;
         ArrayList<Integer> availableMoves = getAvailableMoves(gameBoard, getCurrentPlayer());
         for (Integer availableMove : availableMoves) {
             gameBoard[availableMove] = SUGGESTED;
