@@ -62,7 +62,9 @@ public class ServerConnection implements Runnable {
     private void connectedMain(PrintWriter out, BufferedReader in) throws IOException {
         in.readLine();
         in.readLine();  // remove first two lines the server returns upon connection
-        out.println("login " + this.playerName);
+//        out.println("login " + this.playerName);
+//        out.println("login " + "kian");
+        out.println("login " + "bot");
         in.readLine(); // message: OK
         if(this.model instanceof Othello){
             out.println("subscribe reversi");
@@ -125,18 +127,18 @@ public class ServerConnection implements Runnable {
                 }
                 if (input.contains("SVR GAME WIN")) {
                     String message = String.format("Last match winner: %s", this.playerName);
-                    resetBoard(message);
+//                    resetBoard(message);
                     firstMoveDone = false;
                 }
 
                 if (input.contains("SVR GAME DRAW")) {
-                    resetBoard("Last match: Draw");
+//                    resetBoard("Last match: Draw");
                     firstMoveDone = false;
                 }
 
                 if (input.contains("SVR GAME LOSS")) {
                     String message = String.format("Last match winner: %s", this.opponentName);
-                    resetBoard(message);
+//                    resetBoard(message);
                     firstMoveDone = false;
                 }
             }

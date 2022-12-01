@@ -90,10 +90,8 @@ public class AI {
 
         ArrayList<Integer> moves = isMax ? AiModel.getAvailableMoves(boardData, player) : AiModel.getAvailableMoves(boardData, opponent);
 
-        System.out.println(moves);
         //Bepaal de hoogst mogelijke score voor de maximizer en minimizer
         int best = isMax ? Integer.MIN_VALUE : Integer.MAX_VALUE;
-//        int[] scores = new
         for (int move : moves) {
             if (isMax) {
                 //Doe een zet als de maximizer
@@ -102,24 +100,24 @@ public class AI {
                 //Bepaal de beste score door de functie opnieuw aan te roepen en een zet te doen als de minimizer
                 best = Math.max(best, minimax(AiModel, false, depth - 1, a, b, opponent, player));
 
-//                if (best >= b) {
-//                    boardData[move] = 0;
-//                    break;
-//                }
-//
-//                a = Math.max(a, best);
+                if (best >= b) {
+                    boardData[move] = 0;
+                    break;
+                }
+
+                a = Math.max(a, best);
             } else {
                 //Doe een zet als de minimizer
                 boardData[move] = opponent;
                 //Bepaal de beste score door de functie opnieuw aan te roepen en een zet te doen als de maximizer
                 best = Math.min(best, minimax(AiModel, true, depth - 1, a, b, opponent, player));
 
-//                if (best <= a) {
-//                    boardData[move] = 0;
-//                    break;
-//                }
-//
-//                b = Math.min(b, best);
+                if (best <= a) {
+                    boardData[move] = 0;
+                    break;
+                }
+
+                b = Math.min(b, best);
             }
 
             boardData[move] = 0;
@@ -129,9 +127,8 @@ public class AI {
     }
 
     private int winHeuristics(int[] boardData, int player, int opponent) {
-        int playerScore = Collections.frequency(Arrays.asList(boardData), player);
-        int opponentScore = Collections.frequency(Arrays.asList(boardData), opponent);
-        System.out.println("Player: " + playerScore + "Opponent: " + opponentScore);
+        int playerScore = countScore(boardData, player);
+        int opponentScore = countScore(boardData, opponent);
         if (playerScore > opponentScore) {
             return 1000 * (playerScore - opponentScore);
         }
@@ -139,18 +136,18 @@ public class AI {
     }
 
     private int heuristics(int[] boardData, int player, int opponent) {
-        int playerScore = Collections.frequency(Arrays.asList(boardData), player);
-        int opponentScore = Collections.frequency(Arrays.asList(boardData), opponent);
+        int playerScore = countScore(boardData, player);
+        int opponentScore = countScore(boardData, opponent);
         int score = opponentScore - playerScore;
         score += CornerSideHeuristics(boardData, player);
         score -= CornerSideHeuristics(boardData, opponent);
-
+        int count = 0;
         for (int i = 0; i < aroundCorner.length; i++) {
             if (boardData[aroundCorner[i]] == opponent) {
-                score += 1;
+                count += 1;
             }
         }
-//        System.out.println(score);
+        score += count << 2;
         return score;
     }
 
@@ -199,6 +196,16 @@ public class AI {
         return score;
     }
 
+    private int countScore(int[] boardData, int disc) {
+        int count = 0;
+        for (int i = 0; i < boardData.length; i++) {
+            if (boardData[i] == disc) {
+                count++;
+            }
+        }
+        return count;
+    }
+
     /**
      * Geeft een lege positie op het bord terug waarbij de kans het grootste
      * is dat het een overwinning oplevert
@@ -229,7 +236,7 @@ public class AI {
             }
 
             //Bepaal de score van de zet door een zet te doen als de minimizer
-            int moveVal = minimax(AiModel, false, 6, Integer.MIN_VALUE, Integer.MAX_VALUE, opponent, player);
+            int moveVal = minimax(AiModel, false, 7, Integer.MIN_VALUE, Integer.MAX_VALUE, opponent, player);
 
             //Maak het vakje van deze zet weer leeg om andere zetten toe te staan als het bord veranderd is
             boardData[move] = 0;
@@ -280,7 +287,7 @@ public class AI {
             pos = bestMove;
         }
         long endtime = System.nanoTime();
-        System.out.println((double) (endtime - startTime) / 1000000000);
+//        System.out.println((double) (endtime - startTime) / 1000000000);
 
         // while (!choice) {
         //     int posChoise = bestMove;
