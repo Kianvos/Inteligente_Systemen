@@ -77,7 +77,9 @@ abstract public class Model {
         if (!validMove(idx, gameBoard)) {
             return;
         }
+
         gameBoard = move(idx, gameBoard, currentPlayer);
+        
         if (isFinished()) {
             winner = checkWinner();
             if (winner == PLAYER_ONE || winner == PLAYER_TWO) {
