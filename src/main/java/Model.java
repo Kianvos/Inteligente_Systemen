@@ -48,7 +48,7 @@ abstract public class Model {
         //Alleen als er tegen de AI gespeeld wordt.
         if (!isWinner && !isTie && againstAi && getAvailableMoves(gameBoard, PLAYER_TWO).size() > 0) {
             aiSet(PLAYER_ONE);
-            while (getAvailableMoves(gameBoard, PLAYER_ONE).size() == 0 && (!isWinner)){
+            while (getAvailableMoves(gameBoard, PLAYER_ONE).isEmpty() && !((isWinner && !isTie) ||  (!isWinner && isTie))){
                 aiSet(PLAYER_ONE);
             }
         }

@@ -32,13 +32,13 @@ public class Othello extends Model {
         int[] currentBoard = getBoardData();
 
 
-        if (Arrays.stream(currentBoard).anyMatch(i -> i == EMPTY)) { return false; }
+//        if (Arrays.stream(currentBoard).anyMatch(i -> i == EMPTY)) { return false; }
 
         int currentPlayer = getCurrentPlayer();
         int otherPlayer = (currentPlayer == BLACK) ? WHITE : BLACK;
 
-        ArrayList<Integer> availableMovesCurrentPlayer = getAvailableMoves(getBoardData(), currentPlayer);
-        ArrayList<Integer> availableMovesOtherPlayer = getAvailableMoves(getBoardData(), otherPlayer);
+        ArrayList<Integer> availableMovesCurrentPlayer = getAvailableMoves(currentBoard, currentPlayer);
+        ArrayList<Integer> availableMovesOtherPlayer = getAvailableMoves(currentBoard, otherPlayer);
 
         return (availableMovesCurrentPlayer.size() + availableMovesOtherPlayer.size()) == 0;
     }
