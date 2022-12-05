@@ -60,11 +60,13 @@ public class Othello extends Model {
                 if (c == BLACK) { currentPlayer++; }
                 if (c == WHITE) { opponent++; }
             }
+            if (currentPlayer == opponent){
+                return EMPTY;
+            }
 
-            return (currentPlayer > opponent) ? BLACK : WHITE;
+
         }
-
-        return EMPTY;
+        return (currentPlayer > opponent) ? BLACK : WHITE;
     }
 
     @Override

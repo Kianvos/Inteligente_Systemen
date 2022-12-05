@@ -69,19 +69,20 @@ public class AI {
      */
     private int minimax(Model AiModel, boolean isMax, int depth, int a, int b, int player, int opponent) {
         //Haal het spelbord op waarmee de functie is aangeroepen
-        int[] boardData = AiModel.getBoardData().clone();
+        int[] boardData = AiModel.getBoardData();
+        int[] tmpBoardData = Arrays.copyOf(boardData, boardData.length);
 //        System.out.println(countScore(boardData, player) + countScore(boardData, opponent));
         //Stop met puntentelling als de maximale diepte is bereikt
         if (depth == 0) {
             // System.out.println(depth);
-           for (int i = 0; i < 8; i++) {
-               for (int j = 0; j < 8; j++) {
-                   System.out.print(boardData[i*j+i] + " | ");
-               }
-               System.out.println();
-           }
-           System.out.println();
-           System.out.println();
+//           for (int i = 0; i < 8; i++) {
+//               for (int j = 0; j < 8; j++) {
+//                   System.out.print(boardData[i*j+i] + " | ");
+//               }
+//               System.out.println();
+//           }
+//           System.out.println();
+//           System.out.println();
             return heuristics(boardData, player, opponent);
         }
         //Controleer de score van de zet waarmee de functie is aangeroepen
@@ -96,17 +97,18 @@ public class AI {
 //            return +0;
 //        }
 
-        ArrayList<Integer> moves = isMax ? AiModel.getAvailableMoves(boardData, player) : AiModel.getAvailableMoves(boardData, opponent);
+        ArrayList<Integer> moves = isMax ? AiModel.getAvailableMoves(tmpBoardData, player) : AiModel.getAvailableMoves(tmpBoardData, opponent);
 
         //Bepaal de hoogst mogelijke score voor de maximizer en minimizer
         int best = isMax ? Integer.MIN_VALUE : Integer.MAX_VALUE;
 
         for (int move : moves) {
-            int[] curBoard = AiModel.getBoardData();
+//            int[] curBoard = AiModel.getBoardData();
 
             if (isMax) {
                 //Doe een zet als de maximizer
-                AiModel.move(move, curBoard, player);
+                int[] tmpBoard = AiModel.move(move, tmpBoardData, player);
+                AiModel.setGameBoard(tmpBoard);
 
                 //Bepaal de beste score door de functie opnieuw aan te roepen en een zet te doen als de minimizer
                 best = Math.max(best, minimax(AiModel, false, depth - 1, a, b, player, opponent));
@@ -118,7 +120,8 @@ public class AI {
                 a = Math.max(a, best);
             } else {
                 //Doe een zet als de minimizer
-                AiModel.move(move, curBoard, opponent);
+                int[] tmpBoard = AiModel.move(move, tmpBoardData, opponent);
+                AiModel.setGameBoard(tmpBoard);
 
                 //Bepaal de beste score door de functie opnieuw aan te roepen en een zet te doen als de maximizer
                 best = Math.min(best, minimax(AiModel, true, depth - 1, a, b, player, opponent));
@@ -130,7 +133,7 @@ public class AI {
                 b = Math.min(b, best);
             }
 
-            AiModel.setGameBoard(curBoard);
+            AiModel.setGameBoard(boardData);
         }
 
         return moves.isEmpty() ? winHeuristics(boardData, player, opponent) : best;
@@ -147,10 +150,10 @@ public class AI {
      * @return Lege positie op het bord
      */
     private int findBestMove(Model AiModel, int opponent) {
-        boolean isOthello = AiModel instanceof Othello;
+//        boolean isOthello = AiModel instanceof Othello;
         // Model tmpAiModel = isOthello ? new Othello() : new TicTacToe();
-        int[] boardData = AiModel.getBoardData().clone();
-
+        int[] boardData = AiModel.getBoardData();
+        int[] tmpBoardData = Arrays.copyOf(boardData, boardData.length);
         //Bepaal de hoogst mogelijke score die een bord zou kunnen hebben voor de minimizer
         int bestVal = Integer.MIN_VALUE;
         int bestMove = -1;
@@ -159,10 +162,10 @@ public class AI {
 
         ArrayList<Integer> moves = AiModel.getAvailableMoves(boardData, player);
         for (int move : moves) {
-            // tmpAiModel.setGameBoard(boardData);
-            // int[] tmpNewBoard = tmpAiModel.getBoardData();
 
-            AiModel.move(move, boardData, player);
+            int[] tmpBoard = AiModel.move(move, tmpBoardData, player);
+            AiModel.setGameBoard(tmpBoard);
+
             // tmpAiModel.setGameBoard(tmpNewBoard);
 
 //
@@ -172,13 +175,20 @@ public class AI {
 //                return move;
 //            }
             //Bepaal de score van de zet door een zet te doen als de minimizer
-            int moveVal = minimax(AiModel, false, 8, Integer.MIN_VALUE, Integer.MAX_VALUE, player, opponent);
+            int moveVal = minimax(AiModel, false, 7, Integer.MIN_VALUE, Integer.MAX_VALUE, player, opponent);
             //Als de score van de zet groter is dan de hoogst mogelijk score, kies dan deze zet op het echte bord
             if (moveVal > bestVal) {
                 bestMove = move;
                 bestVal = moveVal;
             }
-
+            for (int i = 0; i < 8; i++) {
+                for (int j = 0; j < 8; j++) {
+                    System.out.print(boardData[i * j + i] + " ");
+                    System.out.print(AiModel.getBoardData()[i * j + i] + " | ");
+                }
+                System.out.println();
+            }
+            System.out.println();
             AiModel.setGameBoard(boardData);
         }
 
@@ -239,8 +249,8 @@ public class AI {
         score += CornerSideHeuristics(boardData, player) << 2;
         score -= CornerSideHeuristics(boardData, opponent);
         int count = 0;
-        for (int i = 0; i < aroundCorner.length; i++) {
-            if (boardData[aroundCorner[i]] == opponent) {
+        for (int cornerIdx : aroundCorner) {
+            if (boardData[cornerIdx] == opponent) {
                 count += 1;
             }
         }

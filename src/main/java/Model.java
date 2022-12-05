@@ -84,10 +84,12 @@ abstract public class Model {
             winner = checkWinner();
             if (winner == PLAYER_ONE || winner == PLAYER_TWO) {
                 isWinner = true;
+            }else {
+                isTie = checkTie();
             }
+
         }
 
-        isTie = checkTie();
         //Veranderd wie er aan de beurt is.
         changeTurn();
 
