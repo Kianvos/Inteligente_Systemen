@@ -1,57 +1,75 @@
-
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 
+//https://courses.cs.washington.edu/courses/cse573/04au/Project/mini1/RUSSIA/Final_Paper.pdf
 public class AI {
+    private final int[] cornersIdx = {0, 7, 56, 63};
 
-    private final int[] upLeftSide = {0, 1, 2, 3, 4, 5, 6, 7, 8, 16, 24, 32, 40, 48, 56};
-    private final int[] upRightSide = {0, 1, 2, 3, 4, 5, 6, 7, 15, 23, 31, 39, 47, 55, 63};
-    private final int[] lowLeftSide = {0, 8, 16, 24, 32, 40, 48, 56, 57, 58, 59, 60, 61, 62, 63};
-    private final int[] lowRightSide = {7, 15, 23, 31, 39, 47, 55, 56, 57, 58, 59, 60, 61, 62, 63};
-    private final int[] aroundCorner = {1, 6, 8, 9, 14, 15, 48, 49, 54, 55, 57, 62};
-
-    private int[] boardScore = {
-            100, -10, 5, 2, 2, 5, -10, 100,
-            -10, -20, 1, 1, 1, 1, -20, -10,
-            5, 1, 1, 1, 1, 1, 1, 5,
-            2, 1, 1, 0, 0, 1, 1, 2,
-            2, 1, 1, 0, 0, 1, 1, 2,
-            5, 1, 1, 1, 1, 1, 1, 5,
-            -10, -20, 1, 1, 1, 1, -20, -10,
-            100, -10, 5, 2, 2, 5, -10, 100,
-    };
-
-    //int score = 0;
-    //        int[] boardData = AiModel.getBoardData();
-    //        for (int i = 0; i < boardData.length; i++) {
-    //            if (boardData[i] == player) {
-    //                score += boardScore[i];
-    //            } else if (boardData[i] == opponent) {
-    //                score -= boardScore[i];
-    //            }
-    //        }
-    //        return score;
+    private enum GamePhase {
+        EARLY_GAME,
+        MID_GAME,
+        END_GAME
+    }
 
     /**
-     * Controleert het bord of de maximizer of minimizer heeft gewonnen
+     * Geeft een lege positie op het bord terug waarbij de kans het grootste
+     * is dat het een overwinning oplevert
+     * /**
+     * Laat de AI een zet doen
      *
-     * @param AiModel Kopie van het echte spelbord waar de experimentele zetten op gedaan worden
-     * @return score van de zet
+     * @param gameBoard Bord van het huidige potje
+     * @param opponent  geeft mee welke speler de tegenstander is.
+     * @return Een lege positie waar de zet opgedaan word
      */
-    private int evaluate(Model AiModel, int player, int opponent) {
-        //Als de maximizer wint, tel dan 10 op bij de score
-        if (AiModel.checkWinner() != 0 && AiModel.checkWinner() == player) {
-            return +100;
-        }
+    public int aiNewSet(int[] gameBoard, int opponent, Model model) {
+        boolean isOthello = model instanceof Othello;
 
-        //Als de minimizer wint, trek dan 10 af van de score
-        else if (AiModel.checkWinner() != 0 && AiModel.checkWinner() == opponent) {
-            return -100;
+        //Cast naar de goede instantie
+        Model AiModel = isOthello ? (Othello) model : (TicTacToe) model;
+
+        //Bepaal de zet met hoogste score, dus de zet die de grootste kans heeft om een overwinning op te leveren
+        int bestMove = findBestMove(AiModel, opponent);
+
+        int player = (opponent == 1) ? 2 : 1;
+
+        ArrayList<Integer> valid = AiModel.getAvailableMoves(gameBoard, player);
+        int pos = valid.get(0);
+
+        if (valid.contains(bestMove)) {
+            pos = bestMove;
         }
-        //Niemand wint, dus geen punten er bij optellen
-        return +0;
+        return pos;
+    }
+
+    /**
+     * Geeft een lege positie op het bord terug waarbij de kans het grootste
+     * is dat het een overwinning oplevert
+     *
+     * @param AiModel  Kopie van het echte spelbord waar de experimentele zetten op gedaan worden
+     * @param opponent geeft mee welke speler de tegenstander is.
+     * @return Lege positie op het bord
+     */
+    private int findBestMove(Model AiModel, int opponent) {
+        int[] boardData = AiModel.getBoardData().clone();
+        final int[] startBoardData = Arrays.copyOf(boardData.clone(), boardData.length);
+
+        int bestScore = Integer.MIN_VALUE;
+        int bestMove = -1;
+        int AI = (opponent == 1) ? 2 : 1;
+        ArrayList<Integer> moves = AiModel.getAvailableMoves(boardData, AI);
+        for (int move : moves) {
+            AiModel.setGameBoard(AiModel.move(move, boardData, AI));
+
+            int score = minimax(AiModel, false, 5, Integer.MIN_VALUE, Integer.MAX_VALUE, AI, opponent);
+            if (score > bestScore) {
+                bestScore = score;
+                bestMove = move;
+            }
+            boardData = startBoardData.clone();
+            AiModel.setGameBoard(startBoardData);
+        }
+        System.out.println(bestMove);
+        return bestMove;
     }
 
     /**
@@ -67,246 +85,207 @@ public class AI {
      * @param opponent geeft mee welke speler de tegenstander is.
      * @return De score van het beste mogelijke zet
      */
-    private int minimax(Model AiModel, boolean isMax, int depth, int a, int b, int player, int opponent) {
-        //Haal het spelbord op waarmee de functie is aangeroepen
-        int[] boardData = AiModel.getBoardData();
-        int[] tmpBoardData = Arrays.copyOf(boardData, boardData.length);
-//        System.out.println(countScore(boardData, player) + countScore(boardData, opponent));
-        //Stop met puntentelling als de maximale diepte is bereikt
-        if (depth == 0) {
-            // System.out.println(depth);
-//           for (int i = 0; i < 8; i++) {
-//               for (int j = 0; j < 8; j++) {
-//                   System.out.print(boardData[i*j+i] + " | ");
-//               }
-//               System.out.println();
-//           }
-//           System.out.println();
-//           System.out.println();
-            return heuristics(boardData, player, opponent);
-        }
-        //Controleer de score van de zet waarmee de functie is aangeroepen
-//        int score = evaluate(AiModel, opponent, player);
-        //Geef de score terug als de maximizer of minimizer gewonnen heeft
-//        if (score != 0) {
-//            return score;
-//        }
+    private int minimax(Model AiModel, boolean isMax, int depth, int a, int b, int AI, int opponent) {
+        int[] boardData = AiModel.getBoardData().clone();
+        final int[] startBoardData = Arrays.copyOf(boardData.clone(), boardData.length);
+        ArrayList<Integer> availableMoves = isMax ? AiModel.getAvailableMoves(boardData, AI) : AiModel.getAvailableMoves(boardData, opponent);
 
-        //Geef niks terug als er gelijkspel is
-//        if (AiModel.checkTie()) {
-//            return +0;
-//        }
-
-        ArrayList<Integer> moves = isMax ? AiModel.getAvailableMoves(tmpBoardData, player) : AiModel.getAvailableMoves(tmpBoardData, opponent);
-
-        //Bepaal de hoogst mogelijke score voor de maximizer en minimizer
-        int best = isMax ? Integer.MIN_VALUE : Integer.MAX_VALUE;
-
-        for (int move : moves) {
-//            int[] curBoard = AiModel.getBoardData();
-
-            if (isMax) {
-                //Doe een zet als de maximizer
-                int[] tmpBoard = AiModel.move(move, tmpBoardData, player);
-                AiModel.setGameBoard(tmpBoard);
-
-                //Bepaal de beste score door de functie opnieuw aan te roepen en een zet te doen als de minimizer
-                best = Math.max(best, minimax(AiModel, false, depth - 1, a, b, player, opponent));
-
-                if (best >= b) {
-                    break;
-                }
-
-                a = Math.max(a, best);
-            } else {
-                //Doe een zet als de minimizer
-                int[] tmpBoard = AiModel.move(move, tmpBoardData, opponent);
-                AiModel.setGameBoard(tmpBoard);
-
-                //Bepaal de beste score door de functie opnieuw aan te roepen en een zet te doen als de maximizer
-                best = Math.min(best, minimax(AiModel, true, depth - 1, a, b, player, opponent));
-
-                if (best <= a) {
-                    break;
-                }
-
-                b = Math.min(b, best);
-            }
-
-            AiModel.setGameBoard(boardData);
+        if (depth == 0 || availableMoves.isEmpty()) {
+            return evaluate(AiModel, AI, opponent);
         }
 
-        return moves.isEmpty() ? winHeuristics(boardData, player, opponent) : best;
+        int bestScore = isMax ? Integer.MIN_VALUE : Integer.MAX_VALUE;
 
-//        return moves.isEmpty() ? winHeuristics(boardData, player, opponent) : best;
-    }
-
-    /**
-     * Geeft een lege positie op het bord terug waarbij de kans het grootste
-     * is dat het een overwinning oplevert
-     *
-     * @param AiModel  Kopie van het echte spelbord waar de experimentele zetten op gedaan worden
-     * @param opponent geeft mee welke speler de tegenstander is.
-     * @return Lege positie op het bord
-     */
-    private int findBestMove(Model AiModel, int opponent) {
-//        boolean isOthello = AiModel instanceof Othello;
-        // Model tmpAiModel = isOthello ? new Othello() : new TicTacToe();
-        int[] boardData = AiModel.getBoardData();
-        int[] tmpBoardData = Arrays.copyOf(boardData, boardData.length);
-        //Bepaal de hoogst mogelijke score die een bord zou kunnen hebben voor de minimizer
-        int bestVal = Integer.MIN_VALUE;
-        int bestMove = -1;
-        int player = 1;
-        player = (opponent == 1) ? 2 : 1;
-
-        ArrayList<Integer> moves = AiModel.getAvailableMoves(boardData, player);
-        for (int move : moves) {
-
-            int[] tmpBoard = AiModel.move(move, tmpBoardData, player);
-            AiModel.setGameBoard(tmpBoard);
-
-            // tmpAiModel.setGameBoard(tmpNewBoard);
-
-//
-//            if (evaluate(AiModel, player, opponent) == 100) {
-//                System.out.println("Exited because of evaluation at move " + move);
-//                boardData[move] = 0;
-//                return move;
-//            }
-            //Bepaal de score van de zet door een zet te doen als de minimizer
-            int moveVal = minimax(AiModel, false, 7, Integer.MIN_VALUE, Integer.MAX_VALUE, player, opponent);
-            //Als de score van de zet groter is dan de hoogst mogelijk score, kies dan deze zet op het echte bord
-            if (moveVal > bestVal) {
-                bestMove = move;
-                bestVal = moveVal;
-            }
-            for (int i = 0; i < 8; i++) {
-                for (int j = 0; j < 8; j++) {
-                    System.out.print(boardData[i * j + i] + " ");
-                    System.out.print(AiModel.getBoardData()[i * j + i] + " | ");
+        if (isMax) {
+            for (Integer move : availableMoves) {
+                for (int i = 0; i < boardData.length; i++) {
+                    if (boardData[i] != startBoardData[i]) {
+                        System.out.print(i);
+                    }
                 }
                 System.out.println();
-            }
-            System.out.println();
-            AiModel.setGameBoard(boardData);
-        }
+                AiModel.setGameBoard(AiModel.move(move, boardData, AI));
+                int score = minimax(AiModel, false, depth - 1, a, b, AI, opponent);
+                bestScore = Math.max(bestScore, score);
 
-        return bestMove;
+                boardData = startBoardData.clone();
+                AiModel.setGameBoard(startBoardData);
+
+                if (bestScore >= b) {
+                    break;
+                }
+
+                a = Math.max(a, bestScore);
+
+            }
+        } else {
+            for (Integer move : availableMoves) {
+                AiModel.setGameBoard(AiModel.move(move, boardData, opponent));
+                int score = minimax(AiModel, true, depth - 1, a, b, AI, opponent);
+                bestScore = Math.min(bestScore, score);
+
+                boardData = startBoardData.clone();
+                AiModel.setGameBoard(startBoardData);
+
+                if (bestScore <= a) {
+                    break;
+                }
+
+                b = Math.min(b, bestScore);
+
+            }
+        }
+        return bestScore;
     }
 
     /**
-     * Laat de AI een zet doen
+     * Controleert het bord of de maximizer of minimizer heeft gewonnen
      *
-     * @param gameBoard Bord van het huidige potje
-     * @param opponent  geeft mee welke speler de tegenstander is.
-     * @return Een lege positie waar de zet opgedaan word
+     * @param AiModel Kopie van het echte spelbord waar de experimentele zetten op gedaan worden
+     * @return score van de zet
      */
-    public int aiNewSet(int[] gameBoard, int opponent, Model model) {
-        boolean isOthello = model instanceof Othello;
-
-        if (!isOthello) {
-            int[] tttScore = {1, 0, 1, 0, 100, 0, 1, 0, 1};
-            this.boardScore = tttScore;
+    private int evaluate(Model AiModel, int player, int opponent) {
+        int[] boardData = AiModel.getBoardData();
+        if (AiModel.isFinished()) {
+            return 1000 * differenceEvaluate(boardData, player, opponent);
         }
-
-        //Maak een kopie van het spelbord die het algoritme kan gebruiken voor simulaties
-        Model AiModel = isOthello ? new Othello() : new TicTacToe();
-        AiModel.setGameBoard(gameBoard.clone());
-        long startTime = System.nanoTime();
-        //Bepaal de zet met hoogste score, dus de zet die de grootste kans heeft om een overwinning op te leveren
-        int bestMove = findBestMove(AiModel, opponent);
-
-        int pos = -1;
-        int player = 1;
-        player = (opponent == 1) ? 2 : 1;
-
-        ArrayList<Integer> valid = AiModel.getAvailableMoves(gameBoard, player);
-
-        if (valid.contains(bestMove)) {
-            pos = bestMove;
-        }
-        long endtime = System.nanoTime();
-//        System.out.println((double) (endtime - startTime) / 1000000000);
-
-
-        return pos;
-    }
-
-    private int winHeuristics(int[] boardData, int player, int opponent) {
-        int playerScore = countScore(boardData, player);
-        int opponentScore = countScore(boardData, opponent);
-        if (playerScore > opponentScore) {
-            return 1000 * (playerScore - opponentScore);
-        }
-        return -200000;
-    }
-
-    private int heuristics(int[] boardData, int player, int opponent) {
-        int playerScore = countScore(boardData, player);
-        int opponentScore = countScore(boardData, opponent);
-        int score = opponentScore - playerScore;
-        score += CornerSideHeuristics(boardData, player) << 2;
-        score -= CornerSideHeuristics(boardData, opponent);
-        int count = 0;
-        for (int cornerIdx : aroundCorner) {
-            if (boardData[cornerIdx] == opponent) {
-                count += 1;
-            }
-        }
-        score += count << 2;
-        return score;
-    }
-
-    private int CornerSideHeuristics(int[] boardData, int disc) {
+        int playerMoves = AiModel.getAvailableMoves(boardData, player).size();
+        int opponentMoves = AiModel.getAvailableMoves(boardData, opponent).size();
+        GamePhase gamePhase = getGamePhase(boardData);
         int score = 0;
-        if (boardData[0] == disc) {
-            score += 50;
-            int count = 0;
-            for (int i = 1; i < upLeftSide.length; i++) {
-                if (boardData[upLeftSide[i]] == disc) {
-                    count++;
-                }
-            }
-            score += count << 2;
+        score += 1000 * cornerCapturedEvaluate(boardData, player, opponent);
+        if (gamePhase == GamePhase.EARLY_GAME) {
+            score += 50 * positionsOfMovesEvaluate(playerMoves, opponentMoves);
+        } else if (gamePhase == GamePhase.MID_GAME) {
+            score += 20 * positionsOfMovesEvaluate(playerMoves, opponentMoves) + 10 * differenceEvaluate(boardData, player, opponent) + 100 * parityEvaluate(boardData);
+        } else if (gamePhase == GamePhase.END_GAME) {
+            score += 100 * positionsOfMovesEvaluate(playerMoves, opponentMoves) + 500 * differenceEvaluate(boardData, player, opponent) + 500 * parityEvaluate(boardData);
         }
-        if (boardData[7] == disc) {
-            score += 50;
-            int count = 0;
-            for (int i = 1; i < upRightSide.length; i++) {
-                if (boardData[upRightSide[i]] == disc) {
-                    count++;
-                }
-            }
-            score += count << 2;
-        }
-        if (boardData[56] == disc) {
-            score += 50;
-            int count = 0;
-            for (int i = 1; i < lowLeftSide.length; i++) {
-                if (boardData[lowLeftSide[i]] == disc) {
-                    count++;
-                }
-            }
-            score += count << 2;
-        }
-        if (boardData[63] == disc) {
-            score += 50;
-            int count = 0;
-            for (int i = 1; i < lowRightSide.length; i++) {
-                if (boardData[lowRightSide[i]] == disc) {
-                    count++;
-                }
-            }
-            score += count << 2;
-        }
+
         return score;
     }
 
+
+    /**
+     * Bekijkt in welke fase van de game je zit.
+     *
+     * @param boardData geeft het speelbord van dat moment mee.
+     * @return in welke fase van de game je zit. Daar wordt de evaluatie op aangepast.
+     */
+    private GamePhase getGamePhase(int[] boardData) {
+        int discs = 0;
+        for (int i = 0; i < boardData.length; i++) {
+            if (boardData[i] == 1 || boardData[i] == 2) {
+                discs++;
+            }
+        }
+        if (discs < 20) {
+            return GamePhase.EARLY_GAME;
+        } else if (discs < 50) {
+            return GamePhase.MID_GAME;
+        } else {
+            return GamePhase.END_GAME;
+        }
+    }
+
+
+    /**
+     * Bekijkt hoeveel stenen geplaatst zijn door de player en door de tegenstander.
+     *
+     * @param boardData geeft het speelbord van dat moment mee
+     * @param player    geeft de player mee.
+     * @param opponent  geeft de tegenstander mee.
+     * @return de percentage van de stenen die geplaatst zijn door de AI.
+     */
+    private int differenceEvaluate(int[] boardData, int player, int opponent) {
+        int playerCount = countScore(boardData, player);
+        int opponentCount = countScore(boardData, opponent);
+        if (playerCount + opponentCount != 0) {
+            return 100 * (playerCount - opponentCount) / (playerCount + opponentCount);
+        }
+        return 0;
+    }
+
+    /**
+     * Kijkt wie de meeste zetten als mogelijkheid heeft. Als tegenstander 0 heeft is positief, dan ben je zelf vaker aan de beurt.
+     * Als de tegenstander maar 1 mogelijkheid heeft, is er grotere kans dat hij slechte zet moet doen.
+     *
+     * @param playerMoves   geeft het aantal moves van de AI mee.
+     * @param opponentMoves geeft de tegenstander mee.
+     * @return de verhouding van mogelijke moves tussen de AI en de opponent
+     */
+    private int positionsOfMovesEvaluate(int playerMoves, int opponentMoves) {
+        if (playerMoves + opponentMoves != 0) {
+            return 100 * (playerMoves - opponentMoves) / (playerMoves + opponentMoves);
+        }
+        return 0;
+    }
+
+    /**
+     * Kijkt naar de hoeken.
+     *
+     * @param boardData geeft het speelbord van dat moment mee
+     * @param player    geeft de player mee.
+     * @param opponent  geeft de tegenstander mee.
+     * @return de verhouding van de hoeken tussen de AI en de opponent
+     */
+    private int cornerCapturedEvaluate(int[] boardData, int player, int opponent) {
+        int playerCorner = 0;
+        int opponentCorner = 0;
+        for (int corner : cornersIdx) {
+            if (boardData[corner] == player) {
+                playerCorner++;
+            } else if (boardData[corner] == opponent) {
+                opponentCorner++;
+            }
+        }
+        if (playerCorner + opponentCorner != 0) {
+            return 100 * (playerCorner - opponentCorner) / (playerCorner + opponentCorner);
+
+        }
+        return 0;
+    }
+
+
+    /**
+     * Kijkt of er een restwaarde is als je deelt door 2
+     *
+     * @param boardData geeft het speelbord van dat moment mee
+     * @return Of je een extra zet hebt ten opzichte van de tegenstander
+     */
+    private int parityEvaluate(int[] boardData) {
+        int remain = 64 - getTotalCount(boardData);
+        return remain % 2 == 0 ? -1 : 1;
+    }
+
+    /**
+     * Telt op hoeveel disks jij op het spelbord hebt staan.
+     *
+     * @param boardData geeft het speelbord van dat moment mee
+     * @param disc      geeft mee voor welke je wil kijken hoeveel er zijn.
+     * @return het aantal disks wat je hebt
+     */
     private int countScore(int[] boardData, int disc) {
         int count = 0;
         for (int i = 0; i < boardData.length; i++) {
             if (boardData[i] == disc) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+
+    /**
+     * Telt op hoeveel disks er op het speelbord staan. Van de AI of van de opponent.
+     *
+     * @param boardData geeft het speelbord van dat moment mee
+     * @return het aantal disks wat er op het speelbord staat
+     */
+    private int getTotalCount(int[] boardData) {
+        int count = 0;
+        for (int i = 0; i < boardData.length; i++) {
+            if (boardData[i] == 1 || boardData[i] == 2) {
                 count++;
             }
         }

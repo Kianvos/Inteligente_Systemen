@@ -42,14 +42,15 @@ abstract public class Model {
         if (!validMove(idx, gameBoard)) {
             return;
         }
+        int player = getCurrentPlayer();
         userSet(idx);
 
         //Alleen als het spel nog niet geëindigd is.
         //Alleen als er tegen de AI gespeeld wordt.
         if (!isWinner && !isTie && againstAi && getAvailableMoves(gameBoard, PLAYER_TWO).size() > 0) {
-            aiSet(PLAYER_ONE);
+            aiSet(player);
             while (getAvailableMoves(gameBoard, PLAYER_ONE).isEmpty() && !((isWinner && !isTie) ||  (!isWinner && isTie))){
-                aiSet(PLAYER_ONE);
+                aiSet(player);
             }
         }
     }
@@ -241,5 +242,16 @@ abstract public class Model {
      */
     public int getSize() {
         return size;
+    }
+
+    @Override
+    public String toString() {
+        for (int i = 0; i < gameBoard.length/8; i++) {
+            for (int j = 0; j < gameBoard.length/8; j++) {
+                System.out.print(gameBoard[i*8+j] + "| ");
+            }
+            System.out.println();
+        }
+        return "";
     }
 }
