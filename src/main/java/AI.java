@@ -1,16 +1,7 @@
 import java.util.ArrayList;
 import java.util.Arrays;
 
-//https://courses.cs.washington.edu/courses/cse573/04au/Project/mini1/RUSSIA/Final_Paper.pdf
-public class AI {
-    private final int[] cornersIdx = {0, 7, 56, 63};
-
-    private enum GamePhase {
-        EARLY_GAME,
-        MID_GAME,
-        END_GAME
-    }
-
+abstract public class AI {
     /**
      * Geeft een lege positie op het bord terug waarbij de kans het grootste
      * is dat het een overwinning oplevert
@@ -68,7 +59,6 @@ public class AI {
             boardData = startBoardData.clone();
             AiModel.setGameBoard(startBoardData);
         }
-        System.out.println(bestMove);
         return bestMove;
     }
 
@@ -98,12 +88,6 @@ public class AI {
 
         if (isMax) {
             for (Integer move : availableMoves) {
-                for (int i = 0; i < boardData.length; i++) {
-                    if (boardData[i] != startBoardData[i]) {
-                        System.out.print(i);
-                    }
-                }
-                System.out.println();
                 AiModel.setGameBoard(AiModel.move(move, boardData, AI));
                 int score = minimax(AiModel, false, depth - 1, a, b, AI, opponent);
                 bestScore = Math.max(bestScore, score);
@@ -138,157 +122,4 @@ public class AI {
         return bestScore;
     }
 
-    /**
-     * Controleert het bord of de maximizer of minimizer heeft gewonnen
-     *
-     * @param AiModel Kopie van het echte spelbord waar de experimentele zetten op gedaan worden
-     * @return score van de zet
-     */
-    private int evaluate(Model AiModel, int player, int opponent) {
-        int[] boardData = AiModel.getBoardData();
-        if (AiModel.isFinished()) {
-            return 1000 * differenceEvaluate(boardData, player, opponent);
-        }
-        int playerMoves = AiModel.getAvailableMoves(boardData, player).size();
-        int opponentMoves = AiModel.getAvailableMoves(boardData, opponent).size();
-        GamePhase gamePhase = getGamePhase(boardData);
-        int score = 0;
-        score += 1000 * cornerCapturedEvaluate(boardData, player, opponent);
-        if (gamePhase == GamePhase.EARLY_GAME) {
-            score += 50 * positionsOfMovesEvaluate(playerMoves, opponentMoves);
-        } else if (gamePhase == GamePhase.MID_GAME) {
-            score += 20 * positionsOfMovesEvaluate(playerMoves, opponentMoves) + 10 * differenceEvaluate(boardData, player, opponent) + 100 * parityEvaluate(boardData);
-        } else if (gamePhase == GamePhase.END_GAME) {
-            score += 100 * positionsOfMovesEvaluate(playerMoves, opponentMoves) + 500 * differenceEvaluate(boardData, player, opponent) + 500 * parityEvaluate(boardData);
-        }
-
-        return score;
-    }
-
-
-    /**
-     * Bekijkt in welke fase van de game je zit.
-     *
-     * @param boardData geeft het speelbord van dat moment mee.
-     * @return in welke fase van de game je zit. Daar wordt de evaluatie op aangepast.
-     */
-    private GamePhase getGamePhase(int[] boardData) {
-        int discs = 0;
-        for (int i = 0; i < boardData.length; i++) {
-            if (boardData[i] == 1 || boardData[i] == 2) {
-                discs++;
-            }
-        }
-        if (discs < 20) {
-            return GamePhase.EARLY_GAME;
-        } else if (discs < 50) {
-            return GamePhase.MID_GAME;
-        } else {
-            return GamePhase.END_GAME;
-        }
-    }
-
-
-    /**
-     * Bekijkt hoeveel stenen geplaatst zijn door de player en door de tegenstander.
-     *
-     * @param boardData geeft het speelbord van dat moment mee
-     * @param player    geeft de player mee.
-     * @param opponent  geeft de tegenstander mee.
-     * @return de percentage van de stenen die geplaatst zijn door de AI.
-     */
-    private int differenceEvaluate(int[] boardData, int player, int opponent) {
-        int playerCount = countScore(boardData, player);
-        int opponentCount = countScore(boardData, opponent);
-        if (playerCount + opponentCount != 0) {
-            return 100 * (playerCount - opponentCount) / (playerCount + opponentCount);
-        }
-        return 0;
-    }
-
-    /**
-     * Kijkt wie de meeste zetten als mogelijkheid heeft. Als tegenstander 0 heeft is positief, dan ben je zelf vaker aan de beurt.
-     * Als de tegenstander maar 1 mogelijkheid heeft, is er grotere kans dat hij slechte zet moet doen.
-     *
-     * @param playerMoves   geeft het aantal moves van de AI mee.
-     * @param opponentMoves geeft de tegenstander mee.
-     * @return de verhouding van mogelijke moves tussen de AI en de opponent
-     */
-    private int positionsOfMovesEvaluate(int playerMoves, int opponentMoves) {
-        if (playerMoves + opponentMoves != 0) {
-            return 100 * (playerMoves - opponentMoves) / (playerMoves + opponentMoves);
-        }
-        return 0;
-    }
-
-    /**
-     * Kijkt naar de hoeken.
-     *
-     * @param boardData geeft het speelbord van dat moment mee
-     * @param player    geeft de player mee.
-     * @param opponent  geeft de tegenstander mee.
-     * @return de verhouding van de hoeken tussen de AI en de opponent
-     */
-    private int cornerCapturedEvaluate(int[] boardData, int player, int opponent) {
-        int playerCorner = 0;
-        int opponentCorner = 0;
-        for (int corner : cornersIdx) {
-            if (boardData[corner] == player) {
-                playerCorner++;
-            } else if (boardData[corner] == opponent) {
-                opponentCorner++;
-            }
-        }
-        if (playerCorner + opponentCorner != 0) {
-            return 100 * (playerCorner - opponentCorner) / (playerCorner + opponentCorner);
-
-        }
-        return 0;
-    }
-
-
-    /**
-     * Kijkt of er een restwaarde is als je deelt door 2
-     *
-     * @param boardData geeft het speelbord van dat moment mee
-     * @return Of je een extra zet hebt ten opzichte van de tegenstander
-     */
-    private int parityEvaluate(int[] boardData) {
-        int remain = 64 - getTotalCount(boardData);
-        return remain % 2 == 0 ? -1 : 1;
-    }
-
-    /**
-     * Telt op hoeveel disks jij op het spelbord hebt staan.
-     *
-     * @param boardData geeft het speelbord van dat moment mee
-     * @param disc      geeft mee voor welke je wil kijken hoeveel er zijn.
-     * @return het aantal disks wat je hebt
-     */
-    private int countScore(int[] boardData, int disc) {
-        int count = 0;
-        for (int i = 0; i < boardData.length; i++) {
-            if (boardData[i] == disc) {
-                count++;
-            }
-        }
-        return count;
-    }
-
-
-    /**
-     * Telt op hoeveel disks er op het speelbord staan. Van de AI of van de opponent.
-     *
-     * @param boardData geeft het speelbord van dat moment mee
-     * @return het aantal disks wat er op het speelbord staat
-     */
-    private int getTotalCount(int[] boardData) {
-        int count = 0;
-        for (int i = 0; i < boardData.length; i++) {
-            if (boardData[i] == 1 || boardData[i] == 2) {
-                count++;
-            }
-        }
-        return count;
-    }
-}
+    abstract public int evaluate(Model AiModel, int player, int opponent);}

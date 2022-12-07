@@ -139,9 +139,6 @@ public class Controller {
                 return;
             }
 
-            // System.out.println(p1);
-            // System.out.println(p2);
-
             Boolean playerVsAi = p1.equals("AI") || p2.equals("AI");
 
             view.show("game");

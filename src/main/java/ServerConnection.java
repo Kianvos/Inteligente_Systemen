@@ -62,13 +62,12 @@ public class ServerConnection implements Runnable {
     private void connectedMain(PrintWriter out, BufferedReader in) throws IOException {
         in.readLine();
         in.readLine();  // remove first two lines the server returns upon connection
-//        out.println("login " + this.playerName);
+        out.println("login " + this.playerName);
 //        out.println("login " + "kian");
-        out.println("login " + "bot");
         in.readLine(); // message: OK
-        if(this.model instanceof Othello){
+        if (this.model instanceof Othello) {
             out.println("subscribe reversi");
-        }else{
+        } else {
             out.println("subscribe tic-tac-toe");
         }
         this.view.getGameView().setText(DEFAULT);
@@ -88,28 +87,14 @@ public class ServerConnection implements Runnable {
                     if (!firstMoveDone) {
                         this.opponentStart = false;
                         firstMoveDone = true;
-                        if(this.model instanceof Othello){
-                            this.model.setCurrentPlayer(1);
-                        } else{
-                            this.model.setCurrentPlayer('X');
-                        }
+                        this.model.setCurrentPlayer(1);
                         System.out.println(model.getStartPlayer());
                     }
                     this.view.getGameView().setText("turn: " + this.playerName);
                     if (this.opponentStart) {
-                        if(this.model instanceof Othello){
-                            out.println("move " + this.model.aiSet(1));
-                        }
-                        else{
-                            out.println("move " + this.model.aiSet('X'));
-                        }
-                    }
-                    else {
-                        if(this.model instanceof Othello){
-                            out.println("move " + this.model.aiSet(2));
-                        } else{
-                            out.println("move " + this.model.aiSet('O'));
-                        }
+                        out.println("move " + this.model.aiSet(1));
+                    } else {
+                        out.println("move " + this.model.aiSet(2));
                     }
                     this.view.getGameView().setText("turn: " + this.opponentName);
                 }
@@ -117,11 +102,7 @@ public class ServerConnection implements Runnable {
                     if (!firstMoveDone) {
                         this.opponentStart = true;
                         firstMoveDone = true;
-                        if(this.model instanceof Othello){
-                            this.model.setCurrentPlayer(1);
-                        } else{
-                            this.model.setCurrentPlayer('X');
-                        }
+                        this.model.setCurrentPlayer(1);
                     }
                     this.updateBoard(input);
                 }
@@ -164,11 +145,8 @@ public class ServerConnection implements Runnable {
      * to play a new game.
      */
     public void resetBoard(String message) {
-        if(model instanceof Othello){
-            this.model.resetGame(false, false, '1');
-        } else{
-            this.model.resetGame(false, false, 'X');
-        }
+
+        this.model.resetGame(false, false, 1);
         this.view.getGameView().update(this.model);
         this.view.getGameView().setText(String.format("<html>%s<br />%s</html>", message, DEFAULT));
     }

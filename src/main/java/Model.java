@@ -22,7 +22,7 @@ abstract public class Model {
     private final int SUGGESTED = 3;
 
 
-    public Model(int size) {
+    public Model(int size, AI ai) {
         this.size = size;
         this.currentPlayer = PLAYER_ONE;
         this.gameBoard = buildGameBoard();
@@ -30,7 +30,7 @@ abstract public class Model {
         this.isTie = false;
         this.isOnline = false;
         this.winner = EMPTY;
-        this.ai = new AI();
+        this.ai = ai;
     }
 
     /**
