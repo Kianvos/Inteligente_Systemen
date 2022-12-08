@@ -62,8 +62,8 @@ public class ServerConnection implements Runnable {
     private void connectedMain(PrintWriter out, BufferedReader in) throws IOException {
         in.readLine();
         in.readLine();  // remove first two lines the server returns upon connection
-        out.println("login " + this.playerName);
-//        out.println("login " + "kian");
+        // out.println("login " + this.playerName);
+       out.println("login " + "kian");
         in.readLine(); // message: OK
         if (this.model instanceof Othello) {
             out.println("subscribe reversi");

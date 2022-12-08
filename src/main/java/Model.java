@@ -1,4 +1,10 @@
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 abstract public class Model {
 
@@ -82,6 +88,23 @@ abstract public class Model {
         gameBoard = move(idx, gameBoard, currentPlayer);
         
         if (isFinished()) {
+            HashMap<Integer, Integer> table = ai.getTable();
+            File file = new File("data.json");
+            if (!file.exists()) { try { file.createNewFile(); } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            } }
+
+            try {
+                FileOutputStream f = new FileOutputStream(file);
+                ObjectOutputStream s = new ObjectOutputStream(f);
+                s.writeObject(table);
+                s.close();
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+
             winner = checkWinner();
             if (winner == PLAYER_ONE || winner == PLAYER_TWO) {
                 isWinner = true;

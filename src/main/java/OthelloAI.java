@@ -2,7 +2,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 //https://courses.cs.washington.edu/courses/cse573/04au/Project/mini1/RUSSIA/Final_Paper.pdf
-public class OthelloAI extends AI{
+public class OthelloAI extends AI {
     private final int[] cornersIdx = {0, 7, 56, 63};
 
     private enum GamePhase {
