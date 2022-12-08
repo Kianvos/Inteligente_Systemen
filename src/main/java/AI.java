@@ -1,9 +1,36 @@
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
 abstract public class AI {
-    private HashMap<Integer, Integer> table = new HashMap<Integer, Integer>();
+    private HashMap<Integer, Integer> table;
+
+    public AI() {
+        File file = new File("data.json");
+
+        if (!file.exists()) { 
+            table = new HashMap<>(); 
+        } else {
+            try {
+                FileInputStream f = new FileInputStream(file);
+                ObjectInputStream s = new ObjectInputStream(f);
+                try {
+                    table = (HashMap<Integer, Integer>) s.readObject();
+                } catch (ClassNotFoundException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+                s.close();
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+    }
 
     /**
      * Geeft een lege positie op het bord terug waarbij de kans het grootste
