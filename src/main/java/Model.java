@@ -89,7 +89,7 @@ abstract public class Model {
         
         if (isFinished()) {
             HashMap<Integer, Integer> table = ai.getTable();
-            File file = new File("data.json");
+            File file = new File("../../../data");
             if (!file.exists()) { try { file.createNewFile(); } catch (IOException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();

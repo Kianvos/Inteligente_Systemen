@@ -10,11 +10,12 @@ abstract public class AI {
     private HashMap<Integer, Integer> table;
 
     public AI() {
-        File file = new File("data.json");
+        File file = new File("../../../data");
 
         if (!file.exists()) { 
             table = new HashMap<>(); 
         } else {
+            System.out.println("Found File");
             try {
                 FileInputStream f = new FileInputStream(file);
                 ObjectInputStream s = new ObjectInputStream(f);
@@ -91,7 +92,7 @@ abstract public class AI {
         for (int move : moves) {
             AiModel.setGameBoard(AiModel.move(move, boardData, AI));
 
-            int score = minimax(AiModel, false, 5, Integer.MIN_VALUE, Integer.MAX_VALUE, AI, opponent);
+            int score = minimax(AiModel, false, 1, Integer.MIN_VALUE, Integer.MAX_VALUE, AI, opponent);
             if (score > bestScore) {
                 bestScore = score;
                 bestMove = move;
