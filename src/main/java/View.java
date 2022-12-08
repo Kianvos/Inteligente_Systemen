@@ -42,15 +42,6 @@ public class View {
     }
 
     public void show(String panel) {
-        // TODO: Geen idee waar dit voor is
-        // if (panel.equals("game") || panel.equals("online")) {
-        //     gamePanel.setVisible(true);
-        //     frame.setVisible(true);
-        // } else {
-        //     gamePanel.setVisible(false);
-        //     frame.setVisible(false);
-        // }
-        
         viewsLayout.show(views, panel);
     }
 
@@ -77,10 +68,10 @@ class MenuView extends JPanel {
         super(new GridLayout(3, 1));
         setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
-        String[] gameTypes = { "TicTacToe", "Othello" };
+        String[] gameTypes = {"TicTacToe", "Othello"};
         this.games = new JComboBox<String>(gameTypes);
 
-        String[] playerTypes = { "Player", "AI" };
+        String[] playerTypes = {"Player", "AI"};
         this.p1 = new JComboBox<String>(playerTypes);
         this.p2 = new JComboBox<String>(playerTypes);
 
@@ -135,6 +126,7 @@ class MenuView extends JPanel {
 
     /**
      * Styles the button given
+     *
      * @param button button
      */
     public void styleButton(JButton button) {
@@ -144,6 +136,7 @@ class MenuView extends JPanel {
 
     /**
      * Get all currently selected dropdown options
+     *
      * @return [games.selected, p1.selected, p2.selected]
      */
     public String[] getSelected() {
@@ -174,6 +167,7 @@ class GameView extends JPanel {
 
     // Just making the GameView nicer to look at
     private JLabel textfield;
+    private JLabel textScoreField;
     private JPanel top;
 
     private CardLayout topRightLayout;
@@ -215,7 +209,8 @@ class GameView extends JPanel {
 
 
     public void setupGameView() {
-        setupTextfield();
+        textfield = setupTextfield();
+        textScoreField = setupTextfield();
         setupTopPanel();
         setupButtons();
     }
@@ -223,32 +218,45 @@ class GameView extends JPanel {
     /**
      * Sets up textfield
      */
-    public void setupTextfield() {
-        this.textfield = new JLabel();
-        textfield.setBackground(new Color(105, 105, 105));
-        textfield.setForeground(new Color(0, 0, 0));
-        textfield.setFont(new Font(textfield.getFont().toString(), Font.BOLD, 20));
-        textfield.setHorizontalAlignment(JLabel.CENTER);
-        // textfield.setText();
-        textfield.setPreferredSize(new Dimension(300, 140));
-        textfield.setOpaque(true);
+    public JLabel setupTextfield() {
+        JLabel text = new JLabel();
+        text.setFont(new Font(text.getFont().toString(), Font.BOLD, 18));
+        text.setForeground(new Color(0,0,0));
+        text.setBackground(new Color(105, 105, 105));
+        text.setHorizontalAlignment(JLabel.CENTER);
+        text.setPreferredSize(new Dimension(300, 75));
+        text.setOpaque(true);
+        return text;
     }
 
     public void setupTopPanel() {
-        this.top = new JPanel();
+        this.top = new JPanel(new GridBagLayout());
         top.setSize(500, 150);
         top.setPreferredSize(new Dimension(500, 150));
 
-        top.add(textfield);
-        setupTopRight();
+        JPanel textTop = setupTextPanel();
 
+        textTop.setPreferredSize(new Dimension(300, 140));
+        topRight = setupTopRight();
+        topRight.setPreferredSize(new Dimension(160, 140));
+
+
+        top.add(textTop);
+        top.add(topRight);
         add(top, BorderLayout.NORTH);
     }
 
-    public void setupTopRight() {
-        this.topRightLayout = new CardLayout();
-        this.topRight = new JPanel(topRightLayout);
+    public JPanel setupTextPanel() {
+        JPanel textPanel = new JPanel(new GridLayout(2, 1));
+        textPanel.add(textfield);
+        textPanel.add(textScoreField);
+        textPanel.setOpaque(true);
+        return textPanel;
+    }
 
+    public JPanel setupTopRight() {
+        topRightLayout = new CardLayout();
+        topRight = new JPanel(topRightLayout);
         styleRightTopButton(resetButton);
         styleRightTopButton(menuButton);
         styleRightTopButton(disconnectButton);
@@ -266,7 +274,7 @@ class GameView extends JPanel {
         // Default but has to be overwritten by thisView.show("online");
         topRightLayout.show(topRight, "local");
 
-        top.add(topRight);
+        return topRight;
     }
 
     /**
@@ -289,15 +297,15 @@ class GameView extends JPanel {
 
     /**
      * Hier worden alle knoppen geupdate op basis van wat er op het vakje staat (x, o)
+     *
      * @param model model die beheert over alle game logica
      */
     public void update(Model model) {
         int[] board = model.getBoardData();
-
+        final int PLAYER_ONE = 1;
+        final int PLAYER_TWO = 2;
+        final int SUGGESTED = 3;
         for (int i = 0; i < size; i++) {
-            final int PLAYER_ONE = 1;
-            final int PLAYER_TWO = 2;
-            final int SUGGESTED = 3;
 
             if (board[i] == PLAYER_ONE) {
                 buttons[i].setForeground(playerOneColor);
@@ -309,7 +317,7 @@ class GameView extends JPanel {
                 buttons[i].setText(playerTwoPiece);
                 continue;
             }
-            if (board[i] == SUGGESTED){
+            if (board[i] == SUGGESTED) {
                 buttons[i].setForeground(new Color(150, 150, 150));
                 buttons[i].setText("-");
                 continue;
@@ -319,10 +327,18 @@ class GameView extends JPanel {
             buttons[i].setText("");
         }
 
+
         if (model.isWinner()) {
             textfield.setText(model.getStringWinner() + " heeft gewonnen!");
-         } else if (model.isTie()) {
+        } else if (model.isTie()) {
             textfield.setText("Gelijkspel");
+        }
+
+        if (model instanceof Othello){
+            int scorePlayerOne = Othello.countScore(board, PLAYER_ONE);
+            int scorePlayerTwo = Othello.countScore(board, PLAYER_TWO);
+            textScoreField.setText("Zwart " + scorePlayerOne + " - " + scorePlayerTwo + " Wit");
+
         }
     }
 
@@ -332,6 +348,7 @@ class GameView extends JPanel {
 
     /**
      * Styles the button given
+     *
      * @param button button
      */
     public void styleButton(JButton button) {
@@ -344,18 +361,22 @@ class GameView extends JPanel {
 
     /**
      * Styles the button given for the topRight panel
+     *
      * @param button button
      */
     public void styleRightTopButton(JButton button) {
         button.setFocusable(false);
         button.setFont(new Font(button.getFont().toString(), Font.BOLD, 20));
         button.setBackground(new Color(112, 128, 144));
-        button.setSize(new Dimension(140, 70));
         button.setPreferredSize(new Dimension(140, 70));
     }
 
     public void setText(String s) {
         this.textfield.setText(s);
+    }
+
+    public void setTextScoreField(JLabel textScoreField) {
+        this.textScoreField = textScoreField;
     }
 
     public JButton[] getButtons() {

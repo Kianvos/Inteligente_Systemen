@@ -22,7 +22,7 @@ abstract public class Model {
     private final int SUGGESTED = 3;
 
 
-    public Model(int size) {
+    public Model(int size, AI ai) {
         this.size = size;
         this.currentPlayer = PLAYER_ONE;
         this.gameBoard = buildGameBoard();
@@ -30,7 +30,7 @@ abstract public class Model {
         this.isTie = false;
         this.isOnline = false;
         this.winner = EMPTY;
-        this.ai = new AI();
+        this.ai = ai;
     }
 
     /**
@@ -42,12 +42,16 @@ abstract public class Model {
         if (!validMove(idx, gameBoard)) {
             return;
         }
+        int player = getCurrentPlayer();
         userSet(idx);
 
         //Alleen als het spel nog niet geëindigd is.
         //Alleen als er tegen de AI gespeeld wordt.
-        if (!isWinner && !isTie && againstAi) {
-            aiSet(PLAYER_ONE);
+        if (!isWinner && !isTie && againstAi && getAvailableMoves(gameBoard, PLAYER_TWO).size() > 0) {
+            aiSet(player);
+            while (getAvailableMoves(gameBoard, PLAYER_ONE).isEmpty() && !((isWinner && !isTie) ||  (!isWinner && isTie))){
+                aiSet(player);
+            }
         }
     }
 
@@ -74,15 +78,19 @@ abstract public class Model {
         if (!validMove(idx, gameBoard)) {
             return;
         }
+
         gameBoard = move(idx, gameBoard, currentPlayer);
+        
         if (isFinished()) {
             winner = checkWinner();
             if (winner == PLAYER_ONE || winner == PLAYER_TWO) {
                 isWinner = true;
+            }else {
+                isTie = checkTie();
             }
+
         }
 
-        isTie = checkTie();
         //Veranderd wie er aan de beurt is.
         changeTurn();
 
@@ -234,5 +242,16 @@ abstract public class Model {
      */
     public int getSize() {
         return size;
+    }
+
+    @Override
+    public String toString() {
+        for (int i = 0; i < gameBoard.length/8; i++) {
+            for (int j = 0; j < gameBoard.length/8; j++) {
+                System.out.print(gameBoard[i*8+j] + "| ");
+            }
+            System.out.println();
+        }
+        return "";
     }
 }

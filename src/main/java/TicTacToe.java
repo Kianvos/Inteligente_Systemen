@@ -8,7 +8,7 @@ public class TicTacToe extends Model {
     private final int PLAYER_O = 2;
 
     public TicTacToe() {
-        super(3);
+        super(3, new TicTacToeAI());
     }
 
     @Override
@@ -24,8 +24,6 @@ public class TicTacToe extends Model {
 
     /**
      * Checkt of de player winnaar is.
-     *
-     * @param player is degene waarvoor hij controleert of er een winnaar is.
      * @return geeft terug of de speler gewonnen heeft.
      */
     @Override

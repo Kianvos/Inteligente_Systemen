@@ -24,21 +24,18 @@ public class Othello extends Model {
     private static final int[] OFFSET_COL = {-1, 0, 1, -1, 1, -1, 0, 1};
 
     public Othello() {
-        super(8);
+        super(8, new OthelloAI());
     }
 
     @Override
     public boolean isFinished() {
         int[] currentBoard = getBoardData();
 
-
-        if (Arrays.stream(currentBoard).anyMatch(i -> i == EMPTY)) { return false; }
-
         int currentPlayer = getCurrentPlayer();
         int otherPlayer = (currentPlayer == BLACK) ? WHITE : BLACK;
 
-        ArrayList<Integer> availableMovesCurrentPlayer = getAvailableMoves(getBoardData(), currentPlayer);
-        ArrayList<Integer> availableMovesOtherPlayer = getAvailableMoves(getBoardData(), otherPlayer);
+        ArrayList<Integer> availableMovesCurrentPlayer = getAvailableMoves(currentBoard, currentPlayer);
+        ArrayList<Integer> availableMovesOtherPlayer = getAvailableMoves(currentBoard, otherPlayer);
 
         return (availableMovesCurrentPlayer.size() + availableMovesOtherPlayer.size()) == 0;
     }
@@ -51,20 +48,26 @@ public class Othello extends Model {
         int[] gameBoard = getBoardData();
         int currentPlayer = 0;
         int opponent = 0;
-        
+
         ArrayList<Integer> blackMoves = this.getAvailableMoves(gameBoard, BLACK);
         ArrayList<Integer> whiteMoves = this.getAvailableMoves(gameBoard, WHITE);
 
         if (blackMoves.isEmpty() && whiteMoves.isEmpty()) {
             for (int c : gameBoard) {
-                if (c == BLACK) { currentPlayer++; }
-                if (c == WHITE) { opponent++; }
+                if (c == BLACK) {
+                    currentPlayer++;
+                }
+                if (c == WHITE) {
+                    opponent++;
+                }
+            }
+            if (currentPlayer == opponent) {
+                return EMPTY;
             }
 
-            return (currentPlayer > opponent) ? BLACK : WHITE;
-        }
 
-        return EMPTY;
+        }
+        return (currentPlayer > opponent) ? BLACK : WHITE;
     }
 
     @Override
@@ -77,8 +80,12 @@ public class Othello extends Model {
 
         if (blackMoves.isEmpty() && whiteMoves.isEmpty()) {
             for (int c : gameBoard) {
-                if (c == BLACK) { currentPlayer++; }
-                if (c == WHITE) { opponent++; }
+                if (c == BLACK) {
+                    currentPlayer++;
+                }
+                if (c == WHITE) {
+                    opponent++;
+                }
             }
 
             return currentPlayer == opponent;
@@ -100,10 +107,10 @@ public class Othello extends Model {
         currentBoard = moveColBetweeen(idx, currentBoard, currentPlayer);
         ArrayList<Integer> availableMoves = getAvailableMoves(currentBoard, opponent);
 
-        if (availableMoves.size() == 0){
+        if (availableMoves.isEmpty()) {
             availableMoves = getAvailableMoves(currentBoard, currentPlayer);
         }
-        
+
         for (Integer availableMove : availableMoves) {
             currentBoard[availableMove] = SUGGESTED;
         }
@@ -158,7 +165,7 @@ public class Othello extends Model {
      *
      * @param player zoekt hij de mogelijke setten
      * @return geeft de indexes terug waar op een zet gedaan kan worden.
-     */ 
+     */
     @Override
     public ArrayList<Integer> getAvailableMoves(int[] gameBoard, int player) {
         ArrayList<Integer> availableMoves = new ArrayList<>();
@@ -229,6 +236,23 @@ public class Othello extends Model {
             gameBoard[availableMove] = SUGGESTED;
         }
         return gameBoard;
+    }
+
+    /**
+     * Telt op hoeveel disks jij op het spelbord hebt staan.
+     *
+     * @param boardData geeft het speelbord van dat moment mee
+     * @param disc      geeft mee voor welke je wil kijken hoeveel er zijn.
+     * @return het aantal disks wat je hebt
+     */
+    public static int countScore(int[] boardData, int disc) {
+        int count = 0;
+        for (int i = 0; i < boardData.length; i++) {
+            if (boardData[i] == disc) {
+                count++;
+            }
+        }
+        return count;
     }
 
     /**
