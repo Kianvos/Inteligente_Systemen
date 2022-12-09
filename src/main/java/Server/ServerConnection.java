@@ -1,3 +1,9 @@
+package Server;
+
+import Model.Model;
+import Model.Othello;
+import Views.View;
+
 import java.net.*;
 import java.io.*;
 
@@ -62,8 +68,8 @@ public class ServerConnection implements Runnable {
     private void connectedMain(PrintWriter out, BufferedReader in) throws IOException {
         in.readLine();
         in.readLine();  // remove first two lines the server returns upon connection
-        // out.println("login " + this.playerName);
-       out.println("login " + "kian");
+         out.println("login " + this.playerName);
+//       out.println("login " + "kian");
         in.readLine(); // message: OK
         if (this.model instanceof Othello) {
             out.println("subscribe reversi");
@@ -73,8 +79,29 @@ public class ServerConnection implements Runnable {
         this.view.getGameView().setText(DEFAULT);
 
         boolean firstMoveDone = false;
+        boolean done = false;
+        int AantalPotjes = 1;
+
+        int countWin = 0;
+        int countDraw = 0;
+        int countLoss = 0;
         this.model.setCurrentPlayer(2);
         while (isRun()) {
+            if (done){
+                System.out.println("done.");
+                done = false;
+                if(this.model instanceof Othello){
+                    out.println("subscribe reversi");
+                }else{
+                    out.println("subscribe tic-tac-toe");
+                }
+                AantalPotjes++;
+                if(AantalPotjes > 10){
+                    System.out.println(AantalPotjes +" keer gespeeld");
+                    disconnect();
+                }
+                resetBoard("Nieuw spel: ");
+            }
             if (in.ready()) {
                 String input = in.readLine();
                 System.out.println("input: " + input);
@@ -107,23 +134,36 @@ public class ServerConnection implements Runnable {
                     this.updateBoard(input);
                 }
                 if (input.contains("SVR GAME WIN")) {
+                    countWin++;
+                    done = true;
                     String message = String.format("Last match winner: %s", this.playerName);
+                    view.getGameView().setText(message);
 //                    resetBoard(message);
                     firstMoveDone = false;
                 }
 
                 if (input.contains("SVR GAME DRAW")) {
+                    countDraw++;
+                    done = true;
+                    String message = "Last match: Draw";
+                    view.getGameView().setText(message);
 //                    resetBoard("Last match: Draw");
                     firstMoveDone = false;
                 }
 
                 if (input.contains("SVR GAME LOSS")) {
+                    countLoss++;
+                    done = true;
                     String message = String.format("Last match winner: %s", this.opponentName);
+                    view.getGameView().setText(message);
 //                    resetBoard(message);
                     firstMoveDone = false;
                 }
             }
         }
+        System.out.println("Win: " + countWin);
+        System.out.println("Draw: " + countDraw);
+        System.out.println("Loss: " + countLoss);
         out.println("exit");
     }
 

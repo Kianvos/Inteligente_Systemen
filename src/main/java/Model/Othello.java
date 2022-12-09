@@ -1,6 +1,7 @@
+package Model;
 
+import AI.OthelloAI;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 // TODO win en gelijk fixen
 

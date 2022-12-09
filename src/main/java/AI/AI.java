@@ -1,3 +1,9 @@
+package AI;
+
+import Model.Model;
+import Model.Othello;
+import Model.TicTacToe;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -10,7 +16,7 @@ abstract public class AI {
     private HashMap<Integer, Integer> table;
 
     public AI() {
-        File file = new File("../../../data");
+        File file = new File("data");
 
         if (!file.exists()) { 
             table = new HashMap<>(); 
@@ -37,7 +43,7 @@ abstract public class AI {
      * Geeft een lege positie op het bord terug waarbij de kans het grootste
      * is dat het een overwinning oplevert
      * /**
-     * Laat de AI een zet doen
+     * Laat de AI.AI een zet doen
      *
      * @param gameBoard Bord van het huidige potje
      * @param opponent  geeft mee welke speler de tegenstander is.
@@ -92,7 +98,7 @@ abstract public class AI {
         for (int move : moves) {
             AiModel.setGameBoard(AiModel.move(move, boardData, AI));
 
-            int score = minimax(AiModel, false, 1, Integer.MIN_VALUE, Integer.MAX_VALUE, AI, opponent);
+            int score = minimax(AiModel, false, 3, Integer.MIN_VALUE, Integer.MAX_VALUE, AI, opponent);
             if (score > bestScore) {
                 bestScore = score;
                 bestMove = move;
@@ -108,7 +114,7 @@ abstract public class AI {
 
     /**
      * Bepaalt de score van een zet om te bepalen wat de beste zet is.
-     * De score wordt bepaald door AI (de maximizer) en de tegenstander (de minimizer)
+     * De score wordt bepaald door AI.AI (de maximizer) en de tegenstander (de minimizer)
      * omzetbeurten een zet te laten doen op elk leeg vakje op het spelbord. Elke keer als deze
      * functie wordt aangeroepen, wordt er eerste gekeken welke speler wint en geeft op basis
      * daarvan punten terug.

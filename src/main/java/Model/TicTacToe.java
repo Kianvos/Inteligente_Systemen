@@ -1,4 +1,7 @@
+package Model;
 
+
+import AI.TicTacToeAI;
 import java.util.ArrayList;
 
 public class TicTacToe extends Model {

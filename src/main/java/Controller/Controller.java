@@ -1,3 +1,7 @@
+package Controller;
+
+import Model.Model;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -6,6 +10,10 @@ import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import Model.Othello;
+import Model.TicTacToe;
+import Views.View;
+import Server.ServerConnection;
 
 public class Controller {
     private Model model;
@@ -58,7 +66,7 @@ public class Controller {
             }
 
             if (game.equals("Othello")) {
-                //View karakters voor Othello
+                //View karakters voor Model.Othello
                 view.getGameView().setPlayerOnePiece("O");
                 view.getGameView().setPlayerTwoPiece("O");
 

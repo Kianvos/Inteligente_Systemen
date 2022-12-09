@@ -1,3 +1,7 @@
+package Model;
+
+import AI.AI;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -40,7 +44,7 @@ abstract public class Model {
     }
 
     /**
-     * Als een speler een zet heeft gedaan doet de AI eventueel daarna meteen een zet.
+     * Als een speler een zet heeft gedaan doet de AI.AI eventueel daarna meteen een zet.
      *
      * @param idx geeft de index mee waar een zet op gedaan is.
      */
@@ -52,10 +56,10 @@ abstract public class Model {
         userSet(idx);
 
         //Alleen als het spel nog niet geëindigd is.
-        //Alleen als er tegen de AI gespeeld wordt.
+        //Alleen als er tegen de AI.AI gespeeld wordt.
         if (!isWinner && !isTie && againstAi && getAvailableMoves(gameBoard, PLAYER_TWO).size() > 0) {
             aiSet(player);
-            while (getAvailableMoves(gameBoard, PLAYER_ONE).isEmpty() && !((isWinner && !isTie) ||  (!isWinner && isTie))){
+            while (getAvailableMoves(gameBoard, PLAYER_ONE).isEmpty() && !((isWinner && !isTie) || (!isWinner && isTie))) {
                 aiSet(player);
             }
         }
@@ -86,14 +90,18 @@ abstract public class Model {
         }
 
         gameBoard = move(idx, gameBoard, currentPlayer);
-        
+
         if (isFinished()) {
             HashMap<Integer, Integer> table = ai.getTable();
-            File file = new File("../../../data");
-            if (!file.exists()) { try { file.createNewFile(); } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            } }
+            File file = new File("data");
+            if (!file.exists()) {
+                try {
+                    file.createNewFile();
+                } catch (IOException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
 
             try {
                 FileOutputStream f = new FileOutputStream(file);
@@ -108,7 +116,7 @@ abstract public class Model {
             winner = checkWinner();
             if (winner == PLAYER_ONE || winner == PLAYER_TWO) {
                 isWinner = true;
-            }else {
+            } else {
                 isTie = checkTie();
             }
 
@@ -251,7 +259,7 @@ abstract public class Model {
         this.currentPlayer = currentPlayer;
     }
 
-    abstract String getCurrentPlayerString();
+    public abstract String getCurrentPlayerString();
 
     /**
      * @return geeft terug wie er begonnen is.
@@ -269,9 +277,13 @@ abstract public class Model {
 
     @Override
     public String toString() {
-        for (int i = 0; i < gameBoard.length/8; i++) {
-            for (int j = 0; j < gameBoard.length/8; j++) {
-                System.out.print(gameBoard[i*8+j] + "| ");
+        for (int i = 0; i < gameBoard.length / 8; i++) {
+            for (int j = 0; j < gameBoard.length / 8; j++) {
+                if (gameBoard[i*8+j] == 3){
+                    System.out.print(0 + "| ");
+                }else {
+                    System.out.print(gameBoard[i * 8 + j] + "| ");
+                }
             }
             System.out.println();
         }

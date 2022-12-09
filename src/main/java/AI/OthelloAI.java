@@ -1,9 +1,15 @@
-import java.util.ArrayList;
-import java.util.Arrays;
+package AI;
+
+import Model.Model;
+import Model.Othello;
 
 //https://courses.cs.washington.edu/courses/cse573/04au/Project/mini1/RUSSIA/Final_Paper.pdf
 public class OthelloAI extends AI {
     private final int[] cornersIdx = {0, 7, 56, 63};
+
+    public OthelloAI() {
+        super();
+    }
 
     private enum GamePhase {
         EARLY_GAME,
@@ -67,7 +73,7 @@ public class OthelloAI extends AI {
      * @param boardData geeft het speelbord van dat moment mee
      * @param player    geeft de player mee.
      * @param opponent  geeft de tegenstander mee.
-     * @return de percentage van de stenen die geplaatst zijn door de AI.
+     * @return de percentage van de stenen die geplaatst zijn door de AI.AI.
      */
     private int differenceEvaluate(int[] boardData, int player, int opponent) {
         int playerCount = Othello.countScore(boardData, player);
@@ -82,9 +88,9 @@ public class OthelloAI extends AI {
      * Kijkt wie de meeste zetten als mogelijkheid heeft. Als tegenstander 0 heeft is positief, dan ben je zelf vaker aan de beurt.
      * Als de tegenstander maar 1 mogelijkheid heeft, is er grotere kans dat hij slechte zet moet doen.
      *
-     * @param playerMoves   geeft het aantal moves van de AI mee.
+     * @param playerMoves   geeft het aantal moves van de AI.AI mee.
      * @param opponentMoves geeft de tegenstander mee.
-     * @return de verhouding van mogelijke moves tussen de AI en de opponent
+     * @return de verhouding van mogelijke moves tussen de AI.AI en de opponent
      */
     private int positionsOfMovesEvaluate(int playerMoves, int opponentMoves) {
         if (playerMoves + opponentMoves != 0) {
@@ -99,7 +105,7 @@ public class OthelloAI extends AI {
      * @param boardData geeft het speelbord van dat moment mee
      * @param player    geeft de player mee.
      * @param opponent  geeft de tegenstander mee.
-     * @return de verhouding van de hoeken tussen de AI en de opponent
+     * @return de verhouding van de hoeken tussen de AI.AI en de opponent
      */
     private int cornerCapturedEvaluate(int[] boardData, int player, int opponent) {
         int playerCorner = 0;
@@ -132,7 +138,7 @@ public class OthelloAI extends AI {
 
 
     /**
-     * Telt op hoeveel disks er op het speelbord staan. Van de AI of van de opponent.
+     * Telt op hoeveel disks er op het speelbord staan. Van de AI.AI of van de opponent.
      *
      * @param boardData geeft het speelbord van dat moment mee
      * @return het aantal disks wat er op het speelbord staat

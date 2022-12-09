@@ -1,3 +1,7 @@
+package AI;
+
+import Model.Model;
+
 public class TicTacToeAI extends AI {
     @Override
     public int evaluate(Model AiModel, int player, int opponent) {

@@ -1,3 +1,6 @@
+import Controller.Controller;
+import Model.Othello;
+import Views.View;
 
 public class Main {
     public static void main(String[] args) {
