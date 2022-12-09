@@ -18,7 +18,13 @@ abstract public class AI {
     public AI() {
         File file = new File("data");
 
-        if (!file.exists()) { 
+        if (!file.exists()) {
+            try {
+                new File("../../../data").createNewFile();
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
             table = new HashMap<>(); 
         } else {
             System.out.println("Found File");
@@ -98,7 +104,7 @@ abstract public class AI {
         for (int move : moves) {
             AiModel.setGameBoard(AiModel.move(move, boardData, AI));
 
-            int score = minimax(AiModel, false, 3, Integer.MIN_VALUE, Integer.MAX_VALUE, AI, opponent);
+            int score = minimax(AiModel, false, 5, Integer.MIN_VALUE, Integer.MAX_VALUE, AI, opponent);
             if (score > bestScore) {
                 bestScore = score;
                 bestMove = move;
@@ -140,7 +146,7 @@ abstract public class AI {
             for (Integer move : availableMoves) {
                 AiModel.setGameBoard(AiModel.move(move, boardData, AI));
                 
-                int score = minimax(AiModel, false, depth, a, b, AI, opponent);
+                int score = minimax(AiModel, false, depth-1, a, b, AI, opponent);
                 bestScore = Math.max(bestScore, score);
 
                 boardData = startBoardData.clone();
