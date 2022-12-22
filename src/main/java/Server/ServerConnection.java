@@ -96,7 +96,7 @@ public class ServerConnection implements Runnable {
                     out.println("subscribe tic-tac-toe");
                 }
                 AantalPotjes++;
-                if(AantalPotjes > 10){
+                if(AantalPotjes > 25){
                     System.out.println(AantalPotjes +" keer gespeeld");
                     disconnect();
                 }

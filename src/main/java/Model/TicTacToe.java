@@ -78,6 +78,11 @@ public class TicTacToe extends Model {
     }
 
     @Override
+    public int[] showMoves(int[] gameBoard, int currentPlayer) {
+        return gameBoard;
+    }
+
+    @Override
     public int[] move(int idx, int[] currentBoard, int currentPlayer) {
         currentBoard[idx] = currentPlayer;
         return currentBoard;

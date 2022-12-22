@@ -79,7 +79,7 @@ public class ServerConnectionHelper implements Runnable {
                 out.println("subscribe reversi");
 
                 AantalPotjes++;
-                if (AantalPotjes > 10) {
+                if (AantalPotjes > 25) {
                     System.out.println(AantalPotjes-1 + " keer gespeeld");
                     disconnect();
                 }

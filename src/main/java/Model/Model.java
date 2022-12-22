@@ -90,7 +90,7 @@ abstract public class Model {
         }
 
         gameBoard = move(idx, gameBoard, currentPlayer);
-
+        gameBoard = showMoves(gameBoard, currentPlayer);
         if (isFinished()) {
             HashMap<Integer, Integer> table = ai.getTable();
             File file = new File("../../../data");
@@ -143,6 +143,8 @@ abstract public class Model {
 
         return false;
     }
+
+    abstract public int[] showMoves(int[] gameBoard, int currentPlayer);
 
     abstract public int[] move(int idx, int[] currentBoard, int currentPlayer);
 
