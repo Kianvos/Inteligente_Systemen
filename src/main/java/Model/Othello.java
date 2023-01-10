@@ -42,6 +42,12 @@ public class Othello extends Model {
         return (availableMovesCurrentPlayer.size() + availableMovesOtherPlayer.size()) == 0;
     }
 
+    @Override
+    public boolean isFinished(ArrayList<Integer> availableMovesCurrentPlayer, ArrayList<Integer> availableMovesOtherPlayer) {
+        return (availableMovesCurrentPlayer.size() + availableMovesOtherPlayer.size()) == 0;
+    }
+
+
     //todo controleer of speler nog minstens 1 steen hebben
     //todo controleer wie er aan het eind van het spel de meeste blokjes te hebben
 

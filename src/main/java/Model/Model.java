@@ -159,6 +159,7 @@ abstract public class Model {
     abstract public boolean checkTie();
 
     abstract public boolean isFinished();
+    abstract public boolean isFinished(ArrayList<Integer> availableMovesCurrentPlayer, ArrayList<Integer> availableMovesOtherPlayer);
 
 
     /**

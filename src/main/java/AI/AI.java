@@ -104,7 +104,7 @@ abstract public class AI {
         for (int move : moves) {
             AiModel.setGameBoard(AiModel.move(move, boardData, AI));
 
-            int score = minimax(AiModel, false, 5, Integer.MIN_VALUE, Integer.MAX_VALUE, AI, opponent);
+            int score = minimax(AiModel, false, 7, Integer.MIN_VALUE, Integer.MAX_VALUE, AI, opponent);
             if (score > bestScore) {
                 bestScore = score;
                 bestMove = move;

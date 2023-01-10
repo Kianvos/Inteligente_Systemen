@@ -3,6 +3,8 @@ package AI;
 import Model.Model;
 import Model.Othello;
 
+import java.util.ArrayList;
+
 //https://courses.cs.washington.edu/courses/cse573/04au/Project/mini1/RUSSIA/Final_Paper.pdf
 public class OthelloAI extends AI {
     private final int[] cornersIdx = {0, 7, 56, 63};
@@ -25,20 +27,23 @@ public class OthelloAI extends AI {
      */
     public int evaluate(Model AiModel, int player, int opponent) {
         int[] boardData = AiModel.getBoardData();
-        if (AiModel.isFinished()) {
+        ArrayList<Integer> playerMoves = AiModel.getAvailableMoves(boardData, player);
+        ArrayList<Integer> opponentMoves = AiModel.getAvailableMoves(boardData, opponent);
+
+        int playerMovesSize = playerMoves.size();
+        int opponentMovesSize = opponentMoves.size();
+        if (AiModel.isFinished(playerMoves, opponentMoves)) {
             return 1000 * differenceEvaluate(boardData, player, opponent);
         }
-        int playerMoves = AiModel.getAvailableMoves(boardData, player).size();
-        int opponentMoves = AiModel.getAvailableMoves(boardData, opponent).size();
         GamePhase gamePhase = getGamePhase(boardData);
         int score = 0;
         score += 100 * cornerCapturedEvaluate(boardData, player, opponent);
         if (gamePhase == GamePhase.EARLY_GAME) {
-            score += 5 * positionsOfMovesEvaluate(playerMoves, opponentMoves);
+            score += 5 * positionsOfMovesEvaluate(playerMovesSize, opponentMovesSize);
         } else if (gamePhase == GamePhase.MID_GAME) {
-            score += 2 * positionsOfMovesEvaluate(playerMoves, opponentMoves) + differenceEvaluate(boardData, player, opponent) + 10 * parityEvaluate(boardData);
+            score += 2 * positionsOfMovesEvaluate(playerMovesSize, opponentMovesSize) + differenceEvaluate(boardData, player, opponent) + 10 * parityEvaluate(boardData);
         } else if (gamePhase == GamePhase.END_GAME) {
-            score += 10 * positionsOfMovesEvaluate(playerMoves, opponentMoves) + 50 * differenceEvaluate(boardData, player, opponent) + 50 * parityEvaluate(boardData);
+            score += 10 * positionsOfMovesEvaluate(playerMovesSize, opponentMovesSize) + 50 * differenceEvaluate(boardData, player, opponent) + 50 * parityEvaluate(boardData);
         }
 
         return score;

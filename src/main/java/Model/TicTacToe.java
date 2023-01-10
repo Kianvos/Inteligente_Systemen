@@ -24,6 +24,11 @@ public class TicTacToe extends Model {
         return false;
     }
 
+    @Override
+    public boolean isFinished(ArrayList<Integer> availableMovesCurrentPlayer, ArrayList<Integer> availableMovesOtherPlayer) {
+        return isFinished();
+    }
+
 
     /**
      * Checkt of de player winnaar is.
