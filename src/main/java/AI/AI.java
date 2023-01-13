@@ -20,7 +20,7 @@ abstract public class AI {
 
         if (!file.exists()) {
             try {
-                new File("../../../data").createNewFile();
+                new File("data").createNewFile();
             } catch (IOException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
