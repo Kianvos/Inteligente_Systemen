@@ -1,18 +1,63 @@
+package AI;
+
+import Model.Model;
+import Model.Othello;
+import Model.TicTacToe;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 
 abstract public class AI {
+    private HashMap<Integer, Integer> table;
+
+    public AI() {
+        File file = new File("data");
+
+        if (!file.exists()) {
+            try {
+                new File("data").createNewFile();
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            table = new HashMap<>(); 
+        } else {
+            System.out.println("Found File");
+            try {
+                FileInputStream f = new FileInputStream(file);
+                ObjectInputStream s = new ObjectInputStream(f);
+                try {
+                    table = (HashMap<Integer, Integer>) s.readObject();
+                } catch (ClassNotFoundException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+                s.close();
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+    }
+
     /**
      * Geeft een lege positie op het bord terug waarbij de kans het grootste
      * is dat het een overwinning oplevert
      * /**
-     * Laat de AI een zet doen
+     * Laat de AI.AI een zet doen
      *
      * @param gameBoard Bord van het huidige potje
      * @param opponent  geeft mee welke speler de tegenstander is.
      * @return Een lege positie waar de zet opgedaan word
      */
     public int aiNewSet(int[] gameBoard, int opponent, Model model) {
+        // System.out.println(table);
+
         boolean isOthello = model instanceof Othello;
 
         //Cast naar de goede instantie
@@ -29,6 +74,7 @@ abstract public class AI {
         if (valid.contains(bestMove)) {
             pos = bestMove;
         }
+        
         return pos;
     }
 
@@ -42,16 +88,23 @@ abstract public class AI {
      */
     private int findBestMove(Model AiModel, int opponent) {
         int[] boardData = AiModel.getBoardData().clone();
+        int hash = Arrays.hashCode(boardData);
         final int[] startBoardData = Arrays.copyOf(boardData.clone(), boardData.length);
 
         int bestScore = Integer.MIN_VALUE;
         int bestMove = -1;
         int AI = (opponent == 1) ? 2 : 1;
         ArrayList<Integer> moves = AiModel.getAvailableMoves(boardData, AI);
+
+        if (table.get(hash) != null) {
+            System.out.println("Found move");
+            return (int) table.get(hash);
+        }
+
         for (int move : moves) {
             AiModel.setGameBoard(AiModel.move(move, boardData, AI));
 
-            int score = minimax(AiModel, false, 5, Integer.MIN_VALUE, Integer.MAX_VALUE, AI, opponent);
+            int score = minimax(AiModel, false, 7, Integer.MIN_VALUE, Integer.MAX_VALUE, AI, opponent);
             if (score > bestScore) {
                 bestScore = score;
                 bestMove = move;
@@ -59,12 +112,15 @@ abstract public class AI {
             boardData = startBoardData.clone();
             AiModel.setGameBoard(startBoardData);
         }
+
+        this.table.put(hash, bestMove);
+
         return bestMove;
     }
 
     /**
      * Bepaalt de score van een zet om te bepalen wat de beste zet is.
-     * De score wordt bepaald door AI (de maximizer) en de tegenstander (de minimizer)
+     * De score wordt bepaald door AI.AI (de maximizer) en de tegenstander (de minimizer)
      * omzetbeurten een zet te laten doen op elk leeg vakje op het spelbord. Elke keer als deze
      * functie wordt aangeroepen, wordt er eerste gekeken welke speler wint en geeft op basis
      * daarvan punten terug.
@@ -89,7 +145,8 @@ abstract public class AI {
         if (isMax) {
             for (Integer move : availableMoves) {
                 AiModel.setGameBoard(AiModel.move(move, boardData, AI));
-                int score = minimax(AiModel, false, depth - 1, a, b, AI, opponent);
+                
+                int score = minimax(AiModel, false, depth-1, a, b, AI, opponent);
                 bestScore = Math.max(bestScore, score);
 
                 boardData = startBoardData.clone();
@@ -105,6 +162,7 @@ abstract public class AI {
         } else {
             for (Integer move : availableMoves) {
                 AiModel.setGameBoard(AiModel.move(move, boardData, opponent));
+
                 int score = minimax(AiModel, true, depth - 1, a, b, AI, opponent);
                 bestScore = Math.min(bestScore, score);
 
@@ -122,4 +180,9 @@ abstract public class AI {
         return bestScore;
     }
 
-    abstract public int evaluate(Model AiModel, int player, int opponent);}
+    public HashMap<Integer, Integer> getTable() {
+        return table;
+    }
+
+    abstract public int evaluate(Model AiModel, int player, int opponent);
+}

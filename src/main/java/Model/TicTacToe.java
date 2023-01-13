@@ -1,4 +1,7 @@
+package Model;
 
+
+import AI.TicTacToeAI;
 import java.util.ArrayList;
 
 public class TicTacToe extends Model {
@@ -19,6 +22,11 @@ public class TicTacToe extends Model {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public boolean isFinished(ArrayList<Integer> availableMovesCurrentPlayer, ArrayList<Integer> availableMovesOtherPlayer) {
+        return isFinished();
     }
 
 
@@ -72,6 +80,11 @@ public class TicTacToe extends Model {
             }
         }
         return true;
+    }
+
+    @Override
+    public int[] showMoves(int[] gameBoard, int currentPlayer) {
+        return gameBoard;
     }
 
     @Override

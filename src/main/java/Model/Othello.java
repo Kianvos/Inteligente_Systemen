@@ -1,6 +1,8 @@
+package Model;
+
+import AI.OthelloAI;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 // TODO win en gelijk fixen
 
@@ -39,6 +41,12 @@ public class Othello extends Model {
 
         return (availableMovesCurrentPlayer.size() + availableMovesOtherPlayer.size()) == 0;
     }
+
+    @Override
+    public boolean isFinished(ArrayList<Integer> availableMovesCurrentPlayer, ArrayList<Integer> availableMovesOtherPlayer) {
+        return (availableMovesCurrentPlayer.size() + availableMovesOtherPlayer.size()) == 0;
+    }
+
 
     //todo controleer of speler nog minstens 1 steen hebben
     //todo controleer wie er aan het eind van het spel de meeste blokjes te hebben
@@ -95,6 +103,25 @@ public class Othello extends Model {
     }
 
     @Override
+    public int[] showMoves(int[] gameBoard, int currentPlayer) {
+        int opponent = 1;
+        if (currentPlayer == 1) {
+            opponent = 2;
+        }
+
+        ArrayList<Integer> availableMoves = getAvailableMoves(gameBoard, opponent);
+
+        if (availableMoves.isEmpty()) {
+            availableMoves = getAvailableMoves(gameBoard, currentPlayer);
+        }
+
+        for (Integer availableMove : availableMoves) {
+            gameBoard[availableMove] = SUGGESTED;
+        }
+        return gameBoard;
+    }
+
+    @Override
     public int[] move(int idx, int[] currentBoard, int currentPlayer) {
         int opponent = (currentPlayer == BLACK) ? WHITE : BLACK;
 
@@ -105,16 +132,6 @@ public class Othello extends Model {
             }
         }
         currentBoard = moveColBetweeen(idx, currentBoard, currentPlayer);
-        ArrayList<Integer> availableMoves = getAvailableMoves(currentBoard, opponent);
-
-        if (availableMoves.isEmpty()) {
-            availableMoves = getAvailableMoves(currentBoard, currentPlayer);
-        }
-
-        for (Integer availableMove : availableMoves) {
-            currentBoard[availableMove] = SUGGESTED;
-        }
-
         return currentBoard;
     }
 
