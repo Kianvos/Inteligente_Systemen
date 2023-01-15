@@ -46,7 +46,7 @@ public class ServerConnectionHelper implements Runnable {
         } catch (UnknownHostException e) {
             System.err.println("Don't know about host " + this.Hostname);
             //System.exit(1);
-        } catch (IOException e) {
+        } catch (IOException | ClassNotFoundException e) {
             System.err.println("Couldn't get I/O for the connection to " +
                     this.Hostname);
             //System.exit(1);
@@ -60,7 +60,7 @@ public class ServerConnectionHelper implements Runnable {
      * @param in  For receiving messages from the server
      * @throws IOException
      */
-    private void connectedMain(PrintWriter out, BufferedReader in) throws IOException {
+    private void connectedMain(PrintWriter out, BufferedReader in) throws IOException, ClassNotFoundException {
         in.readLine();
         in.readLine();  // remove first two lines the server returns upon connection
         out.println("login " + this.playerName);
@@ -92,7 +92,9 @@ public class ServerConnectionHelper implements Runnable {
                         firstMoveDone = true;
                         model.startGameSettings(1, 2);
                     }
-                    out.println("move " + this.model.AImove());
+                    int move = model.AImove();
+                    model.addMove(move);
+                    out.println("move " + move);
                     recentAI = true;
                 }
                 if (input.contains("SVR GAME MOVE")) {
@@ -109,19 +111,19 @@ public class ServerConnectionHelper implements Runnable {
                 if (input.contains("SVR GAME WIN")) {
                     firstMoveDone = false;
                     done = true;
-                    resetGame();
+                    resetGame(AantalPotjes);
                 }
 
                 if (input.contains("SVR GAME DRAW")) {
                     firstMoveDone = false;
                     done = true;
-                    resetGame();
+                    resetGame(AantalPotjes);
                 }
 
                 if (input.contains("SVR GAME LOSS")) {
                     firstMoveDone = false;
                     done = true;
-                    resetGame();
+                    resetGame(AantalPotjes);
                 }
             }
         }
@@ -140,7 +142,9 @@ public class ServerConnectionHelper implements Runnable {
         this.model.move(move, model.getOpponent());
     }
 
-    private void resetGame(){
+    private void resetGame(int aantalPotjes) throws IOException {
+        model.setCount(aantalPotjes);
+        model.writeFile();
         model.resetGame();
     }
 }
