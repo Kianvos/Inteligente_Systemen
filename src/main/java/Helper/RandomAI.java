@@ -26,13 +26,18 @@ public class RandomAI {
     public RandomAI() {
         this.othello = new Othello();
         this.gameStatus = GAME.FILE;
-        this.gameIndex = 0;
-        arrayListFile =  new ArrayListFile();
+        // Start op 1 omdat index 0 is de int die de player represent
+        this.gameIndex = 1;
+        arrayListFile = new ArrayListFile();
     }
 
     public void startGameSettings(int AI, int opponent) {
         System.out.println("AI: " + AI + " Opponent: " + opponent);
         this.AI = AI;
+        // Start op 1 omdat index 0 is de int die de player represent
+        this.gameIndex = 1;
+
+        if (gameStatus == GAME.RANDOM){ this.moves.add(this.AI); }
         this.opponent = opponent;
     }
 
@@ -50,8 +55,8 @@ public class RandomAI {
     public int AImove() throws IOException, ClassNotFoundException {
         int[] gameBoard = othello.getBoardData().clone();
         int move = randomMove(gameBoard);
-        this.gameIndex += 1;
         move(move, AI);
+        this.gameIndex += 1;
         return move;
     }
 
@@ -64,10 +69,11 @@ public class RandomAI {
 //        System.out.println("MOVES: " + tmpMoves);
             move = tmpMoves.get(random.nextInt(tmpMoves.size()));
         } else if (gameStatus == GAME.FILE) {
+            System.out.println("game_"+(count+1));
             ArrayList<Integer> moves = arrayListFile.ArrayListRead("game_"+(count+1));
             // idx gebruiken voor een van de moves
             move = moves.get(this.gameIndex);
-            System.out.println("Loaded move: " + move + " From index: " + this.gameIndex);
+//            System.out.println("Loaded move: " + move + " From index: " + this.gameIndex);
         }
 
 //        System.out.println(move);
@@ -90,4 +96,8 @@ public class RandomAI {
     public void setCount(int count) {
         this.count = count;
     }
+
+    public int Ai() { return this.AI; }
+
+    public boolean isFile() { return this.gameStatus == GAME.FILE; }
 }

@@ -14,6 +14,7 @@ public class ServerConnectionHelper implements Runnable {
     final private String Hostname;
     final private int portNumber;
     private boolean run;
+    private boolean slept;
     private RandomAI model;
 
     public ServerConnectionHelper(RandomAI model, String playerName) {
@@ -21,6 +22,7 @@ public class ServerConnectionHelper implements Runnable {
         this.portNumber = 7789;
         this.playerName = playerName;
         this.run = true;
+        this.slept = false;
         this.model = model;
     }
 
@@ -88,10 +90,26 @@ public class ServerConnectionHelper implements Runnable {
                 String input = in.readLine();
 //                System.out.println("input: " + input);
                 if (input.contains("SVR GAME YOURTURN")) {
+                    if (model.isFile()) {
+                        int ai = new ArrayListFile().ArrayListRead("game_" + AantalPotjes).get(0);
+                        if (firstMoveDone ? ai == 2 : ai == 1) {
+                            try {
+                                Thread.sleep(11000);
+                                System.out.println("slept.");
+                                this.slept = true;
+                                out.println("subscribe reversi");
+                            } catch (InterruptedException e) {
+                                throw new RuntimeException(e);
+                            }
+                            continue;
+                        }
+                    }
+
                     if (!firstMoveDone) {
                         firstMoveDone = true;
                         model.startGameSettings(1, 2);
                     }
+
                     int move = model.AImove();
                     model.addMove(move);
                     out.println("move " + move);
@@ -121,8 +139,9 @@ public class ServerConnectionHelper implements Runnable {
                 }
 
                 if (input.contains("SVR GAME LOSS")) {
+                    if (!this.slept) { done = true; }
+
                     firstMoveDone = false;
-                    done = true;
                     resetGame(AantalPotjes);
                 }
             }
