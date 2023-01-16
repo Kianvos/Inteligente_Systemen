@@ -9,6 +9,7 @@ import java.util.Random;
 public class RandomAI {
     private final Othello othello;
     private ArrayListFile arrayListFile;
+    private int gameIndex;
     private int opponent;
     private int AI;
 
@@ -24,7 +25,8 @@ public class RandomAI {
 
     public RandomAI() {
         this.othello = new Othello();
-        this.gameStatus = GAME.RANDOM;
+        this.gameStatus = GAME.FILE;
+        this.gameIndex = 0;
         arrayListFile =  new ArrayListFile();
     }
 
@@ -48,6 +50,7 @@ public class RandomAI {
     public int AImove() throws IOException, ClassNotFoundException {
         int[] gameBoard = othello.getBoardData().clone();
         int move = randomMove(gameBoard);
+        this.gameIndex += 1;
         move(move, AI);
         return move;
     }
@@ -61,8 +64,10 @@ public class RandomAI {
 //        System.out.println("MOVES: " + tmpMoves);
             move = tmpMoves.get(random.nextInt(tmpMoves.size()));
         } else if (gameStatus == GAME.FILE) {
-            ArrayList<Integer> moves = arrayListFile.ArrayListRead("game_"+count);
-            //todo idx gebruiken voor een van de moves
+            ArrayList<Integer> moves = arrayListFile.ArrayListRead("game_"+(count+1));
+            // idx gebruiken voor een van de moves
+            move = moves.get(this.gameIndex);
+            System.out.println("Loaded move: " + move + " From index: " + this.gameIndex);
         }
 
 //        System.out.println(move);

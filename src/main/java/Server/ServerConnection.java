@@ -185,7 +185,6 @@ public class ServerConnection implements Runnable {
      * to play a new game.
      */
     public void resetBoard(String message) {
-
         this.model.resetGame(false, false, 1);
         this.view.getGameView().update(this.model);
         this.view.getGameView().setText(String.format("<html>%s<br />%s</html>", message, DEFAULT));
