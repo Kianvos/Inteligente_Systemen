@@ -25,7 +25,7 @@ public class ArrayListFile {
 
     public static void main(String[] args) throws IOException, ClassNotFoundException {
         ArrayListFile tmp = new ArrayListFile();
-        ArrayList<Integer> moves = tmp.ArrayListRead("game_2");
+        ArrayList<Integer> moves = tmp.ArrayListRead("game_1");
         for (Integer move : moves){
             System.out.println(move);
         }

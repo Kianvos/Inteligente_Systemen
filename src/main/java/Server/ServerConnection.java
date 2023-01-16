@@ -95,11 +95,11 @@ public class ServerConnection implements Runnable {
                 }else{
                     out.println("subscribe tic-tac-toe");
                 }
-                AantalPotjes++;
-                if(AantalPotjes > 25){
+                if(AantalPotjes == 100){
                     System.out.println(AantalPotjes +" keer gespeeld");
                     disconnect();
                 }
+                AantalPotjes++;
                 resetBoard("Nieuw spel: ");
             }
             if (in.ready()) {

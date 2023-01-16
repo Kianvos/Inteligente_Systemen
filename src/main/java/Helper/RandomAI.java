@@ -22,12 +22,16 @@ public class RandomAI {
     private int count;
     private ArrayList<Integer> moves = new ArrayList<>();
 
+    boolean reset;
+
 
     public RandomAI() {
         this.othello = new Othello();
+//        this.gameStatus = GAME.RANDOM;
         this.gameStatus = GAME.FILE;
         // Start op 1 omdat index 0 is de int die de player represent
         this.gameIndex = 1;
+        this.reset = true;
         arrayListFile = new ArrayListFile();
     }
 
@@ -69,10 +73,14 @@ public class RandomAI {
 //        System.out.println("MOVES: " + tmpMoves);
             move = tmpMoves.get(random.nextInt(tmpMoves.size()));
         } else if (gameStatus == GAME.FILE) {
-            System.out.println("game_"+(count+1));
-            ArrayList<Integer> moves = arrayListFile.ArrayListRead("game_"+(count+1));
+            if (reset){
+                moves = arrayListFile.ArrayListRead("game_"+(count+1));
+                reset = false;
+            }
+//            ArrayList<Integer> moves = arrayListFile.ArrayListRead("game_"+(count+1));
             // idx gebruiken voor een van de moves
             move = moves.get(this.gameIndex);
+            System.out.println(move);
 //            System.out.println("Loaded move: " + move + " From index: " + this.gameIndex);
         }
 
@@ -82,9 +90,11 @@ public class RandomAI {
 
     public void resetGame() {
         othello.setGameBoard(othello.buildGameBoard());
+        reset = true;
     }
 
     public void writeFile() throws IOException {
+        System.out.println(moves +  " Moves");
         arrayListFile.writeArrayListToFile("game_"+count, moves);
         moves = new ArrayList<>();
     }

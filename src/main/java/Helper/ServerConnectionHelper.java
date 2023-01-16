@@ -8,6 +8,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 
 public class ServerConnectionHelper implements Runnable {
     final private String playerName;
@@ -67,43 +68,45 @@ public class ServerConnectionHelper implements Runnable {
         in.readLine();  // remove first two lines the server returns upon connection
         out.println("login " + this.playerName);
         in.readLine(); // message: OK
-        out.println("subscribe reversi");
 
         boolean recentAI = false;
         boolean done = false;
         boolean firstMoveDone = false;
+        boolean aiMoved = false;
+
         int AantalPotjes = 1;
 
         while (isRun()) {
             if (done) {
+                aiMoved = false;
+
                 System.out.println("done.");
                 done = false;
                 out.println("subscribe reversi");
 
-                AantalPotjes++;
-                if (AantalPotjes > 25) {
-                    System.out.println(AantalPotjes-1 + " keer gespeeld");
+                if (AantalPotjes == 25) {
+                    System.out.println(AantalPotjes + " keer gespeeld. AFGELOPEN");
                     disconnect();
                 }
+                AantalPotjes++;
+            } else {
+                out.println("subscribe reversi");
             }
             if (in.ready()) {
                 String input = in.readLine();
 //                System.out.println("input: " + input);
                 if (input.contains("SVR GAME YOURTURN")) {
-                    if (model.isFile()) {
+                    if (model.isFile() && !aiMoved) {
                         int ai = new ArrayListFile().ArrayListRead("game_" + AantalPotjes).get(0);
-                        if (firstMoveDone ? ai == 2 : ai == 1) {
-                            try {
-                                Thread.sleep(11000);
-                                System.out.println("slept.");
-                                this.slept = true;
-                                out.println("subscribe reversi");
-                            } catch (InterruptedException e) {
-                                throw new RuntimeException(e);
-                            }
+                        int aiPlayer = firstMoveDone ? 2 : 1;
+                        if (aiPlayer!=ai) {
+//                        if (firstMoveDone ? ai == 2 : ai == 1) {
+                            out.println("move " + 1);
+                            this.slept = true;
                             continue;
                         }
                     }
+                    aiMoved = true;
 
                     if (!firstMoveDone) {
                         firstMoveDone = true;
@@ -111,7 +114,10 @@ public class ServerConnectionHelper implements Runnable {
                     }
 
                     int move = model.AImove();
-                    model.addMove(move);
+                    if (!model.isFile()){
+                        model.addMove(move);
+
+                    }
                     out.println("move " + move);
                     recentAI = true;
                 }
@@ -140,6 +146,7 @@ public class ServerConnectionHelper implements Runnable {
 
                 if (input.contains("SVR GAME LOSS")) {
                     if (!this.slept) { done = true; }
+                    this.slept = false;
 
                     firstMoveDone = false;
                     resetGame(AantalPotjes);
@@ -163,7 +170,9 @@ public class ServerConnectionHelper implements Runnable {
 
     private void resetGame(int aantalPotjes) throws IOException {
         model.setCount(aantalPotjes);
-        model.writeFile();
+        if (!model.isFile()){
+            model.writeFile();
+        }
         model.resetGame();
     }
 }
