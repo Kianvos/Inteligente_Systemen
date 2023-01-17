@@ -13,7 +13,7 @@ abstract public class AI {
     private HashMap<Integer, Integer> table;
 
     public AI() {
-        this.loadTranspositionTable("transposition-table");
+        this.loadTranspositionTable("./data/transposition-table");
     }
 
     /**
@@ -40,7 +40,8 @@ abstract public class AI {
                 //noinspection unchecked
                 table = (HashMap<Integer, Integer>) s.readObject();
             } catch (IOException | ClassNotFoundException e) {
-                e.printStackTrace();
+//                e.printStackTrace();
+                table = new HashMap<>();
             }
         }
     }

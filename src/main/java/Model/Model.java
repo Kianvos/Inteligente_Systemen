@@ -1,17 +1,12 @@
 package Model;
 
 import AI.AI;
+import Helper.CsvLogger;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.List;
 
 abstract public class Model {
-
     private boolean againstAi;
     private int[] gameBoard;
     private int currentPlayer;
@@ -22,6 +17,9 @@ abstract public class Model {
     private int winner;
     private int size;
     private AI ai;
+
+    private CsvLogger csvLogger;
+    private List<Long> timesPerMove;
 
     private final int EMPTY = 0;
 
@@ -41,6 +39,8 @@ abstract public class Model {
         this.isOnline = false;
         this.winner = EMPTY;
         this.ai = ai;
+        this.csvLogger = new CsvLogger("./data/average-times.csv");
+        this.timesPerMove = new ArrayList<>();
     }
 
     /**
@@ -72,9 +72,25 @@ abstract public class Model {
      * @return geeft de index terug waar de ai een zet op wil doen.
      */
     public int aiSet(int opponent) {
+        long startTime = System.nanoTime();
         int i = ai.aiNewSet(gameBoard, opponent, this);
+        long endTime = System.nanoTime();
+
+        long deltaTime = endTime - startTime;
+
+        timesPerMove.add(deltaTime);
+
         userSet(i);
+
         return i;
+    }
+
+    public double getAverageTimePerAIMove() {
+        return this.timesPerMove
+                .stream()
+                .mapToDouble(d -> d)
+                .average()
+                .orElse(0.0);
     }
 
 
@@ -92,7 +108,11 @@ abstract public class Model {
         gameBoard = move(idx, gameBoard, currentPlayer);
         gameBoard = showMoves(gameBoard, currentPlayer);
         if (isFinished()) {
-            ai.saveTranspositionTable("transposition-table");
+            ai.saveTranspositionTable("./data/transposition-table");
+
+            int transpositionTableSize = ai.getTable().size();
+            double averageTime = getAverageTimePerAIMove();
+            csvLogger.writeDataToCsv(transpositionTableSize, averageTime);
 
             winner = checkWinner();
             if (winner == PLAYER_ONE || winner == PLAYER_TWO) {
