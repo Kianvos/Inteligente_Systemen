@@ -10,10 +10,10 @@ import java.util.Arrays;
 import java.util.HashMap;
 
 abstract public class AI {
-    private final HashMap<Integer, Integer> table;
+    private HashMap<Integer, Integer> table;
 
     public AI() {
-        table = this.loadTranspositionTable("transposition-table");
+        this.loadTranspositionTable("transposition-table");
     }
 
     /**
@@ -23,9 +23,8 @@ abstract public class AI {
      * @param filePath het pad naar het bestand.
      * @return De transposition table uit het opgegeven bestand.
      **/
-    private HashMap<Integer, Integer> loadTranspositionTable(String filePath) {
+    private void loadTranspositionTable(String filePath) {
         File file = new File(filePath);
-        HashMap<Integer, Integer> transpositionTable = new HashMap<>();
 
         if (!file.exists()) {
             try {
@@ -33,17 +32,28 @@ abstract public class AI {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+
+            table = new HashMap<>();
         } else {
-            try (FileInputStream f = new FileInputStream(file)) {
-                ObjectInputStream s = new ObjectInputStream(f);
+            try (FileInputStream f = new FileInputStream(file);
+                 ObjectInputStream s = new ObjectInputStream(f)) {
                 //noinspection unchecked
-                transpositionTable = (HashMap<Integer, Integer>) s.readObject();
+                table = (HashMap<Integer, Integer>) s.readObject();
             } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
             }
         }
+    }
 
-        return transpositionTable;
+    public void saveTranspositionTable(String filePath) {
+        File file = new File(filePath);
+
+        try (FileOutputStream f = new FileOutputStream(file);
+             ObjectOutputStream s = new ObjectOutputStream(f)) {
+            s.writeObject(table);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**

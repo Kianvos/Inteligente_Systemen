@@ -92,18 +92,7 @@ abstract public class Model {
         gameBoard = move(idx, gameBoard, currentPlayer);
         gameBoard = showMoves(gameBoard, currentPlayer);
         if (isFinished()) {
-            HashMap<Integer, Integer> table = ai.getTable();
-            File file = new File("transposition-table");
-
-            try {
-                FileOutputStream f = new FileOutputStream(file);
-                ObjectOutputStream s = new ObjectOutputStream(f);
-                s.writeObject(table);
-                s.close();
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
+            ai.saveTranspositionTable("transposition-table");
 
             winner = checkWinner();
             if (winner == PLAYER_ONE || winner == PLAYER_TWO) {
