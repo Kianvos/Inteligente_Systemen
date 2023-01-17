@@ -93,7 +93,7 @@ abstract public class Model {
         gameBoard = showMoves(gameBoard, currentPlayer);
         if (isFinished()) {
             HashMap<Integer, Integer> table = ai.getTable();
-            File file = new File("data");
+            File file = new File("transposition-table");
 
             try {
                 FileOutputStream f = new FileOutputStream(file);

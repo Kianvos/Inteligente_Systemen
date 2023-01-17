@@ -4,45 +4,46 @@ import Model.Model;
 import Model.Othello;
 import Model.TicTacToe;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
 abstract public class AI {
-    private HashMap<Integer, Integer> table;
+    private final HashMap<Integer, Integer> table;
 
     public AI() {
-        File file = new File("data");
+        table = this.loadTranspositionTable("transposition-table");
+    }
+
+    /**
+     * Laad de opgeslagen transposition table uit het opgegeven bestand in.
+     * Als het bestand niet bestaat wordt deze aangemaakt en wordt er een lege transposition table geretourneerd.
+     *
+     * @param filePath het pad naar het bestand.
+     * @return De transposition table uit het opgegeven bestand.
+     **/
+    private HashMap<Integer, Integer> loadTranspositionTable(String filePath) {
+        File file = new File(filePath);
+        HashMap<Integer, Integer> transpositionTable = new HashMap<>();
 
         if (!file.exists()) {
             try {
-                new File("data").createNewFile();
+                boolean exists = file.createNewFile();
             } catch (IOException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
-            table = new HashMap<>(); 
         } else {
-            System.out.println("Found File");
-            try {
-                FileInputStream f = new FileInputStream(file);
+            try (FileInputStream f = new FileInputStream(file)) {
                 ObjectInputStream s = new ObjectInputStream(f);
-                try {
-                    table = (HashMap<Integer, Integer>) s.readObject();
-                } catch (ClassNotFoundException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-                s.close();
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
+                //noinspection unchecked
+                transpositionTable = (HashMap<Integer, Integer>) s.readObject();
+            } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
             }
         }
+
+        return transpositionTable;
     }
 
     /**
@@ -74,7 +75,7 @@ abstract public class AI {
         if (valid.contains(bestMove)) {
             pos = bestMove;
         }
-        
+
         return pos;
     }
 
@@ -145,8 +146,8 @@ abstract public class AI {
         if (isMax) {
             for (Integer move : availableMoves) {
                 AiModel.setGameBoard(AiModel.move(move, boardData, AI));
-                
-                int score = minimax(AiModel, false, depth-1, a, b, AI, opponent);
+
+                int score = minimax(AiModel, false, depth - 1, a, b, AI, opponent);
                 bestScore = Math.max(bestScore, score);
 
                 boardData = startBoardData.clone();
