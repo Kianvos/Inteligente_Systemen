@@ -5,7 +5,11 @@ import java.util.ArrayList;
 
 public class ArrayListFile {
     //CONFIG
-    private String folderName = "moves/";
+    private String folderName;
+
+    public ArrayListFile(String folderName) {
+        this.folderName = folderName;
+    }
 
     public void writeArrayListToFile(String fileName, ArrayList<Integer> values) throws IOException {
         FileOutputStream fileOutputStream = new FileOutputStream(folderName + fileName);
@@ -24,7 +28,7 @@ public class ArrayListFile {
     }
 
     public static void main(String[] args) throws IOException, ClassNotFoundException {
-        ArrayListFile tmp = new ArrayListFile();
+        ArrayListFile tmp = new ArrayListFile("./data/");
         ArrayList<Integer> moves = tmp.ArrayListRead("game_1");
         for (Integer move : moves){
             System.out.println(move);

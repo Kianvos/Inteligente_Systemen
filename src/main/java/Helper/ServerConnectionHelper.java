@@ -97,7 +97,7 @@ public class ServerConnectionHelper implements Runnable {
 //                System.out.println("input: " + input);
                 if (input.contains("SVR GAME YOURTURN")) {
                     if (model.isFile() && !aiMoved) {
-                        int ai = new ArrayListFile().ArrayListRead("game_" + AantalPotjes).get(0);
+                        int ai = new ArrayListFile("./data/").ArrayListRead("game_" + AantalPotjes).get(0);
                         int aiPlayer = firstMoveDone ? 2 : 1;
                         if (aiPlayer!=ai) {
 //                        if (firstMoveDone ? ai == 2 : ai == 1) {

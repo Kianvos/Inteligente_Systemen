@@ -32,16 +32,20 @@ public class RandomAI {
         // Start op 1 omdat index 0 is de int die de player represent
         this.gameIndex = 1;
         this.reset = true;
-        arrayListFile = new ArrayListFile();
+        arrayListFile = new ArrayListFile("./data/");
     }
 
-    public void startGameSettings(int AI, int opponent) {
+    public void startGameSettings(int AI, int opponent) throws IOException, ClassNotFoundException {
         System.out.println("AI: " + AI + " Opponent: " + opponent);
         this.AI = AI;
         // Start op 1 omdat index 0 is de int die de player represent
         this.gameIndex = 1;
 
-        if (gameStatus == GAME.RANDOM){ this.moves.add(this.AI); }
+        if (gameStatus == GAME.RANDOM){
+            this.moves.add(this.AI);
+        }else if (gameStatus == GAME.FILE){
+            moves = arrayListFile.ArrayListRead("game_"+(count+1));
+        }
         this.opponent = opponent;
     }
 
@@ -56,7 +60,7 @@ public class RandomAI {
         othello.changeTurn();
     }
 
-    public int AImove() throws IOException, ClassNotFoundException {
+    public int AImove() {
         int[] gameBoard = othello.getBoardData().clone();
         int move = randomMove(gameBoard);
         move(move, AI);
@@ -64,7 +68,7 @@ public class RandomAI {
         return move;
     }
 
-    public int randomMove(int[] gameBoard) throws IOException, ClassNotFoundException {
+    public int randomMove(int[] gameBoard) {
         int move = 0;
         if (gameStatus == GAME.RANDOM){
             Random random = new Random();
@@ -73,10 +77,6 @@ public class RandomAI {
 //        System.out.println("MOVES: " + tmpMoves);
             move = tmpMoves.get(random.nextInt(tmpMoves.size()));
         } else if (gameStatus == GAME.FILE) {
-            if (reset){
-                moves = arrayListFile.ArrayListRead("game_"+(count+1));
-                reset = false;
-            }
 //            ArrayList<Integer> moves = arrayListFile.ArrayListRead("game_"+(count+1));
             // idx gebruiken voor een van de moves
             move = moves.get(this.gameIndex);
@@ -90,7 +90,6 @@ public class RandomAI {
 
     public void resetGame() {
         othello.setGameBoard(othello.buildGameBoard());
-        reset = true;
     }
 
     public void writeFile() throws IOException {
