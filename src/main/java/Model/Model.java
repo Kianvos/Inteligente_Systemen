@@ -2,6 +2,7 @@ package Model;
 
 import AI.AI;
 import Helper.CsvLogger;
+import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -85,23 +86,20 @@ abstract public class Model {
         return i;
     }
 
-    public double getAverageTimePerAIMove() {
-        return this.timesPerMove
-                .stream()
-                .mapToDouble(d -> d)
-                .average()
-                .orElse(0.0);
-    }
+    private void writeStatisticToCSV() {
+        double[] times = this.timesPerMove.stream().mapToDouble(d -> d).toArray();
+        DescriptiveStatistics stats = new DescriptiveStatistics(times);
 
-    private double getStandardDeviation(double mean) {
-        int length = this.timesPerMove.size();
-        double standardDeviation = 0.0;
+        int transpositionTableSize = ai.getTable().size();
+        double mean = stats.getMean();
+        double std = stats.getStandardDeviation();
+        double maxTime = stats.getMax();
+        double minTime = stats.getMin();
+        double q1 = stats.getPercentile(25);
+        double q2 = stats.getPercentile(50);
+        double q3 = stats.getPercentile(75);
 
-        for(double i : timesPerMove) {
-            standardDeviation += Math.pow(i - mean, 2);
-        }
-
-        return Math.sqrt(standardDeviation / length);
+        csvLogger.writeDataToCsv(transpositionTableSize, mean, std, maxTime, minTime, q1, q2, q3);
     }
 
 
@@ -121,10 +119,7 @@ abstract public class Model {
         if (isFinished()) {
             ai.saveTranspositionTable("./data/transposition-table");
 
-            int transpositionTableSize = ai.getTable().size();
-            double averageTime = getAverageTimePerAIMove();
-            double standardDeviation = getStandardDeviation(averageTime);
-            csvLogger.writeDataToCsv(transpositionTableSize, averageTime, standardDeviation);
+            writeStatisticToCSV();
 
             winner = checkWinner();
             if (winner == PLAYER_ONE || winner == PLAYER_TWO) {

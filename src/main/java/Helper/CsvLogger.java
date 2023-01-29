@@ -28,7 +28,15 @@ public class CsvLogger {
         this.csvFormat = builder.build();
     }
 
-    public void writeDataToCsv(int transpositionTableSize, double averageTime, double standardDeviation) {
+    public void writeDataToCsv(
+            int transpositionTableSize,
+            double mean,
+            double std,
+            double maxTime,
+            double minTime,
+            double q1,
+            double q2,
+            double q3) {
         if (csvOutputFile.toFile().exists()) {
             this.csvFormat = builder.setSkipHeaderRecord(true).build();
         }
@@ -40,7 +48,7 @@ public class CsvLogger {
         ) {
             CSVPrinter printer = new CSVPrinter(writer, csvFormat);
 
-            printer.printRecord(transpositionTableSize, averageTime, standardDeviation);
+            printer.printRecord(transpositionTableSize, mean, std, maxTime, minTime, q1, q2, q3);
 
             printer.flush();
         } catch (IOException e) {
@@ -49,6 +57,6 @@ public class CsvLogger {
     }
 
     private enum BoardStateCSVHeader {
-        TRANSPOSITION_TABLE_SIZE, AVERAGE_TIME_PER_MOVE, STANDARD_DEVIATION
+        TRANSPOSITION_TABLE_SIZE, AVERAGE_TIME_PER_MOVE, STANDARD_DEVIATION, MAX_TIME, MIN_TIME, Q1, Q2, Q3
     }
 }
