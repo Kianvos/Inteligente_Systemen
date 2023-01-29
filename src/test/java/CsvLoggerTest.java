@@ -25,7 +25,7 @@ public class CsvLoggerTest {
 
     @Test
     public void testCanWriteToFile() throws IOException {
-        this.csvLogger.writeDataToCsv(10, 100.0);
+        this.csvLogger.writeDataToCsv(10, 100.0, 5);
 
         long fileSize = Files.size(temp);
 

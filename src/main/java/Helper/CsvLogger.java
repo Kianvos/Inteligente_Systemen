@@ -10,7 +10,7 @@ import java.nio.file.StandardOpenOption;
 
 public class CsvLogger {
     private final Path csvOutputFile;
-    private CSVFormat.Builder builder;
+    private final CSVFormat.Builder builder;
     private CSVFormat csvFormat;
 
 
@@ -28,7 +28,7 @@ public class CsvLogger {
         this.csvFormat = builder.build();
     }
 
-    public void writeDataToCsv(int transpositionTableSize, double averageTime) {
+    public void writeDataToCsv(int transpositionTableSize, double averageTime, double standardDeviation) {
         if (csvOutputFile.toFile().exists()) {
             this.csvFormat = builder.setSkipHeaderRecord(true).build();
         }
@@ -40,7 +40,7 @@ public class CsvLogger {
         ) {
             CSVPrinter printer = new CSVPrinter(writer, csvFormat);
 
-            printer.printRecord(transpositionTableSize, averageTime);
+            printer.printRecord(transpositionTableSize, averageTime, standardDeviation);
 
             printer.flush();
         } catch (IOException e) {
@@ -49,6 +49,6 @@ public class CsvLogger {
     }
 
     private enum BoardStateCSVHeader {
-        TRANSPOSITION_TABLE_SIZE, AVERAGE_TIME_PER_MOVE
+        TRANSPOSITION_TABLE_SIZE, AVERAGE_TIME_PER_MOVE, STANDARD_DEVIATION
     }
 }

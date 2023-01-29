@@ -18,8 +18,8 @@ abstract public class Model {
     private int size;
     private AI ai;
 
-    private CsvLogger csvLogger;
-    private List<Long> timesPerMove;
+    private final CsvLogger csvLogger;
+    private final List<Long> timesPerMove;
 
     private final int EMPTY = 0;
 
@@ -93,6 +93,17 @@ abstract public class Model {
                 .orElse(0.0);
     }
 
+    private double getStandardDeviation(double mean) {
+        int length = this.timesPerMove.size();
+        double standardDeviation = 0.0;
+
+        for(double i : timesPerMove) {
+            standardDeviation += Math.pow(i - mean, 2);
+        }
+
+        return Math.sqrt(standardDeviation / length);
+    }
+
 
     /**
      * Zet de zet op het bord en handelt de vervolgstappen af.
@@ -112,7 +123,8 @@ abstract public class Model {
 
             int transpositionTableSize = ai.getTable().size();
             double averageTime = getAverageTimePerAIMove();
-            csvLogger.writeDataToCsv(transpositionTableSize, averageTime);
+            double standardDeviation = getStandardDeviation(averageTime);
+            csvLogger.writeDataToCsv(transpositionTableSize, averageTime, standardDeviation);
 
             winner = checkWinner();
             if (winner == PLAYER_ONE || winner == PLAYER_TWO) {
@@ -130,7 +142,6 @@ abstract public class Model {
             changeTurn();
         }
     }
-
 
     public void changeTurn() {
         currentPlayer = (currentPlayer == PLAYER_ONE) ? PLAYER_TWO : PLAYER_ONE;
