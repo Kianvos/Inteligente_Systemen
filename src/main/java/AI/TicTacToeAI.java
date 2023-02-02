@@ -3,6 +3,10 @@ package AI;
 import Model.Model;
 
 public class TicTacToeAI extends AI {
+    public TicTacToeAI(int time) {
+        super(time);
+    }
+
     @Override
     public int evaluate(Model AiModel, int player, int opponent) {
         //Als de maximizer wint, tel dan 10 op bij de score

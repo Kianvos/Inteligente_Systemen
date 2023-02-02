@@ -7,13 +7,16 @@ import Model.TicTacToe;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 
 abstract public class AI {
     private HashMap<Integer, Integer> table;
-
-    public AI() {
+    private int maxTime;
+    private long timeStarted;
+    public AI(int time) {
         this.loadTranspositionTable("./data/transposition-table");
+        maxTime = time*1000;
     }
 
     /**
@@ -98,7 +101,9 @@ abstract public class AI {
      * @param opponent geeft mee welke speler de tegenstander is.
      * @return Lege positie op het bord
      */
+
     private int findBestMove(Model AiModel, int opponent) {
+        timeStarted = new Date().getTime();
         int[] boardData = AiModel.getBoardData().clone();
         int hash = Arrays.hashCode(boardData);
         final int[] startBoardData = Arrays.copyOf(boardData.clone(), boardData.length);
@@ -116,7 +121,7 @@ abstract public class AI {
         for (int move : moves) {
             AiModel.setGameBoard(AiModel.move(move, boardData, AI));
 
-            int score = minimax(AiModel, false, 3, Integer.MIN_VALUE, Integer.MAX_VALUE, AI, opponent);
+            int score = minimax(AiModel, false, 6, Integer.MIN_VALUE, Integer.MAX_VALUE, AI, opponent);
             if (score > bestScore) {
                 bestScore = score;
                 bestMove = move;
@@ -124,6 +129,8 @@ abstract public class AI {
             boardData = startBoardData.clone();
             AiModel.setGameBoard(startBoardData);
         }
+
+        System.out.println(new Date().getTime()-timeStarted);
 
         this.table.put(hash, bestMove);
 
@@ -144,6 +151,10 @@ abstract public class AI {
      * @return De score van het beste mogelijke zet
      */
     private int minimax(Model AiModel, boolean isMax, int depth, int a, int b, int AI, int opponent) {
+        if (new Date().getTime() > timeStarted + maxTime-250){
+            System.out.println("test");
+            return 0;
+        }
         int[] boardData = AiModel.getBoardData().clone();
         final int[] startBoardData = Arrays.copyOf(boardData.clone(), boardData.length);
         ArrayList<Integer> availableMoves = isMax ? AiModel.getAvailableMoves(boardData, AI) : AiModel.getAvailableMoves(boardData, opponent);

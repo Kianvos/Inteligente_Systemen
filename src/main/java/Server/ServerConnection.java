@@ -72,9 +72,9 @@ public class ServerConnection implements Runnable {
 //       out.println("login " + "kian");
         in.readLine(); // message: OK
         if (this.model instanceof Othello) {
-            out.println("subscribe reversi");
+//            out.println("subscribe reversi");
         } else {
-            out.println("subscribe tic-tac-toe");
+//            out.println("subscribe tic-tac-toe");
         }
         this.view.getGameView().setText(DEFAULT);
 
@@ -91,11 +91,11 @@ public class ServerConnection implements Runnable {
                 System.out.println("done.");
                 done = false;
                 if(this.model instanceof Othello){
-                    out.println("subscribe reversi");
+//                    out.println("subscribe reversi");
                 }else{
-                    out.println("subscribe tic-tac-toe");
+//                    out.println("subscribe tic-tac-toe");
                 }
-                if(AantalPotjes == 100){
+                if(AantalPotjes == 200){
                     System.out.println(AantalPotjes +" keer gespeeld");
                     disconnect();
                 }

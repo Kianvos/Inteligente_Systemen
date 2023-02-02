@@ -73,40 +73,43 @@ public class ServerConnectionHelper implements Runnable {
         boolean done = false;
         boolean firstMoveDone = false;
         boolean aiMoved = false;
+        boolean check = true;
 
-        int AantalPotjes = 1;
-
+        int tmpCount = 1;
+        int AantalPotjes = tmpCount;
+        out.println("subscribe reversi");
         while (isRun()) {
             if (done) {
-                aiMoved = false;
-
                 System.out.println("done.");
                 done = false;
                 out.println("subscribe reversi");
 
-                if (AantalPotjes == 25) {
-                    System.out.println(AantalPotjes + " keer gespeeld. AFGELOPEN");
+                if (AantalPotjes > 15) {
+                    System.out.println(AantalPotjes-1 + " keer gespeeld. AFGELOPEN");
                     disconnect();
                 }
-                AantalPotjes++;
-            } else {
-                out.println("subscribe reversi");
-            }
+                if (!slept) {
+                    AantalPotjes++;
+                } else {
+                    slept = false;
+                }
+            }  //                out.println("subscribe reversi");
+
             if (in.ready()) {
                 String input = in.readLine();
 //                System.out.println("input: " + input);
                 if (input.contains("SVR GAME YOURTURN")) {
-                    if (model.isFile() && !aiMoved) {
+                    if (model.isFile() && check) {
                         int ai = new ArrayListFile("./data/").ArrayListRead("game_" + AantalPotjes).get(0);
                         int aiPlayer = firstMoveDone ? 2 : 1;
-                        if (aiPlayer!=ai) {
+                        if (aiPlayer != ai) {
 //                        if (firstMoveDone ? ai == 2 : ai == 1) {
                             out.println("move " + 1);
-                            this.slept = true;
+                            slept = true;
                             continue;
                         }
+                        check = false;
                     }
-                    aiMoved = true;
 
                     if (!firstMoveDone) {
                         firstMoveDone = true;
@@ -114,7 +117,7 @@ public class ServerConnectionHelper implements Runnable {
                     }
 
                     int move = model.AImove();
-                    if (!model.isFile()){
+                    if (!model.isFile()) {
                         model.addMove(move);
 
                     }
@@ -145,11 +148,14 @@ public class ServerConnectionHelper implements Runnable {
                 }
 
                 if (input.contains("SVR GAME LOSS")) {
-                    if (!this.slept) { done = true; }
-                    this.slept = false;
-
+                    check = true;
+                    done=true;
                     firstMoveDone = false;
-                    resetGame(AantalPotjes);
+                    if (slept){
+                        resetGame(AantalPotjes-1);
+                    } else {
+                        resetGame(AantalPotjes);
+                    }
                 }
             }
         }
@@ -170,7 +176,7 @@ public class ServerConnectionHelper implements Runnable {
 
     private void resetGame(int aantalPotjes) throws IOException {
         model.setCount(aantalPotjes);
-        if (!model.isFile()){
+        if (!model.isFile()) {
             model.writeFile();
         }
         model.resetGame();

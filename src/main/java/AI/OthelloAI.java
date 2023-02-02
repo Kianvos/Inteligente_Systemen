@@ -10,7 +10,7 @@ public class OthelloAI extends AI {
     private final int[] cornersIdx = {0, 7, 56, 63};
 
     public OthelloAI() {
-        super();
+        super(10);
     }
 
     private enum GamePhase {
@@ -134,7 +134,7 @@ public class OthelloAI extends AI {
      * Kijkt of er een restwaarde is als je deelt door 2
      *
      * @param boardData geeft het speelbord van dat moment mee
-     * @return Of je een extra zet hebt ten opzichte van de tegenstander
+     * @return Of je de laatste zet zou mogen zetten
      */
     private int parityEvaluate(int[] boardData) {
         int remain = 64 - getTotalCount(boardData);

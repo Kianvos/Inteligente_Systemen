@@ -11,7 +11,7 @@ public class TicTacToe extends Model {
     private final int PLAYER_O = 2;
 
     public TicTacToe() {
-        super(3, new TicTacToeAI());
+        super(3, new TicTacToeAI(10));
     }
 
     @Override

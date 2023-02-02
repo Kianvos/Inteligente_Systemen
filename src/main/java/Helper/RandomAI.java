@@ -28,7 +28,7 @@ public class RandomAI {
     public RandomAI() {
         this.othello = new Othello();
 //        this.gameStatus = GAME.RANDOM;
-        this.gameStatus = GAME.FILE;
+        this.gameStatus = GAME.RANDOM;
         // Start op 1 omdat index 0 is de int die de player represent
         this.gameIndex = 1;
         this.reset = true;
