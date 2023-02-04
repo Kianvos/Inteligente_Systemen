@@ -4,44 +4,59 @@ import Model.Model;
 import Model.Othello;
 import Model.TicTacToe;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 
 abstract public class AI {
     private HashMap<Integer, Integer> table;
+    private int maxTime;
+    private long timeStarted;
+    public AI(int time) {
+        this.loadTranspositionTable("./data/transposition-table");
+        maxTime = time*1000;
+    }
 
-    public AI() {
-        File file = new File("data");
+    /**
+     * Laad de opgeslagen transposition table uit het opgegeven bestand in.
+     * Als het bestand niet bestaat wordt deze aangemaakt en wordt er een lege transposition table geretourneerd.
+     *
+     * @param filePath het pad naar het bestand.
+     * @return De transposition table uit het opgegeven bestand.
+     **/
+    private void loadTranspositionTable(String filePath) {
+        File file = new File(filePath);
 
         if (!file.exists()) {
             try {
-                new File("data").createNewFile();
+                boolean exists = file.createNewFile();
             } catch (IOException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
-            table = new HashMap<>(); 
+
+            table = new HashMap<>();
         } else {
-            System.out.println("Found File");
-            try {
-                FileInputStream f = new FileInputStream(file);
-                ObjectInputStream s = new ObjectInputStream(f);
-                try {
-                    table = (HashMap<Integer, Integer>) s.readObject();
-                } catch (ClassNotFoundException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-                s.close();
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+            try (FileInputStream f = new FileInputStream(file);
+                 ObjectInputStream s = new ObjectInputStream(f)) {
+                //noinspection unchecked
+                table = (HashMap<Integer, Integer>) s.readObject();
+            } catch (IOException | ClassNotFoundException e) {
+//                e.printStackTrace();
+                table = new HashMap<>();
             }
+        }
+    }
+
+    public void saveTranspositionTable(String filePath) {
+        File file = new File(filePath);
+
+        try (FileOutputStream f = new FileOutputStream(file);
+             ObjectOutputStream s = new ObjectOutputStream(f)) {
+            s.writeObject(table);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -74,7 +89,7 @@ abstract public class AI {
         if (valid.contains(bestMove)) {
             pos = bestMove;
         }
-        
+
         return pos;
     }
 
@@ -86,7 +101,9 @@ abstract public class AI {
      * @param opponent geeft mee welke speler de tegenstander is.
      * @return Lege positie op het bord
      */
+
     private int findBestMove(Model AiModel, int opponent) {
+        timeStarted = new Date().getTime();
         int[] boardData = AiModel.getBoardData().clone();
         int hash = Arrays.hashCode(boardData);
         final int[] startBoardData = Arrays.copyOf(boardData.clone(), boardData.length);
@@ -104,7 +121,7 @@ abstract public class AI {
         for (int move : moves) {
             AiModel.setGameBoard(AiModel.move(move, boardData, AI));
 
-            int score = minimax(AiModel, false, 7, Integer.MIN_VALUE, Integer.MAX_VALUE, AI, opponent);
+            int score = minimax(AiModel, false, 6, Integer.MIN_VALUE, Integer.MAX_VALUE, AI, opponent);
             if (score > bestScore) {
                 bestScore = score;
                 bestMove = move;
@@ -112,6 +129,8 @@ abstract public class AI {
             boardData = startBoardData.clone();
             AiModel.setGameBoard(startBoardData);
         }
+
+        System.out.println(new Date().getTime()-timeStarted);
 
         this.table.put(hash, bestMove);
 
@@ -132,6 +151,10 @@ abstract public class AI {
      * @return De score van het beste mogelijke zet
      */
     private int minimax(Model AiModel, boolean isMax, int depth, int a, int b, int AI, int opponent) {
+        if (new Date().getTime() > timeStarted + maxTime-250){
+            System.out.println("test");
+            return 0;
+        }
         int[] boardData = AiModel.getBoardData().clone();
         final int[] startBoardData = Arrays.copyOf(boardData.clone(), boardData.length);
         ArrayList<Integer> availableMoves = isMax ? AiModel.getAvailableMoves(boardData, AI) : AiModel.getAvailableMoves(boardData, opponent);
@@ -145,8 +168,8 @@ abstract public class AI {
         if (isMax) {
             for (Integer move : availableMoves) {
                 AiModel.setGameBoard(AiModel.move(move, boardData, AI));
-                
-                int score = minimax(AiModel, false, depth-1, a, b, AI, opponent);
+
+                int score = minimax(AiModel, false, depth - 1, a, b, AI, opponent);
                 bestScore = Math.max(bestScore, score);
 
                 boardData = startBoardData.clone();
